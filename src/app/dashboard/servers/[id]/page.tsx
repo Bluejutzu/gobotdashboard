@@ -9,8 +9,8 @@ type ServerSideProps = Promise<{ id: string }>
 
 export default async function ServerPage({ params }: { params: ServerSideProps }) {
   const { id }: { id: string } = await params
-  
-  const supabase = createServerClient()
+
+  const supabase = await createServerClient()
   const {
     data: { session },
   } = await supabase.auth.getSession()

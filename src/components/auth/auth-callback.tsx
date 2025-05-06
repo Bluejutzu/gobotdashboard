@@ -6,9 +6,10 @@ import { getSupabaseClient } from "@/lib/supabase/client"
 
 export default function AuthCallback() {
   const router = useRouter()
-  const supabase = getSupabaseClient()
 
   useEffect(() => {
+    const supabase = getSupabaseClient()  // Ensure this runs only on the client side
+
     const handleAuthCallback = async () => {
       const { data, error } = await supabase.auth.getSession()
 
@@ -26,7 +27,7 @@ export default function AuthCallback() {
     }
 
     handleAuthCallback()
-  }, [router, supabase])
+  }, [router])
 
   return (
     <div className="flex items-center justify-center min-h-screen">

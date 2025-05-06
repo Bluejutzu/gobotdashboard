@@ -3,13 +3,10 @@ import { createServerClient } from "@/lib/supabase/server"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { SettingsForm } from "@/components/dashboard/settings-form"
 
-interface SettingsPageProps {
-    params: {
-        id: string
-    }
-}
+type SettingsPageProps = Promise<{ id: string }>
 
-export default async function SettingsPage({ params }: SettingsPageProps) {
+export default async function SettingsPage({ params }: { params: SettingsPageProps }) {
+    const { id }: { id: string } = await params
     const supabase = createServerClient()
 
     const {
@@ -21,7 +18,7 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
     }
 
     // Get server data
-    const { data: server } = await supabase.from("servers").select("*").eq("id", params.id).single()
+    const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
 
     if (!server) {
         redirect("/dashboard")
@@ -43,20 +40,20 @@ export default async function SettingsPage({ params }: SettingsPageProps) {
 
     // Check if user is admin
     if (!userServer || !userServer.is_admin) {
-        redirect(`/dashboard/servers/${params.id}`)
+        redirect(`/dashboard/servers/${id}`)
     }
 
     // Get bot settings
     const { data: botSettings } = await supabase.from("bot_settings").select("*").eq("server_id", server.id).single()
 
     if (!botSettings) {
-        redirect(`/dashboard/servers/${params.id}`)
+        redirect(`/dashboard/servers/${id}`)
     }
 
     return (
         <>
             <div className="hidden md:flex w-64 flex-col border-r bg-muted/40">
-                <DashboardSidebar serverId={params.id} />
+                <DashboardSidebar serverId={id} />
             </div>
             <div className="flex-1">
                 <div className="h-full px-4 py-6 lg:px-8">
