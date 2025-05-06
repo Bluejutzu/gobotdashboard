@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 
@@ -21,12 +21,12 @@ export function ToastDemo({
     autoShow = false,
     delay = 1000,
 }: ToastDemoProps) {
-    const showToast = () => {
+    const showToast = useCallback(() => {
         toast(title, {
             description,
             action,
         })
-    }
+    }, [action, description, title])
 
     useEffect(() => {
         if (autoShow) {
@@ -36,7 +36,7 @@ export function ToastDemo({
 
             return () => clearTimeout(timer)
         }
-    }, [autoShow, delay])
+    }, [autoShow, delay, showToast])
 
     if (autoShow) return null
 

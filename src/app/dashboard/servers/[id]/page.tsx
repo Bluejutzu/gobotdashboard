@@ -5,15 +5,12 @@ import { StatsCard } from "@/components/dashboard/stats-card"
 import { CommandHistory } from "@/components/dashboard/command-history"
 import { BarChart3, MessageSquare, Users } from "lucide-react"
 
-interface ServerPageProps {
-  params: {
-    id: string
-  }
-}
+type ServerSideProps = Promise<{ id: string }>
 
-export default async function ServerPage({ params }: ServerPageProps) {
+export default async function ServerPage({ params }: { params: ServerSideProps }) {
+  const { id }: { id: string } = await params
+  
   const supabase = createServerClient()
-
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -23,7 +20,7 @@ export default async function ServerPage({ params }: ServerPageProps) {
   }
 
   // Get server data
-  const { data: server } = await supabase.from("servers").select("*").eq("id", params.id).single()
+  const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
 
   if (!server) {
     redirect("/dashboard")
@@ -61,7 +58,7 @@ export default async function ServerPage({ params }: ServerPageProps) {
   return (
     <>
       <div className="hidden md:flex w-64 flex-col border-r bg-muted/40">
-        <DashboardSidebar serverId={params.id} />
+        <DashboardSidebar serverId={id} />
       </div>
       <div className="flex-1">
         <div className="h-full px-4 py-6 lg:px-8">
