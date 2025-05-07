@@ -1,10 +1,38 @@
-import { createServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
+"use client"
 
-export default async function AuthCallback() {
-  const supabase = createServerClient();
+import { getSupabaseClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { User } from "@supabase/supabase-js"
+import { useEffect, useState } from "react";
 
-  console.log(await supabase.auth.getSession())
+export default function AuthCallback() {
+  const router = useRouter()
+  const supabase = getSupabaseClient()
+  const [user, setUser] = useState<User>()
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      console.log(user)
 
-  redirect("/dashboard");
+      if (!session) {
+        router.push("/auth/login")
+        return
+      }
+
+      setUser(session.user)
+    }
+
+    checkSession()
+
+  }, [router, supabase, user])
+
+  return (
+    <div>
+      {Object.entries(user?.user_metadata || {}).map(([key, value], i) => (
+        <div key={i}>{`${key}: ${value}`}</div>
+      ))}
+    </div>
+  );
 }
