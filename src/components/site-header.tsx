@@ -45,7 +45,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <Button asChild>
-            <Link href="/dashboard">Open dashboard</Link>
+            <Link href="/auth/callback">Open dashboard</Link>
           </Button>
         </div>
       </div>

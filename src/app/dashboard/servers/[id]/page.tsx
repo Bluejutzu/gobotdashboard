@@ -26,6 +26,8 @@ export default async function ServerPage({ params }: { params: ServerSideProps }
     redirect("/dashboard")
   }
 
+  
+
   // Get user access to this server
   const { data: userData } = await supabase
     .from("users")
