@@ -24,14 +24,12 @@ export default function CustomThemesPage() {
     const [mounted, setMounted] = useState(false)
     const [activeTab, setActiveTab] = useState("create")
 
-    // Theme state
     const [primaryColor, setPrimaryColor] = useState("#0ea5e9")
     const [secondaryColor, setSecondaryColor] = useState("#f1f5f9")
     const [accentColor, setAccentColor] = useState("#6366f1")
     const [borderRadius, setBorderRadius] = useState(8)
     const [themeName, setThemeName] = useState("My Custom Theme")
 
-    // Mock community themes
     const communityThemes: ThemeData[] = [
         {
             id: 1,
@@ -95,24 +93,20 @@ export default function CustomThemesPage() {
         },
     ]
 
-    // Mock saved themes
     const [savedThemes, setSavedThemes] = useState([
         { id: 1, name: "My Dark Theme", primary: "#2563eb", secondary: "#1e293b", accent: "#8b5cf6", borderRadius: 8 },
         { id: 2, name: "Light Mode", primary: "#0ea5e9", secondary: "#f8fafc", accent: "#6366f1", borderRadius: 12 },
     ])
 
-    // Apply theme to preview
     useEffect(() => {
         setMounted(true)
 
-        // Apply theme colors to CSS variables for preview
         document.documentElement.style.setProperty("--theme-primary", primaryColor)
         document.documentElement.style.setProperty("--theme-secondary", secondaryColor)
         document.documentElement.style.setProperty("--theme-accent", accentColor)
         document.documentElement.style.setProperty("--theme-radius", `${borderRadius}px`)
 
         return () => {
-            // Clean up custom properties when component unmounts
             document.documentElement.style.removeProperty("--theme-primary")
             document.documentElement.style.removeProperty("--theme-secondary")
             document.documentElement.style.removeProperty("--theme-accent")
@@ -120,7 +114,6 @@ export default function CustomThemesPage() {
         }
     }, [primaryColor, secondaryColor, accentColor, borderRadius])
 
-    // Handle save theme
     const handleSaveTheme = () => {
         const newTheme = {
             id: savedThemes.length + 1,
@@ -143,7 +136,6 @@ export default function CustomThemesPage() {
         })
     }
 
-    // Apply a theme
     const applyTheme = (theme: Partial<ThemeData>) => {
         setPrimaryColor(theme.primary!)
         setSecondaryColor(theme.secondary!)
@@ -156,7 +148,6 @@ export default function CustomThemesPage() {
         })
     }
 
-    // Like a community theme
     const likeTheme = () => {
         toast("Theme Liked", {
             description: "You've liked this community theme.",

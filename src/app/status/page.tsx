@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 
 export default function StatusPage() {
-    // Mock data for system status
     const systems = [
         { name: "API", status: "operational", uptime: 99.98 },
         { name: "Bot Core", status: "operational", uptime: 99.99 },
@@ -19,7 +18,6 @@ export default function StatusPage() {
         { name: "Authentication", status: "operational", uptime: 100 },
     ]
 
-    // Mock data for incidents
     const incidents = [
         {
             id: 1,

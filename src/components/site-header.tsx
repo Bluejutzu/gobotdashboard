@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { Button } from "@/components/ui/button"
+import { AnimationPreferences } from "@/components/animation-preferences"
 
 export function SiteHeader() {
   return (
@@ -43,9 +44,10 @@ export function SiteHeader() {
           </Link>
         </nav>
         <div className="flex items-center gap-2">
+          <AnimationPreferences />
           <ThemeToggle />
           <Button asChild>
-            <Link href="/auth/callback">Open dashboard</Link>
+            <Link href="/dashboard">Open dashboard</Link>
           </Button>
         </div>
       </div>

@@ -1,3 +1,5 @@
+"use client"
+
 import GuildList from '@/components/dashboard/guild-list'
 import React from 'react'
 

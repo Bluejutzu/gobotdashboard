@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image"
 import { User } from "@supabase/supabase-js"
+import { Avatar } from "@radix-ui/react-avatar"
+import { AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function OnboardingPage() {
     const router = useRouter()
@@ -38,7 +39,6 @@ export default function OnboardingPage() {
         setIsLoading(true)
 
         try {
-            // Create user in our database
             const { error: userError } = await supabase.from("users").insert({
                 discord_id: user.user_metadata.sub,
                 username: user.user_metadata.full_name || user.user_metadata.name,
@@ -46,6 +46,9 @@ export default function OnboardingPage() {
                 email: user.email,
             })
 
+            if (userError?.code == "23505") {
+                return router.push("/dashboard")
+            }
             if (userError) throw userError
 
             router.push("/dashboard")
@@ -76,11 +79,14 @@ export default function OnboardingPage() {
                 <CardContent>
                     <div className="flex items-center gap-4 mb-4">
                         {user?.user_metadata?.avatar_url && (
-                            <Image
-                                src={user.user_metadata.avatar_url || "/placeholder.svg"}
-                                alt="Discord avatar"
-                                className="w-16 h-16 rounded-full"
-                            />
+                            <Avatar>
+                                <AvatarImage src={user.user_metadata.avatar_url || "/placeholder.svg"}
+                                    alt="Discord avatar"
+                                    className="w-16 h-16 rounded-full" />
+                                <AvatarFallback className="bg-primary/10 text-primary text-2xl">
+                                    {user?.user_metadata?.full_name?.charAt(0) || "U"}
+                                </AvatarFallback>
+                            </Avatar>
                         )}
                         <div>
                             <p className="font-medium">{user?.user_metadata?.full_name || user?.user_metadata?.name}</p>

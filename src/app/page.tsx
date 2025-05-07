@@ -30,22 +30,22 @@ export default function Home() {
         <section className="relative overflow-hidden bg-background py-24 md:py-32">
           {/* Animated background elements */}
           <div className="absolute inset-0 z-0 overflow-hidden">
-            <div className="absolute -top-20 -left-20 h-[40rem] w-[40rem] rounded-full bg-primary/5 animate-blob"></div>
-            <div className="absolute top-40 -right-20 h-[35rem] w-[35rem] rounded-full bg-blue-500/5 animate-blob animation-delay-2000"></div>
-            <div className="absolute -bottom-40 left-20 h-[30rem] w-[30rem] rounded-full bg-indigo-500/5 animate-blob animation-delay-4000"></div>
+            <div className="absolute -top-20 -left-20 h-[40rem] w-[40rem] rounded-full bg-primary/5 animate-blob will-animate"></div>
+            <div className="absolute top-40 -right-20 h-[35rem] w-[35rem] rounded-full bg-blue-500/5 animate-blob animation-delay-2000 will-animate"></div>
+            <div className="absolute -bottom-40 left-20 h-[30rem] w-[30rem] rounded-full bg-indigo-500/5 animate-blob animation-delay-4000 will-animate"></div>
           </div>
 
-          {/* Floating elements */}
-          <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-blue-500/10 rounded-full animate-float animation-delay-1000"></div>
-          <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-indigo-500/10 rounded-full animate-float animation-delay-2000"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-16 h-16 bg-primary/10 rounded-full animate-float animation-delay-3000"></div>
-          <div className="absolute bottom-1/3 left-1/3 w-10 h-10 bg-blue-500/10 rounded-full animate-float animation-delay-4000"></div>
+          {/* Floating elements with improved animations */}
+          <div className="absolute top-1/4 left-1/4 w-12 h-12 bg-blue-500/10 rounded-full animate-float-rotate animation-delay-1000 will-animate"></div>
+          <div className="absolute top-1/3 right-1/3 w-8 h-8 bg-indigo-500/10 rounded-full animate-float animation-delay-2000 will-animate"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-16 h-16 bg-primary/10 rounded-full animate-float-reverse animation-delay-3000 will-animate"></div>
+          <div className="absolute bottom-1/3 left-1/3 w-10 h-10 bg-blue-500/10 rounded-full animate-float animation-delay-4000 will-animate"></div>
 
           <div className="container relative z-10">
             <div className="grid gap-12 md:grid-cols-2 md:gap-16 items-center">
-              <div className="space-y-8 animate-fade-in">
+              <div className="space-y-8 animate-fade-in will-animate">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-blue-500 rounded-md flex items-center justify-center animate-pulse-slow">
+                  <div className="w-16 h-16 bg-blue-500 rounded-md flex items-center justify-center animate-pulse-shadow">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -54,39 +54,42 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="w-10 h-10 text-white"
+                      className="w-10 h-10 text-white animate-pulse-slow"
                     >
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
                   </div>
                   <div>
-                    <Badge variant="outline" className="mb-2 animate-slide-in animation-delay-500">
+                    <Badge variant="outline" className="mb-2 animate-scale-in animation-delay-500 will-animate">
                       Next-Gen Discord Bot
                     </Badge>
-                    <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl animate-slide-in">Gobot</h1>
+                    <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl animate-slide-in will-animate">
+                      Gobot
+                    </h1>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-1000">
+                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-1000 will-animate">
                     Multi-purpose Discord Bot.
                   </p>
-                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-1500">
+                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-1500 will-animate">
                     Fully customizable.
                   </p>
-                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-2000">
+                  <p className="text-xl md:text-2xl text-muted-foreground animate-slide-in animation-delay-2000 will-animate">
                     Completely free.
                   </p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-4 animate-fade-in animation-delay-2500">
-                  <Button size="lg" className="group relative overflow-hidden" asChild>
+                <div className="flex flex-col sm:flex-row gap-4 animate-fade-in animation-delay-2500 will-animate">
+                  <Button size="lg" className="group relative overflow-hidden animate-pulse-shadow" asChild>
                     <Link href="/auth/login">
-                      Add to Discord
+                      <span className="relative z-10">Add to Discord</span>
                       <span className="absolute right-4 top-1/2 transform -translate-y-1/2 transition-transform duration-300 group-hover:translate-x-1">
                         <ArrowRight className="h-4 w-4" />
                       </span>
+                      <span className="absolute inset-0 w-full h-full animate-shine"></span>
                     </Link>
                   </Button>
-                  <Button size="lg" variant="outline" className="group" asChild>
+                  <Button size="lg" variant="outline" className="group relative overflow-hidden" asChild>
                     <Link href="/features">
                       <span className="relative z-10">Explore features</span>
                       <span className="absolute inset-0 bg-primary/10 transform scale-x-0 origin-left transition-transform duration-300 group-hover:scale-x-100"></span>
@@ -95,50 +98,50 @@ export default function Home() {
                 </div>
               </div>
               <div className="relative h-[400px]">
-                {/* Floating elements */}
+                {/* Floating elements with improved animations */}
                 <div
-                  className="absolute w-32 h-32 bg-blue-500/20 rounded-2xl -top-10 right-20 animate-float"
+                  className="absolute w-32 h-32 bg-blue-500/20 rounded-2xl -top-10 right-20 animate-float-rotate will-animate"
                   style={{ animationDelay: "0s" }}
                 ></div>
                 <div
-                  className="absolute w-24 h-24 bg-blue-500/30 rounded-2xl top-40 right-10 animate-float"
+                  className="absolute w-24 h-24 bg-blue-500/30 rounded-2xl top-40 right-10 animate-float will-animate"
                   style={{ animationDelay: "1s" }}
                 ></div>
                 <div
-                  className="absolute w-16 h-16 bg-blue-500/40 rounded-2xl top-20 right-40 animate-float"
+                  className="absolute w-16 h-16 bg-blue-500/40 rounded-2xl top-20 right-40 animate-float-reverse will-animate"
                   style={{ animationDelay: "2s" }}
                 ></div>
                 <div
-                  className="absolute w-20 h-20 bg-blue-500/20 rounded-2xl top-60 right-60 animate-float"
+                  className="absolute w-20 h-20 bg-blue-500/20 rounded-2xl top-60 right-60 animate-float will-animate"
                   style={{ animationDelay: "1.5s" }}
                 ></div>
 
                 {/* Additional floating elements */}
                 <div
-                  className="absolute w-28 h-28 bg-indigo-500/20 rounded-full top-10 left-20 animate-float"
+                  className="absolute w-28 h-28 bg-indigo-500/20 rounded-full top-10 left-20 animate-float-rotate will-animate"
                   style={{ animationDelay: "2.5s" }}
                 ></div>
                 <div
-                  className="absolute w-14 h-14 bg-indigo-500/30 rounded-full top-60 left-10 animate-float"
+                  className="absolute w-14 h-14 bg-indigo-500/30 rounded-full top-60 left-10 animate-float will-animate"
                   style={{ animationDelay: "3s" }}
                 ></div>
                 <div
-                  className="absolute w-10 h-10 bg-primary/40 rounded-full top-30 left-40 animate-float"
+                  className="absolute w-10 h-10 bg-primary/40 rounded-full top-30 left-40 animate-float-reverse will-animate"
                   style={{ animationDelay: "3.5s" }}
                 ></div>
 
-                {/* Discord-like interface mockup */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[350px] bg-background border rounded-lg shadow-xl overflow-hidden animate-float-slow">
+                {/* Discord-like interface mockup with enhanced animations */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[300px] h-[350px] bg-background border rounded-lg shadow-xl overflow-hidden animate-float-slow animate-pulse-shadow will-animate">
                   <div className="h-12 bg-muted flex items-center px-4 border-b">
-                    <div className="w-6 h-6 bg-blue-500 rounded-full mr-2"></div>
+                    <div className="w-6 h-6 bg-blue-500 rounded-full mr-2 animate-pulse-slow"></div>
                     <div className="font-medium">Gobot Bot</div>
                   </div>
                   <div className="p-4 space-y-4">
-                    <div className="flex items-start gap-2">
+                    <div className="flex items-start gap-2 animate-slide-in-left animation-delay-1000 will-animate">
                       <div className="w-8 h-8 rounded-full bg-muted flex-shrink-0"></div>
                       <div className="bg-muted rounded-lg p-2 text-sm">!help</div>
                     </div>
-                    <div className="flex items-start gap-2 flex-row-reverse">
+                    <div className="flex items-start gap-2 flex-row-reverse animate-slide-in-right animation-delay-2000 will-animate">
                       <div className="w-8 h-8 rounded-full bg-blue-500 flex-shrink-0 flex items-center justify-center text-white text-xs">
                         S
                       </div>
@@ -161,7 +164,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Wave SVG */}
+          {/* Wave SVG with animation */}
           <div className="absolute bottom-0 left-0 right-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
               <path
@@ -176,8 +179,8 @@ export default function Home() {
         {/* Stats Section */}
         <section className="py-16 md:py-24 bg-muted/50 relative overflow-hidden">
           <div className="container relative z-10">
-            <div className="text-center mb-12 animate-fade-in-up">
-              <Badge variant="outline" className="mb-4">
+            <div className="text-center mb-12 animate-fade-in-up will-animate">
+              <Badge variant="outline" className="mb-4 animate-scale-in will-animate">
                 TRUSTED WORLDWIDE
               </Badge>
               <h2 className="text-3xl font-bold md:text-4xl">Trusted by your favorite servers.</h2>
@@ -187,32 +190,36 @@ export default function Home() {
               </p>
             </div>
             <div className="grid gap-8 md:grid-cols-3">
-              <Card className="overflow-hidden animate-fade-in-up animation-delay-500">
+              <Card className="overflow-hidden animate-fade-in-up animation-delay-500 hover:shadow-lg transition-shadow duration-300 will-animate">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-4xl font-bold">866,600+</CardTitle>
+                  <CardTitle className="text-4xl font-bold animate-scale-in will-animate">866,600+</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-lg">Discord Servers</CardDescription>
                 </CardContent>
-                <div className="h-2 bg-blue-500"></div>
+                <div className="h-2 bg-blue-500 animate-shine"></div>
               </Card>
-              <Card className="overflow-hidden animate-fade-in-up animation-delay-1000">
+              <Card className="overflow-hidden animate-fade-in-up animation-delay-1000 hover:shadow-lg transition-shadow duration-300 will-animate">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-4xl font-bold">297.3M+</CardTitle>
+                  <CardTitle className="text-4xl font-bold animate-scale-in animation-delay-200 will-animate">
+                    297.3M+
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-lg">Discord Users</CardDescription>
                 </CardContent>
-                <div className="h-2 bg-indigo-500"></div>
+                <div className="h-2 bg-indigo-500 animate-shine"></div>
               </Card>
-              <Card className="overflow-hidden animate-fade-in-up animation-delay-1500">
+              <Card className="overflow-hidden animate-fade-in-up animation-delay-1500 hover:shadow-lg transition-shadow duration-300 will-animate">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-4xl font-bold">99.9%</CardTitle>
+                  <CardTitle className="text-4xl font-bold animate-scale-in animation-delay-400 will-animate">
+                    99.9%
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-lg">Uptime</CardDescription>
                 </CardContent>
-                <div className="h-2 bg-primary"></div>
+                <div className="h-2 bg-primary animate-shine"></div>
               </Card>
             </div>
           </div>
@@ -354,7 +361,7 @@ export default function Home() {
                         <div className="bg-primary/10 rounded-lg p-2 text-sm">
                           <div className="font-medium text-primary mb-1">Command Creator</div>
                           <div className="text-xs">
-                            {` Custom command "rules" has been created!`}
+                            {`Custom command "rules" has been created!`}
                             <div className="mt-1 p-2 border rounded bg-background/50">
                               <div className="text-xs font-medium">Command Details</div>
                               <div className="text-xs">Trigger: !rules</div>
@@ -455,7 +462,7 @@ export default function Home() {
                         <div className="bg-primary/10 rounded-lg p-2 text-sm">
                           <div className="font-medium text-primary mb-1">Auto Role</div>
                           <div className="text-xs">
-                            {` Auto role has been set to "Member". New members will automatically receive this role when`}
+                           {` Auto role has been set to "Member". New members will automatically receive this role when`}
                             they join.
                           </div>
                         </div>
@@ -493,7 +500,7 @@ export default function Home() {
                       <div className="flex items-start gap-2">
                         <div className="w-8 h-8 rounded-full bg-muted-foreground/20 flex-shrink-0"></div>
                         <div className="bg-background rounded-lg p-2 text-sm">
-                          {` !poll "What game should we play tonight?" "Minecraft" "Fortnite" "Among Us"`}
+                          {`!poll "What game should we play tonight?" "Minecraft" "Fortnite" "Among Us"`}
                         </div>
                       </div>
                       <div className="flex items-start gap-2 flex-row-reverse">
@@ -522,7 +529,7 @@ export default function Home() {
                   <div className="space-y-4">
                     <h3 className="text-2xl font-bold">Detailed Analytics</h3>
                     <p className="text-muted-foreground">
-                      {` Track your server's activity and growth with detailed analytics.`}
+                      {`Track your server's activity and growth with detailed analytics.`}
                     </p>
                     <ul className="space-y-2">
                       <li className="flex items-center gap-2">
@@ -578,14 +585,22 @@ export default function Home() {
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_30%,_rgba(255,255,255,0.2)_0%,_transparent_70%)]"></div>
           </div>
           <div className="container relative z-10 text-center">
-            <h2 className="text-3xl font-bold md:text-4xl mb-6 animate-fade-in">
+            <h2 className="text-3xl font-bold md:text-4xl mb-6 animate-fade-in will-animate">
               Ready to enhance your Discord server?
             </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-500">
+            <p className="text-xl mb-8 max-w-2xl mx-auto animate-fade-in animation-delay-500 will-animate">
               Join thousands of servers already using Gobot to improve their Discord experience.
             </p>
-            <Button size="lg" variant="secondary" className="animate-fade-in animation-delay-1000" asChild>
-              <Link href="/auth/login">Add to Discord</Link>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="animate-fade-in animation-delay-1000 relative overflow-hidden group will-animate animate-pulse-shadow"
+              asChild
+            >
+              <Link href="/auth/login">
+                <span className="relative z-10">Add to Discord</span>
+                <span className="absolute inset-0 w-full h-full animate-shine"></span>
+              </Link>
             </Button>
           </div>
         </section>

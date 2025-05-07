@@ -17,14 +17,12 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
         redirect("/auth/login")
     }
 
-    // Get server data
     const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
 
     if (!server) {
         redirect("/dashboard")
     }
 
-    // Get user access to this server
     const { data: userData } = await supabase
         .from("users")
         .select("*")
@@ -38,12 +36,10 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
         .eq("server_id", server.id)
         .single()
 
-    // Check if user is admin
     if (!userServer || !userServer.is_admin) {
         redirect(`/dashboard/servers/${id}`)
     }
 
-    // Get bot settings
     const { data: botSettings } = await supabase.from("bot_settings").select("*").eq("server_id", server.id).single()
 
     if (!botSettings) {
