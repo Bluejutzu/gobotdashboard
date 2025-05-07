@@ -3,7 +3,7 @@
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { User } from "@supabase/supabase-js"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import axios from "axios"
 import Link from "next/link"
 
-export default function AuthCallback() {
+function AuthCallback() {
   const router = useRouter()
   const supabase = getSupabaseClient()
   const [user, setUser] = useState<User>()
@@ -234,5 +234,13 @@ export default function AuthCallback() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AuthCallbackWithSuspense() {
+  return (
+    <Suspense fallback={<div>Loading search parameters...</div>}>
+      <AuthCallback />
+    </Suspense>
   )
 }

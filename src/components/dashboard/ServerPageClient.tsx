@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
-import { CommandHistory } from "@/components/dashboard/command-history"
 import type { CommandLog } from "@/lib/types"
 
 interface ClientComponentProps {
@@ -63,7 +62,8 @@ const ServerPageClient: React.FC<ClientComponentProps> = ({ id, server }) => {
             {loading ? (
                 <div>Loading...</div>
             ) : recentCommands.length > 0 ? (
-                <CommandHistory commands={recentCommands} />
+                <></>
+                // <CommandHistory commands={recentCommands} />
             ) : (
                 <div className="rounded-md border p-8 text-center">
                     <p className="text-muted-foreground">No recent commands</p>

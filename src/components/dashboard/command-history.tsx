@@ -19,7 +19,7 @@ export function CommandHistory({ commands }: CommandHistoryProps) {
                     {commands.map((command) => (
                         <TableRow key={command.id}>
                             <TableCell className="font-mono">{command.command}</TableCell>
-                            <TableCell>{new Date(command.executed_at).toLocaleString()}</TableCell>
+                            <TableCell>{new Date(command.executed_at!).toLocaleString()}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
