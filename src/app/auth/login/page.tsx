@@ -1,6 +1,6 @@
 "use client"
 
-import {  useState } from "react"
+import { useState, useEffect } from "react"
 import { DiscordAuthButton } from "@/components/auth/discord-auth-button"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -12,7 +12,11 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 export default function LoginPage() {
-    const [, setIsHovering] = useState(false)
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
 
     const features = [
         {
@@ -36,6 +40,10 @@ export default function LoginPage() {
             description: "Easily manage roles and permissions",
         },
     ]
+
+    if (!isMounted) {
+        return null
+    }
 
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-background to-background/90">
@@ -70,8 +78,6 @@ export default function LoginPage() {
                                 <motion.div
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.98 }}
-                                    onHoverStart={() => setIsHovering(true)}
-                                    onHoverEnd={() => setIsHovering(false)}
                                     className="w-full"
                                 >
                                     <DiscordAuthButton />
@@ -194,28 +200,31 @@ export default function LoginPage() {
 
             {/* Floating Particles */}
             <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-                {[...Array(10)].map((_, i) => (
-                    <motion.div
-                        key={i}
-                        className="absolute rounded-full bg-primary/5"
-                        style={{
-                            width: Math.random() * 100 + 50,
-                            height: Math.random() * 100 + 50,
-                            left: `${Math.random() * 100}%`,
-                            top: `${Math.random() * 100}%`,
-                        }}
-                        animate={{
-                            y: [Math.random() * 100, Math.random() * -100],
-                            x: [Math.random() * 100, Math.random() * -100],
-                            opacity: [0.1, 0.3, 0.1],
-                        }}
-                        transition={{
-                            duration: Math.random() * 20 + 10,
-                            repeat: Number.POSITIVE_INFINITY,
-                            repeatType: "reverse",
-                        }}
-                    />
-                ))}
+                {isMounted && (
+                    <>
+                        {[...Array(10)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute rounded-full bg-primary/5"
+                                initial={{
+                                    width: Math.random() * 100 + 50,
+                                    height: Math.random() * 100 + 50,
+                                    left: `${Math.random() * 100}%`,
+                                    top: `${Math.random() * 100}%`,
+                                }}
+                                animate={{
+                                    y: [0, Math.random() * 20 - 10],
+                                    x: [0, Math.random() * 20 - 10],
+                                }}
+                                transition={{
+                                    duration: Math.random() * 5 + 5,
+                                    repeat: Infinity,
+                                    repeatType: "reverse",
+                                }}
+                            />
+                        ))}
+                    </>
+                )}
             </div>
 
             <SiteFooter />

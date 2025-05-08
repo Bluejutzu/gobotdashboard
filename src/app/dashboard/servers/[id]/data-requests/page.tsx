@@ -1,12 +1,16 @@
 import { redirect } from "next/navigation"
 import { createServerClient } from "@/lib/supabase/server"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
-import { SettingsForm } from "@/components/dashboard/settings-form"
+import { DataRequestForm } from "@/components/dashboard/data-request-form"
+import { DataRequestsList } from "@/components/dashboard/data-requests-list"
 
-type SettingsPageProps = Promise<{ id: string }>
+interface DataRequestsPageProps {
+    params: {
+        id: string
+    }
+}
 
-export default async function SettingsPage({ params }: { params: SettingsPageProps }) {
-    const { id }: { id: string } = await params
+export default async function DataRequestsPage({ params }: DataRequestsPageProps) {
     const supabase = createServerClient()
 
     const {
@@ -17,12 +21,14 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
         redirect("/auth/login")
     }
 
-    const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
+    // Get server data
+    const { data: server } = await supabase.from("servers").select("*").eq("id", params.id).single()
 
     if (!server) {
         redirect("/dashboard")
     }
 
+    // Get user access to this server
     const { data: userData } = await supabase
         .from("users")
         .select("*")
@@ -36,32 +42,25 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
         .eq("server_id", server.id)
         .single()
 
-    if (!userServer || !userServer.is_admin) {
-        redirect(`/dashboard/servers/${id}`)
-    }
-
-    const { data: botSettings } = await supabase.from("bot_settings").select("*").eq("server_id", server.id).single()
-
-    if (!botSettings) {
-        redirect(`/dashboard/servers/${id}`)
+    if (!userServer) {
+        redirect("/dashboard")
     }
 
     return (
         <>
             <div className="hidden md:flex w-64 flex-col border-r bg-muted/40">
-                <DashboardSidebar serverId={id} />
+                <DashboardSidebar serverId={params.id} />
             </div>
             <div className="flex-1">
                 <div className="h-full px-4 py-6 lg:px-8">
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Bot Settings</h2>
-                        <p className="text-muted-foreground">Configure Gobot for {server.name}</p>
+                        <h2 className="text-2xl font-bold tracking-tight">Data Requests</h2>
+                        <p className="text-muted-foreground">Request and manage data exports for {server.name}</p>
                     </div>
 
-                    <div className="mt-8">
-                        <div className="max-w-2xl">
-                            <SettingsForm settings={botSettings} />
-                        </div>
+                    <div className="mt-8 grid gap-8 md:grid-cols-2">
+                        <DataRequestForm serverId={params.id} serverName={server.name} />
+                        <DataRequestsList serverId={params.id} />
                     </div>
                 </div>
             </div>
