@@ -47,7 +47,7 @@ export default async function ServerPage({ params }: { params: Promise<{ id: str
     .eq("server_id", server.id)
     .order("executed_at", { ascending: false })
     .limit(5)
-    .returns<CommandLog[]>()
+    .overrideTypes<CommandLog[]>()
 
   if (commandsError) {
     console.error("Error fetching commands:", commandsError)

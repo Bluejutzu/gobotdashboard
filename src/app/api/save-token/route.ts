@@ -36,6 +36,7 @@ export async function POST(req: Request) {
                 discord_token: token,
                 discord_id: userId,
                 email,
+                avatar_url: user.user_metadata.avatar_url,
             },
             {
                 onConflict: "discord_id"

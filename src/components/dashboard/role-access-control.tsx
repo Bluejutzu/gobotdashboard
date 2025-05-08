@@ -53,7 +53,7 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                 setRoles(mockRoles)
 
                 // Fetch existing access roles from database
-                const { data, error } = await supabase.from("server_access_roles").select("*").eq("server_id", serverId).returns<ServerAccessRole[]>()
+                const { data, error } = await supabase.from("server_access_roles").select("*").eq("server_id", serverId).overrideTypes<ServerAccessRole[]>()
 
                 if (error) throw error
 
