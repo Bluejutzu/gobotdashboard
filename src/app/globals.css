@@ -4,25 +4,34 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 201 100% 50%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 201 100% 50%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+
     --radius: 0.5rem;
 
     /* Theme variables for custom themes */
@@ -59,6 +68,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -69,9 +79,11 @@
   0% {
     transform: translateY(0px) translateZ(0);
   }
+
   50% {
     transform: translateY(-20px) translateZ(0);
   }
+
   100% {
     transform: translateY(0px) translateZ(0);
   }
@@ -81,20 +93,24 @@
   0% {
     transform: translateY(0px) rotate(0deg) translateZ(0);
   }
+
   50% {
     transform: translateY(20px) rotate(5deg) translateZ(0);
   }
+
   100% {
     transform: translateY(0px) rotate(0deg) translateZ(0);
   }
 }
 
 @keyframes pulse-glow {
+
   0%,
   100% {
     opacity: 0.6;
     transform: scale(1) translateZ(0);
   }
+
   50% {
     opacity: 1;
     transform: scale(1.05) translateZ(0);
@@ -105,6 +121,7 @@
   from {
     transform: rotate(0deg) translateZ(0);
   }
+
   to {
     transform: rotate(360deg) translateZ(0);
   }
@@ -115,6 +132,7 @@
     opacity: 0;
     transform: translateY(20px) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) translateZ(0);
@@ -126,6 +144,7 @@
     opacity: 0;
     transform: translateY(-20px) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) translateZ(0);
@@ -137,6 +156,7 @@
     opacity: 0;
     transform: translateX(20px) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) translateZ(0);
@@ -148,6 +168,7 @@
     opacity: 0;
     transform: translateX(-20px) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) translateZ(0);
@@ -158,33 +179,40 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
 }
 
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0) translateZ(0);
   }
+
   50% {
     transform: translateY(-10px) translateZ(0);
   }
 }
 
 @keyframes blob {
+
   0%,
   100% {
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
     transform: translateZ(0);
   }
+
   25% {
     border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
   }
+
   50% {
     border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%;
   }
+
   75% {
     border-radius: 60% 40% 50% 40% / 70% 30% 50% 60%;
   }
@@ -194,6 +222,7 @@
   0% {
     transform: rotate(0deg) translateZ(0);
   }
+
   100% {
     transform: rotate(360deg) translateZ(0);
   }
@@ -204,6 +233,7 @@
     opacity: 0;
     transform: translateY(20px) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) translateZ(0);
@@ -216,6 +246,7 @@
     opacity: 0;
     transform: scale(0.9) translateZ(0);
   }
+
   100% {
     opacity: 1;
     transform: scale(1) translateZ(0);
@@ -226,15 +257,19 @@
   0% {
     background-position: -100% 0;
   }
+
   100% {
     background-position: 200% 0;
   }
 }
 
 @keyframes pulse-shadow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 rgba(59, 130, 246, 0);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
   }
@@ -244,15 +279,19 @@
   0% {
     transform: translateY(0) rotate(0deg) translateZ(0);
   }
+
   25% {
     transform: translateY(-10px) rotate(2deg) translateZ(0);
   }
+
   50% {
     transform: translateY(0) rotate(0deg) translateZ(0);
   }
+
   75% {
     transform: translateY(10px) rotate(-2deg) translateZ(0);
   }
+
   100% {
     transform: translateY(0) rotate(0deg) translateZ(0);
   }
@@ -443,6 +482,7 @@
     transform: scale(0, 0);
     opacity: 0.5;
   }
+
   100% {
     transform: scale(20, 20);
     opacity: 0;
@@ -463,9 +503,11 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -484,12 +526,10 @@
   left: -100%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
   animation: shimmer 2s infinite;
 }
 
@@ -497,6 +537,7 @@
   0% {
     left: -100%;
   }
+
   100% {
     left: 200%;
   }
@@ -504,13 +545,16 @@
 
 /* Add reduced motion preferences for accessibility */
 @media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
+
+  *,
+  ::before,
+  ::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  
+
   .animate-float,
   .animate-float-reverse,
   .animate-float-slow,
@@ -533,4 +577,28 @@
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform: translateZ(0);
+}
+
+/* Reduced motion class for users who toggle it via the UI */
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+.reduce-motion .animate-float,
+.reduce-motion .animate-float-reverse,
+.reduce-motion .animate-float-slow,
+.reduce-motion .animate-pulse-slow,
+.reduce-motion .animate-pulse-glow,
+.reduce-motion .animate-rotate,
+.reduce-motion .animate-spin-slow,
+.reduce-motion .animate-bounce,
+.reduce-motion .animate-blob,
+.reduce-motion .animate-float-rotate,
+.reduce-motion .animate-pulse-shadow,
+.reduce-motion .animate-shine {
+  animation: none !important;
+  transform: none !important;
 }

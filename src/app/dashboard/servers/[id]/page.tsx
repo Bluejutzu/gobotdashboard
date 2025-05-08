@@ -2,7 +2,6 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import type { Server as ServerType, CommandLog } from "@/lib/types"
 import { ServerError } from "@/components/dashboard/server-error"
-import { ServerCreator } from "@/components/dashboard/server-creator"
 import { ServerPageContent } from "@/components/dashboard/server-page-content"
 
 export default async function ServerPage({ params }: { params: Promise<{ id: string }> }) {
