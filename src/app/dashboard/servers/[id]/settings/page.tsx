@@ -2,18 +2,19 @@ import { redirect } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { SettingsForm } from "@/components/dashboard/settings-form"
 import { RoleAccessControl } from "@/components/dashboard/role-access-control"
-import { getSupabaseClient } from "@/lib/supabase/client"
 import type { Server, BotSettings, User, UserServer } from "@/lib/types"
+import { createClient } from "@/lib/supabase/server"
 
 type SettingsPageProps = Promise<{ id: string }>
 
 export default async function SettingsPage({ params }: { params: SettingsPageProps }) {
     const { id }: { id: string } = await params
-    const supabase = getSupabaseClient()
+    const supabase = await createClient()
 
     const {
         data: { session },
     } = await supabase.auth.getSession()
+    console.log(session)
 
     if (!session) {
         redirect("/auth/login")

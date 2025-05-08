@@ -5,12 +5,13 @@ import { DataRequestForm } from "@/components/dashboard/data-request-form"
 import { DataRequestsList } from "@/components/dashboard/data-requests-list"
 
 interface DataRequestsPageProps {
-    params: {
+    params: Promise<{
         id: string
-    }
+    }>
 }
 
-export default async function DataRequestsPage({ params }: DataRequestsPageProps) {
+export default async function DataRequestsPage(props: DataRequestsPageProps) {
+    const params = await props.params;
     const supabase = createServerClient()
 
     const {

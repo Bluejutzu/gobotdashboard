@@ -2,13 +2,17 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ServerCrash } from "lucide-react"
 
-export function ServerLoading() {
+interface ServerLoadingProps {
+    message?: string
+}
+
+export function ServerLoading({ message }: ServerLoadingProps) {
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-center py-8">
                 <div className="flex flex-col items-center gap-2">
                     <ServerCrash className="h-10 w-10 text-primary animate-pulse" />
-                    <h2 className="text-xl font-semibold">Loading server data...</h2>
+                    <h2 className="text-xl font-semibold">{message || "Loading server data..."}</h2>
                     <div className="text-sm text-muted-foreground">Please wait while we fetch your server information</div>
                 </div>
             </div>

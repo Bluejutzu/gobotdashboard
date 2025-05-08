@@ -13,7 +13,7 @@ import { RefreshCw, Settings, Shield, MessageSquare, BarChart3, AlertCircle, Ser
 import Link from "next/link"
 import type { CommandLog, Server as ServerType } from "@/lib/types"
 
-interface ServerPageClientProps {
+export interface ServerPageClientProps {
     id: string
     server: ServerType
     commands: CommandLog[]

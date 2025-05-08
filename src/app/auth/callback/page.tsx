@@ -40,6 +40,7 @@ function AuthCallback() {
         const {
           data: { session },
         } = await supabase.auth.getSession()
+        console.log(session?.user)
 
         if (!session) {
           clearInterval(progressInterval)
