@@ -1,0 +1,23 @@
+{
+  "name": "gobot-bot",
+  "version": "1.0.0",
+  "description": "Dynamic Discord bot for GoBot Dashboard",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "commandkit build",
+    "start": "commandkit start",
+    "dev": "commandkit dev"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.4",
+    "commandkit": "1.0.0-dev.20250509144654",
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16"
+  }
+}

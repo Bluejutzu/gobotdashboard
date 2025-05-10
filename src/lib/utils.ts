@@ -11,8 +11,8 @@ export async function getBearerToken(userId: string) {
 
   const { data, error } = await supabase
     .from("users")
-    .select("discord_bearer_token")
-    .eq("id", userId)
+    .select("discord_token")
+    .eq("discord_id", userId)
     .single()
 
   if (error || !data) {
@@ -20,5 +20,5 @@ export async function getBearerToken(userId: string) {
     return null
   }
 
-  return data.discord_bearer_token
-}
+  return data.discord_token
+} 

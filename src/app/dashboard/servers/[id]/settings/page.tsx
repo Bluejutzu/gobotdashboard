@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import type { Server, BotSettings } from "@/lib/types"
 import { ServerError } from "@/components/dashboard/server-error"

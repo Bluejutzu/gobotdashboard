@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation"
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DataRequestForm } from "@/components/dashboard/data-request-form"
 import { DataRequestsList } from "@/components/dashboard/data-requests-list"
@@ -10,9 +10,9 @@ interface DataRequestsPageProps {
     }>
 }
 
-export default async function DataRequestsPage(props: DataRequestsPageProps) {
-    const params = await props.params;
-    const supabase = createServerClient()
+export default async function DataRequestsPage(props: Promise<{ id: string }>) {
+    const { id }: { id: string } = await props
+    const supabase = await createClient()
 
     const {
         data: { session },
@@ -23,7 +23,7 @@ export default async function DataRequestsPage(props: DataRequestsPageProps) {
     }
 
     // Get server data
-    const { data: server } = await supabase.from("servers").select("*").eq("id", params.id).single()
+    const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
 
     if (!server) {
         redirect("/dashboard")
@@ -50,7 +50,7 @@ export default async function DataRequestsPage(props: DataRequestsPageProps) {
     return (
         <>
             <div className="hidden md:flex w-64 flex-col border-r bg-muted/40">
-                <DashboardSidebar serverId={params.id} />
+                <DashboardSidebar serverId={id} />
             </div>
             <div className="flex-1">
                 <div className="h-full px-4 py-6 lg:px-8">
@@ -60,8 +60,8 @@ export default async function DataRequestsPage(props: DataRequestsPageProps) {
                     </div>
 
                     <div className="mt-8 grid gap-8 md:grid-cols-2">
-                        <DataRequestForm serverId={params.id} serverName={server.name} />
-                        <DataRequestsList serverId={params.id} />
+                        <DataRequestForm serverId={id} serverName={server.name} />
+                        <DataRequestsList serverId={id} />
                     </div>
                 </div>
             </div>
