@@ -33,23 +33,22 @@ export async function loadCommands(client: Client, supabase: SupabaseClient, ser
       }
       guildCommands.get(cmd.server_id)?.push(cmd);
     });
-console.log(guildCommands)
 
     // Register commands for each guild
     for (const [guildId, guildCmds] of guildCommands) {
       try {
         console.log(`Fetching guild: ${guildId}`);
-        
+
         // First try to get the guild from Discord.js cache
         let guild = client.guilds.cache.get(guildId);
-        
+
         // If not in cache, try to fetch it
         if (!guild) {
           try {
             guild = await client.guilds.fetch(guildId);
           } catch (error) {
             console.error(`Failed to fetch guild ${guildId} via Discord.js:`, error);
-            
+
             // As fallback, try the REST API
             try {
               const res = await axios.get(`https://discord.com/api/v10/guilds/${guildId}`, {
@@ -57,15 +56,15 @@ console.log(guildCommands)
                   Authorization: `Bot ${process.env.DISCORD_TOKEN}`
                 }
               });
-              
+
               if (res.status !== 200 || !res.data) {
                 throw new Error('Guild not found via REST API');
               }
-              
+
               console.log(`Fetched guild via REST API: ${res.data.name}`);
             } catch (restError) {
               console.error(`Could not fetch guild ${guildId} via any method:`, restError);
-              
+
               // Mark the event as processed if this was the target server
               if (serverId === guildId) {
                 await supabase
@@ -79,14 +78,14 @@ console.log(guildCommands)
             }
           }
         }
-        
+
         // Check if the bot has permission to create commands
         let botHasPermission = false;
         try {
           if (guild) {
             const botMember = await guild.members.fetch(client.user.id);
             botHasPermission = botMember.permissions.has(PermissionFlagsBits.UseApplicationCommands);
-            
+
             if (!botHasPermission) {
               console.error(`Bot lacks application commands permission in guild ${guildId}, skipping command registration`);
               continue;
@@ -184,7 +183,7 @@ console.log(guildCommands)
         }
       } catch (error) {
         console.error(`Error processing commands for guild ${guildId}:`, error);
-        
+
         // Mark the event as processed even if it failed
         if (serverId === guildId) {
           await supabase

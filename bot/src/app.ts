@@ -69,8 +69,7 @@ client.once('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}`);
     await loadCommands(client, supabase);
 
-    // Check for bot events every 10 seconds
-    setInterval(checkBotEvents, 10000);
+    setInterval(checkBotEvents, 30000);
 });
 
 client.on('interactionCreate', async (interaction) => {

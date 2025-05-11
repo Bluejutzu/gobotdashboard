@@ -6,18 +6,18 @@ const COMMAND_NAME_REGEX = /^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai
 
 // Validate command name according to Discord's rules
 function isValidCommandName(name: string): boolean {
-    return COMMAND_NAME_REGEX.test(name) && 
-           name.length >= 1 && 
-           name.length <= 32 &&
-           !name.includes('__') &&  // No double underscores
-           !/^[-_]|[-_]$/.test(name); // Can't start or end with hyphen/underscore
+    return COMMAND_NAME_REGEX.test(name) &&
+        name.length >= 1 &&
+        name.length <= 32 &&
+        !name.includes('__') &&  // No double underscores
+        !/^[-_]|[-_]$/.test(name); // Can't start or end with hyphen/underscore
 }
 
 export async function POST(request: Request) {
     try {
         const supabase = await createClient()
         const { nodes, edges, serverId } = await request.json()
-
+        console.log(nodes, edges, serverId)
         // Get the command name and description from the start node
         const startNode = nodes.find((node: any) => node.type === 'input')
         if (!startNode) {
@@ -33,10 +33,10 @@ export async function POST(request: Request) {
         if (!isValidCommandName(commandName)) {
             return NextResponse.json({
                 error: 'Invalid command name. Names must:\n' +
-                      '- Be 1-32 characters long\n' +
-                      '- Include only lowercase letters, numbers, hyphens, or underscores\n' +
-                      '- Not contain double underscores\n' +
-                      '- Not start or end with a hyphen or underscore'
+                    '- Be 1-32 characters long\n' +
+                    '- Include only lowercase letters, numbers, hyphens, or underscores\n' +
+                    '- Not contain double underscores\n' +
+                    '- Not start or end with a hyphen or underscore'
             }, { status: 400 })
         }
 
