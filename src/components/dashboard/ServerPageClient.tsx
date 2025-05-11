@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { CommandHistory } from "@/components/dashboard/command-history"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,6 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { RefreshCw, Settings, Shield, MessageSquare, BarChart3, AlertCircle, Server } from 'lucide-react'
 import Link from "next/link"
 import type { CommandLog, Server as ServerType } from "@/lib/types"
+import { Avatar } from "@radix-ui/react-avatar"
+import { AvatarFallback, AvatarImage } from "../ui/avatar"
 
 export interface ServerPageClientProps {
     id: string
@@ -31,7 +33,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
         setIsRefreshing(true)
         setError(null)
 
-        const supabase = getSupabaseClient()
+        const supabase = createClient()
 
         // Check if user is still authenticated
         const {
@@ -96,7 +98,12 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     {server.icon_url ? (
-                        <img src={server.icon_url || "/placeholder.svg"} alt={server.name} className="w-10 h-10 rounded-full" />
+                        <Avatar>    
+                            <AvatarImage src={server.icon_url || "/placeholder.svg"} alt={server.name} className="w-10 h-10 rounded-full" />
+                            <AvatarFallback>
+                                {server.name.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
                     ) : (
                         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                             <Server className="h-5 w-5 text-primary" />

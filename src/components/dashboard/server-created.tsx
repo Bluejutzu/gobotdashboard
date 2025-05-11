@@ -21,9 +21,12 @@ export function ServerCreated({ serverName, serverId }: ServerCreatedProps) {
                 </CardHeader>
                 <CardContent className="text-center">
                     <p className="font-medium text-lg">{serverName}</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                        Your server has been created successfully! Now let&apos;s add the bot to your Discord server.
+                    </p>
                     <p className="text-sm text-muted-foreground mt-1">Server ID: {serverId}</p>
                     <div className="mt-6 p-4 bg-muted rounded-lg">
-                        <h3 className="font-medium mb-2">What's Next?</h3>
+                        <h3 className="font-medium mb-2">{`What's Next?`}</h3>
                         <ul className="text-sm text-muted-foreground text-left list-disc pl-5 space-y-1">
                             <li>Configure your server settings</li>
                             <li>Set up moderation rules</li>

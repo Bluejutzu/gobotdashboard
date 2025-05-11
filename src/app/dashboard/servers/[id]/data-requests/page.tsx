@@ -1,66 +1,100 @@
-import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
-import { DashboardSidebar } from "@/components/dashboard/sidebar"
+"use client"
+
 import { DataRequestForm } from "@/components/dashboard/data-request-form"
 import { DataRequestsList } from "@/components/dashboard/data-requests-list"
+import React, { Usable, useEffect, useState } from "react"
+import { createClient } from "@/lib/supabase/client"
+import { useRouter } from "next/navigation"
 
-interface DataRequestsPageProps {
-    params: Promise<{
-        id: string
-    }>
+interface PageParams {
+    id: string;
 }
 
-export default async function DataRequestsPage(props: Promise<{ id: string }>) {
-    const { id }: { id: string } = await props
-    const supabase = await createClient()
+interface ServerData {
+    id: string;
+    name: string;
+    discord_id: string;
+    [key: string]: unknown;
+}
 
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
+export default function DataRequestsPage({ params }: { params: Usable<PageParams> }) {
+    const { id } = React.use(params)
+    const router = useRouter()
+    const [server, setServer] = useState<ServerData | null>(null)
+    const [loading, setLoading] = useState(true)
 
-    if (!session) {
-        redirect("/auth/login")
-    }
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const supabase = createClient()
+                const {
+                    data: { session },
+                } = await supabase.auth.getSession()
 
-    // Get server data
-    const { data: server } = await supabase.from("servers").select("*").eq("id", id).single()
+                if (!session) {
+                    router.push("/auth/login")
+                    return
+                }
 
-    if (!server) {
-        redirect("/dashboard")
-    }
+                // Get server data
+                const { data: serverData, error: serverError } = await supabase
+                    .from("servers")
+                    .select("*")
+                    .eq("discord_id", id)
+                    .single()
 
-    // Get user access to this server
-    const { data: userData } = await supabase
-        .from("users")
-        .select("*")
-        .eq("discord_id", session.user.user_metadata.sub)
-        .single()
+                if (serverError) {
+                    console.error("Error fetching server data:", serverError)
+                    return <div>Error fetching server data</div>
+                }
 
-    const { data: userServer } = await supabase
-        .from("user_servers")
-        .select("*")
-        .eq("user_id", userData?.id)
-        .eq("server_id", server.id)
-        .single()
+                setServer(serverData as ServerData)
 
-    if (!userServer) {
-        redirect("/dashboard")
+                // Get user access to this server
+                // const { data: userData } = await supabase
+                //     .from("users")
+                //     .select("*")
+                //     .eq("discord_id", session.user.user_metadata.sub)
+                //     .single()
+
+                // const { data: userServerData } = await supabase
+                //     .from("user_servers")
+                //     .select("*")
+                //     .eq("user_id", String(userData?.id))
+                //     .eq("server_id", String(serverData.id))
+                //     .single()
+
+                // if (!userServerData) {
+                //     console.log("No user server data")
+                //     router.push("/dashboard")
+                //     return
+                // }
+
+                setLoading(false)
+            } catch (error) {
+                console.error("Error fetching data:", error)
+                router.push("/dashboard")
+            }
+        }
+
+        fetchData()
+    }, [id, router])
+
+    if (loading) {
+        return <div className="p-8">Loading...</div>
     }
 
     return (
         <>
-            <div className="hidden md:flex w-64 flex-col border-r bg-muted/40">
-                <DashboardSidebar serverId={id} />
-            </div>
             <div className="flex-1">
                 <div className="h-full px-4 py-6 lg:px-8">
                     <div>
                         <h2 className="text-2xl font-bold tracking-tight">Data Requests</h2>
-                        <p className="text-muted-foreground">Request and manage data exports for {server.name}</p>
+                        <p className="text-muted-foreground">Request and manage data exports for {server?.name || ""}</p>
                     </div>
 
                     <div className="mt-8 grid gap-8 md:grid-cols-2">
-                        <DataRequestForm serverId={id} serverName={server.name} />
+                        <DataRequestForm serverId={id} serverName={server?.name || ""} />
                         <DataRequestsList serverId={id} />
                     </div>
                 </div>

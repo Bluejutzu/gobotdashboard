@@ -1,13 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export function DiscordAuthButton() {
     const router = useRouter()
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
     const [isLoading, setIsLoading] = useState(false)
 
     const handleLogin = async () => {

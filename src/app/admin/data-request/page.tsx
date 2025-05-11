@@ -1,26 +1,55 @@
-import { redirect } from "next/navigation"
+"use client"
+
 import { DataRequestsAdmin } from "@/components/admin/data-requests-admin"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
-export default async function AdminDataRequestsPage() {
-  const supabase = getSupabaseClient()
+export default function AdminDataRequestsPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(true)
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const supabase = createClient()
+        const {
+          data: { session },
+        } = await supabase.auth.getSession()
 
-  if (!session) {
-    redirect("/auth/login")
-  }
+        if (!session) {
+          router.push("/auth/login")
+          return
+        }
 
-  const { data: adminUser } = await supabase
-    .from("admin_users")
-    .select("*")
-    .eq("discord_id", session.user.user_metadata.sub)
-    .single()
+        const { data: adminUser, error: adminUserError } = await supabase
+          .from("admin_users")
+          .select("*")
+          .eq("discord_id", session.user.user_metadata.sub)
+          .single()
+        
+        if (adminUserError) {
+          console.error("Error fetching admin user:", adminUserError)
+          return <div>Error fetching admin user</div>
+        }
+        
+        if (!adminUser) {
+          router.push("/dashboard")
+          return
+        }
 
-  if (!adminUser) {
-    redirect("/dashboard")
+        setLoading(false)
+      } catch (error) {
+        console.error("Authentication error:", error)
+        router.push("/auth/login")
+      }
+    }
+
+    fetchSession()
+  }, [router])
+
+  if (loading) {
+    return <div className="container py-10">Loading...</div>
   }
 
   return (

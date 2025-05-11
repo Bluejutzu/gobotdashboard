@@ -1,6 +1,6 @@
 "use client"
 
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import type { DiscordPartialGuild } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
 import axios from "axios"
@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator"
 
 export default function GuildList() {
     const router = useRouter()
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
     const [user, setUser] = useState<User>()
     const [guilds, setGuilds] = useState<DiscordPartialGuild[]>()
     const [isLoading, setIsLoading] = useState(true)

@@ -29,24 +29,35 @@ async function checkBotEvents() {
             .from('bot_events')
             .select('*')
             .eq('type', 'RELOAD_COMMANDS')
-            .order('created_at', { ascending: false })
-            .limit(1);
+            .is('processed_at', null)
+            .order('created_at', { ascending: true })
+            .limit(5);
 
         if (error) throw error;
+        
         if (events && events.length > 0) {
-            const event = events[0];
-
-            // Delete the event after processing
-            await supabase
-                .from('bot_events')
-                .delete()
-                .eq('id', event.id);
-
-            // Reload commands for the specific server
-            console.log(event)
-            if (event.server_id) {
-                await loadCommands(client, supabase, event.server_id);
-                console.log(`Reloaded commands for server ${event.server_id}`);
+            console.log(`Found ${events.length} unprocessed command reload events`);
+            
+            for (const event of events) {
+                try {
+                    if (event.server_id) {
+                        await loadCommands(client, supabase, event.server_id);
+                        console.log(`Reloaded commands for server ${event.server_id}`);
+                    }
+                    
+                    // Mark event as processed
+                    await supabase
+                        .from('bot_events')
+                        .update({ processed_at: new Date().toISOString() })
+                        .eq('id', event.id);
+                } catch (eventError) {
+                    console.error(`Error processing event ${event.id}:`, eventError);
+                    // Mark as processed anyway to avoid endless retries
+                    await supabase
+                        .from('bot_events')
+                        .update({ processed_at: new Date().toISOString() })
+                        .eq('id', event.id);
+                }
             }
         }
     } catch (error) {
@@ -68,7 +79,7 @@ client.on('interactionCreate', async (interaction) => {
     const { data: command } = await supabase
         .from('commands')
         .select('*')
-        .eq('guild_id', interaction.guildId)
+        .eq('server_id', interaction.guildId)
         .eq('name', interaction.commandName)
         .single();
 

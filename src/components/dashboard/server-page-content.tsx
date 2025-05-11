@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ServerLoading } from "@/components/dashboard/server-loading"
 import { ServerCreator } from "@/components/dashboard/server-creator"
@@ -10,6 +10,7 @@ import { MessageSquare, Shield, Flag, Hand, Bot, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import type { Server as ServerType, CommandLog } from "@/lib/types"
+import { User } from "@/lib/types"
 
 interface ServerPageContentProps {
   id: string
@@ -17,11 +18,11 @@ interface ServerPageContentProps {
   commands: CommandLog[]
 }
 
-export function ServerPageContent({ id, server, commands }: ServerPageContentProps) {
-  const [userData, setUserData] = useState<any>(null)
+export function ServerPageContent({ id, server }: ServerPageContentProps) {
+  const [userData, setUserData] = useState<User>()
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -32,7 +33,7 @@ export function ServerPageContent({ id, server, commands }: ServerPageContentPro
           return
         }
 
-        const { data: userData, error: userError } = await supabase
+        const { data: userData } = await supabase
           .from("users")
           .select("*")
           .eq("discord_id", sessionData.user.user_metadata.sub)
@@ -63,8 +64,8 @@ export function ServerPageContent({ id, server, commands }: ServerPageContentPro
     return (
       <ServerCreator
         discordId={id}
-        userId={userData.id}
-        onServerCreated={(newServer) => {
+        userId={userData?.id!}
+        onServerCreated={() => {
           // This will trigger a page refresh
           router.refresh()
         }}
@@ -171,7 +172,7 @@ export function ServerPageContent({ id, server, commands }: ServerPageContentPro
                 <div>
                   <h3 className="text-xl font-semibold mb-1">Role greetings</h3>
                   <p className="text-muted-foreground text-sm">
-                    Welcome users to their new role by using Sapphire's role assignment messages.
+                    {`Welcome users to their new role by using Sapphire's role assignment messages.`}
                   </p>
                 </div>
               </div>
@@ -194,7 +195,7 @@ export function ServerPageContent({ id, server, commands }: ServerPageContentPro
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-1">Prefixes</h3>
-                  <p className="text-muted-foreground text-sm">Update how you execute Sapphire's commands.</p>
+                  <p className="text-muted-foreground text-sm">[`Update how you execute Sapphire's commands.`]</p>
                 </div>
               </div>
               <Button

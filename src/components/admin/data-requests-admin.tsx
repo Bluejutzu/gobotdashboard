@@ -18,7 +18,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 interface DataRequest {
@@ -40,18 +40,35 @@ interface DataRequest {
     }
 }
 
-export function DataRequestsAdmin() {
-    const [requests, setRequests] = useState<DataRequest[]>()
-    const [loading, setLoading] = useState(true)
+interface DataRequestsAdminProps {
+    mockRequests?: DataRequest[]
+}
+
+export function DataRequestsAdmin({ mockRequests }: DataRequestsAdminProps) {
+    const [requests, setRequests] = useState<DataRequest[]>(mockRequests || [])
+    const [loading, setLoading] = useState(!mockRequests)
     const [filter, setFilter] = useState("all")
     const [searchQuery, setSearchQuery] = useState("")
     const [rejectionReason, setRejectionReason] = useState("")
     const [, setDataUrl] = useState("")
     const [processingRequestId, setProcessingRequestId] = useState<string | null>(null)
     const [isProcessing, setIsProcessing] = useState(false)
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
+    
 
     const fetchRequests = useCallback(async () => {
+        // If mock data is provided, use it and skip the API call
+        if (mockRequests) {
+            setRequests(mockRequests.filter(request => {
+                if (filter !== "all") {
+                    return request.status === filter;
+                }
+                return true;
+            }));
+            setLoading(false);
+            return;
+        }
+
         try {
             setLoading(true)
 
@@ -67,7 +84,7 @@ export function DataRequestsAdmin() {
           rejection_reason,
           data_url,
           expires_at,
-          user:user_id (username, email),
+          user:user_id2 (username, email),
           server:server_id (name)
         `)
                 .order("created_at", { ascending: false })
@@ -77,7 +94,6 @@ export function DataRequestsAdmin() {
             }
 
             const { data, error } = await query.overrideTypes<DataRequest[]>()
-
 
             if (error) throw error
             console.log(typeof(setRequests))
@@ -90,7 +106,7 @@ export function DataRequestsAdmin() {
         } finally {
             setLoading(false)
         }
-    }, [filter, supabase])
+    }, [filter, supabase, mockRequests])
 
     useEffect(() => {
         fetchRequests()
@@ -101,12 +117,38 @@ export function DataRequestsAdmin() {
         setIsProcessing(true)
 
         try {
-
             const mockDataUrl = "https://example.com/data-export.zip"
-
             const expiresAt = new Date()
             expiresAt.setDate(expiresAt.getDate() + 7)
 
+            // Handle mock data scenario
+            if (mockRequests) {
+                // Update the local state directly
+                setRequests(prevRequests => 
+                    prevRequests.map(req => 
+                        req.id === requestId 
+                            ? {
+                                ...req, 
+                                status: "approved", 
+                                data_url: mockDataUrl,
+                                expires_at: expiresAt.toISOString(),
+                                updated_at: new Date().toISOString()
+                              } 
+                            : req
+                    )
+                )
+                
+                toast("Request approved", {
+                    description: "The data request has been approved and the user has been notified.",
+                })
+                
+                setProcessingRequestId(null)
+                setIsProcessing(false)
+                setDataUrl("")
+                return
+            }
+
+            // Original Supabase update for real data
             const { error } = await supabase
                 .from("data_requests")
                 .update({
@@ -148,6 +190,33 @@ export function DataRequestsAdmin() {
         setIsProcessing(true)
 
         try {
+            // Handle mock data scenario
+            if (mockRequests) {
+                // Update the local state directly
+                setRequests(prevRequests => 
+                    prevRequests.map(req => 
+                        req.id === requestId 
+                            ? {
+                                ...req, 
+                                status: "rejected", 
+                                rejection_reason: rejectionReason,
+                                updated_at: new Date().toISOString()
+                              } 
+                            : req
+                    )
+                )
+                
+                toast("Request rejected", {
+                    description: "The data request has been rejected and the user has been notified.",
+                })
+                
+                setProcessingRequestId(null)
+                setIsProcessing(false)
+                setRejectionReason("")
+                return
+            }
+
+            // Original Supabase update for real data
             const { error } = await supabase
                 .from("data_requests")
                 .update({
@@ -155,7 +224,7 @@ export function DataRequestsAdmin() {
                     rejection_reason: rejectionReason,
                     updated_at: new Date().toISOString(),
                 })
-                .eq("id", requestId)
+                .eq("request_id", requestId)
 
             if (error) throw error
 
@@ -231,16 +300,23 @@ export function DataRequestsAdmin() {
     }
 
     const filteredRequests = requests?.filter((request) => {
-        if (!searchQuery) return true
+        if (!searchQuery) return true;
 
-        const searchLower = searchQuery.toLowerCase()
+        const searchLower = searchQuery.toLowerCase();
         return (
             request.server.name.toLowerCase().includes(searchLower) ||
             request.user.username.toLowerCase().includes(searchLower) ||
             request.user.email.toLowerCase().includes(searchLower) ||
             request.request_reason.toLowerCase().includes(searchLower)
-        )
-    })
+        );
+    });
+
+    useEffect(() => {
+        // When using mock data, we need to update filteredRequests when searchQuery changes
+        if (mockRequests) {
+            fetchRequests();
+        }
+    }, [searchQuery, mockRequests, fetchRequests]);
 
     return (
         <Card>

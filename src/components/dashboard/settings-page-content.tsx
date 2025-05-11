@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { SettingsForm } from "@/components/dashboard/settings-form"
 import { RoleAccessControl } from "@/components/dashboard/role-access-control"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ServerLoading } from "@/components/dashboard/server-loading"
 import type { Server, BotSettings, User, UserServer } from "@/lib/types"
@@ -16,10 +16,10 @@ interface SettingsPageContentProps {
 }
 
 export function SettingsPageContent({ id, server, botSettings }: SettingsPageContentProps) {
-  const [userData, setUserData] = useState<User | null>(null)
+  const [, setUserData] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,7 +30,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
           return
         }
 
-        const { data: userData, error: userError } = await supabase
+        const { data: userData} = await supabase
           .from("users")
           .select("*")
           .eq("discord_id", sessionData.user.user_metadata.sub)

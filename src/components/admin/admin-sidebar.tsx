@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation"
 import { FileText, Shield, Users, Settings, LogOut, LayoutDashboard } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 type AdminSidebarProps = React.HTMLAttributes<HTMLElement>
@@ -15,7 +15,7 @@ type AdminSidebarProps = React.HTMLAttributes<HTMLElement>
 export function AdminSidebar({ className, ...props }: AdminSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()

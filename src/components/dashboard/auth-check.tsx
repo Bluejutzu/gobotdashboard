@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, type ReactNode } from "react"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { ServerLoading } from "./server-loading"
 
@@ -17,7 +17,7 @@ export function AuthCheck({ children }: AuthCheckProps) {
         const checkSession = async () => {
             try {
                 setIsLoading(true)
-                const supabase = getSupabaseClient()
+                const supabase = createClient()
                 const { data, error } = await supabase.auth.getSession()
 
                 if (error || !data.session) {

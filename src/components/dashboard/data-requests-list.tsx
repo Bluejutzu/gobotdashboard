@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 
 interface DataRequest {
@@ -31,7 +31,7 @@ interface DataRequestsListProps {
 export function DataRequestsList({ serverId }: DataRequestsListProps) {
     const [requests, setRequests] = useState<DataRequest[] | null>(null)
     const [loading, setLoading] = useState(true)
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -48,15 +48,14 @@ export function DataRequestsList({ serverId }: DataRequestsListProps) {
                 // Get user ID from database
                 const { data: userData } = await supabase
                     .from("users")
-                    .select("id")
+                    .select("discord_id")
                     .eq("discord_id", user.user_metadata.sub)
-                    .single<{ id: string }>()
+                    .single<{ discord_id: string }>()
 
                 if (!userData) {
                     throw new Error("User not found in database")
                 }
 
-                // Build query
                 let query = supabase
                     .from("data_requests")
                     .select(`
@@ -71,7 +70,7 @@ export function DataRequestsList({ serverId }: DataRequestsListProps) {
             expires_at,
             server:server_id (name)
           `)
-                    .eq("user_id", userData.id)
+                    .eq("user_id2", userData.discord_id)
                     .order("created_at", { ascending: false })
 
                 if (serverId) {

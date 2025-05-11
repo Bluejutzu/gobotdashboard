@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { getBearerToken } from "@/lib/utils"
 import axios from "axios"
 import { ServerError } from "./server-error"
@@ -17,7 +17,7 @@ interface ServerCreatorProps {
 export function ServerCreator({ discordId, userId, onServerCreated }: ServerCreatorProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<any>(null)
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
 
   const createServer = async () => {
     try {

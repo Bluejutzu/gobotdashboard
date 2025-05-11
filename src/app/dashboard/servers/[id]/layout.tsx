@@ -4,7 +4,7 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import {
     Home,
     Settings,
@@ -16,7 +16,6 @@ import {
     Smile,
     Link2,
     FileText,
-    User,
     LogOut,
     ChevronDown,
     Menu,
@@ -26,6 +25,7 @@ import {
     BarChart3,
     Plus,
     ArrowLeft,
+    User as UserIcon
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -49,6 +49,7 @@ import type { Server as ServerType } from "@/lib/types"
 import { SiteFooter } from "@/components/site-footer"
 import axios from "axios"
 import { getBearerToken } from "@/lib/utils"
+import { User } from "@/lib/types"
 
 // Define the Discord guild interface
 interface DiscordPartialGuild {
@@ -84,12 +85,12 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
     const [userServers, setUserServers] = useState<DiscordPartialGuild[]>([])
     const [loading, setLoading] = useState(true)
     const [serversLoading, setServersLoading] = useState(true)
-    const [userData, setUserData] = useState<any>(null)
+    const [userData, setUserData] = useState<User>()
     const [userLoading, setUserLoading] = useState(true)
     const [showBetaAlert, setShowBetaAlert] = useState(false)
     const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null)
     const [serverSelectorOpen, setServerSelectorOpen] = useState(false)
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
 
     useEffect(() => {
         const fetchServer = async () => {
@@ -318,11 +319,14 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                                 {loading ? (
                                                     <Skeleton className="h-6 w-6 rounded-full" />
                                                 ) : server?.icon_url ? (
-                                                    <img
-                                                        src={server.icon_url || "/placeholder.svg"}
-                                                        alt={server.name}
-                                                        className="h-6 w-6 rounded-full"
-                                                    />
+                                                    <Avatar>
+                                                        <AvatarImage src={server.icon_url || "/placeholder.svg"}
+                                                            alt={server.name}
+                                                            className="h-6 w-6 rounded-full" />
+                                                        <AvatarFallback>
+                                                            {server?.name?.charAt(0) || "S"}
+                                                        </AvatarFallback>
+                                                    </Avatar>
                                                 ) : (
                                                     <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
                                                         <span className="text-xs font-bold text-white">{server?.name?.charAt(0) || "S"}</span>
@@ -354,11 +358,15 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                                     >
                                                         <div className="flex items-center gap-2 w-full">
                                                             {server.icon ? (
-                                                                <img
-                                                                    src={server.icon || "/placeholder.svg"}
-                                                                    alt={server.name}
-                                                                    className="h-6 w-6 rounded-full"
-                                                                />
+                                                                <Avatar>
+                                                                    <AvatarImage src={server.icon || "/placeholder.svg"}
+                                                                        alt={server.name}
+                                                                        className="h-6 w-6 rounded-full" />
+                                                                    <AvatarFallback>
+                                                                        {server.name.charAt(0)}
+                                                                    </AvatarFallback>
+                                                                </Avatar>
+
                                                             ) : (
                                                                 <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
                                                                     <span className="text-xs font-bold text-white">{server.name.charAt(0)}</span>
@@ -473,11 +481,14 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                         {loading ? (
                                             <Skeleton className="h-6 w-6 rounded-full" />
                                         ) : server?.icon_url ? (
-                                            <img
-                                                src={server.icon_url || "/placeholder.svg"}
-                                                alt={server.name}
-                                                className="h-6 w-6 rounded-full"
-                                            />
+                                            <Avatar>
+                                                <AvatarImage src={server.icon_url || "/placeholder.svg"}
+                                                    alt={server.name}
+                                                    className="h-6 w-6 rounded-full" />
+                                                <AvatarFallback>
+                                                    {server?.name?.charAt(0) || "S"}
+                                                </AvatarFallback>
+                                            </Avatar>
                                         ) : (
                                             <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
                                                 <span className="text-xs font-bold text-white">{server?.name?.charAt(0) || "S"}</span>
@@ -509,11 +520,14 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                             >
                                                 <div className="flex items-center gap-2 w-full">
                                                     {server.icon ? (
-                                                        <img
-                                                            src={server.icon || "/placeholder.svg"}
-                                                            alt={server.name}
-                                                            className="h-6 w-6 rounded-full"
-                                                        />
+                                                        <Avatar>
+                                                            <AvatarImage src={server.icon || "/placeholder.svg"}
+                                                                alt={server.name}
+                                                                className="h-6 w-6 rounded-full" />
+                                                            <AvatarFallback>
+                                                                {server.name.charAt(0)}
+                                                            </AvatarFallback>
+                                                        </Avatar>
                                                     ) : (
                                                         <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
                                                             <span className="text-xs font-bold text-white">{server.name.charAt(0)}</span>
@@ -649,7 +663,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                             <DropdownMenuGroup>
                                 <DropdownMenuItem asChild>
                                     <Link href="/dashboard/profile" className="cursor-pointer">
-                                        <User className="mr-2 h-4 w-4" />
+                                        <UserIcon className="mr-2 h-4 w-4" />
                                         <span>Profile</span>
                                     </Link>
                                 </DropdownMenuItem>

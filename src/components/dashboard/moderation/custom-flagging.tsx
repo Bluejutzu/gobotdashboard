@@ -30,7 +30,7 @@ type FlagType = {
     enabled: boolean
 }
 
-export function CustomFlagging({ serverId }: { serverId: string }) {
+export function CustomFlagging({  }: { serverId: string }) {    
     const [flags, setFlags] = useState<FlagType[]>([
         {
             id: "1",

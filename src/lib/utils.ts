@@ -1,13 +1,13 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { getSupabaseClient } from "./supabase/client"
+import { createClient } from "./supabase/client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export async function getBearerToken(userId: string) {
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
 
   const { data, error } = await supabase
     .from("users")

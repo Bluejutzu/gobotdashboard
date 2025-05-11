@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation"
 import { BarChart3, Settings, MessageSquare, Shield, Home, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
@@ -17,7 +17,7 @@ interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
 export function DashboardSidebar({ className, serverId, ...props }: SidebarNavProps) {
     const pathname = usePathname()
     const router = useRouter()
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
 
     const handleSignOut = async () => {
         await supabase.auth.signOut()

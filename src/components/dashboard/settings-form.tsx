@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { toast } from "sonner"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 
 interface SettingsFormProps {
     settings: BotSettings
@@ -19,7 +19,7 @@ interface SettingsFormProps {
 export function SettingsForm({ settings }: SettingsFormProps) {
     const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState<BotSettings>(settings)
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target

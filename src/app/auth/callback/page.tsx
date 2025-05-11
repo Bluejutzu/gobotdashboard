@@ -1,6 +1,6 @@
 "use client"
 
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import { User } from "@supabase/supabase-js"
 import { Suspense, useEffect, useState } from "react"
@@ -14,7 +14,7 @@ import Link from "next/link"
 
 function AuthCallback() {
   const router = useRouter()
-  const supabase = getSupabaseClient()
+  const supabase = createClient()
   const [user, setUser] = useState<User>()
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
   const [errorMessage, setErrorMessage] = useState<string>("")

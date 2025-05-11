@@ -1,11 +1,17 @@
 import { Client, REST, Routes, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { SupabaseClient } from '@supabase/supabase-js';
+import axios from 'axios'
 
 export async function loadCommands(client: Client, supabase: SupabaseClient, serverId?: string) {
   try {
     // Ensure client is ready before proceeding
     if (!client.isReady()) {
       throw new Error('Discord client is not ready');
+    }
+
+    // Ensure we have a valid client.user
+    if (!client.user) {
+      throw new Error('Client user is not initialized');
     }
 
     let query = supabase.from('commands').select('*');
@@ -27,77 +33,73 @@ export async function loadCommands(client: Client, supabase: SupabaseClient, ser
       }
       guildCommands.get(cmd.server_id)?.push(cmd);
     });
+console.log(guildCommands)
 
     // Register commands for each guild
     for (const [guildId, guildCmds] of guildCommands) {
       try {
-        // Check if bot has access to the guild
-        let guild;
-        try {
-          // First try to get from cache
-          guild = client.guilds.cache.get(guildId);
-          
-          // If not in cache, try to fetch
-          if (!guild) {
-            guild = await client.guilds.fetch(guildId);
-          }
-        } catch (err) {
-          console.error(`Failed to fetch guild ${guildId}:`, err);
-          guild = null;
-        }
-
+        console.log(`Fetching guild: ${guildId}`);
+        
+        // First try to get the guild from Discord.js cache
+        let guild = client.guilds.cache.get(guildId);
+        
+        // If not in cache, try to fetch it
         if (!guild) {
-          console.error(`Bot is not in guild ${guildId} or guild ID is invalid, skipping command registration`);
-          
-          // Mark the event as processed if this was the target server
-          if (serverId === guildId) {
-            await supabase
-              .from('bot_events')
-              .update({ processed_at: new Date().toISOString() })
-              .eq('type', 'RELOAD_COMMANDS')
-              .eq('server_id', serverId)
-              .is('processed_at', null);
+          try {
+            guild = await client.guilds.fetch(guildId);
+          } catch (error) {
+            console.error(`Failed to fetch guild ${guildId} via Discord.js:`, error);
+            
+            // As fallback, try the REST API
+            try {
+              const res = await axios.get(`https://discord.com/api/v10/guilds/${guildId}`, {
+                headers: {
+                  Authorization: `Bot ${process.env.DISCORD_TOKEN}`
+                }
+              });
+              
+              if (res.status !== 200 || !res.data) {
+                throw new Error('Guild not found via REST API');
+              }
+              
+              console.log(`Fetched guild via REST API: ${res.data.name}`);
+            } catch (restError) {
+              console.error(`Could not fetch guild ${guildId} via any method:`, restError);
+              
+              // Mark the event as processed if this was the target server
+              if (serverId === guildId) {
+                await supabase
+                  .from('bot_events')
+                  .update({ processed_at: new Date().toISOString() })
+                  .eq('type', 'RELOAD_COMMANDS')
+                  .eq('server_id', serverId)
+                  .is('processed_at', null);
+              }
+              continue;
+            }
           }
-          continue;
         }
-
-        // Check if bot has required permissions
-        let botMember;
+        
+        // Check if the bot has permission to create commands
+        let botHasPermission = false;
         try {
-          // First try to get from cache
-          botMember = guild.members.cache.get(client.user!.id);
-          
-          // If not in cache, try to fetch
-          if (!botMember) {
-            botMember = await guild.members.fetch(client.user!.id);
+          if (guild) {
+            const botMember = await guild.members.fetch(client.user.id);
+            botHasPermission = botMember.permissions.has(PermissionFlagsBits.UseApplicationCommands);
+            
+            if (!botHasPermission) {
+              console.error(`Bot lacks application commands permission in guild ${guildId}, skipping command registration`);
+              continue;
+            }
           }
-        } catch (err) {
-          console.error(`Failed to fetch bot member for guild ${guildId}:`, err);
-          
-          // Mark the event as processed if this was the target server
-          if (serverId === guildId) {
-            await supabase
-              .from('bot_events')
-              .update({ processed_at: new Date().toISOString() })
-              .eq('type', 'RELOAD_COMMANDS')
-              .eq('server_id', serverId)
-              .is('processed_at', null);
-          }
-          continue;
+        } catch (memberError) {
+          console.error(`Failed to check bot permissions for guild ${guildId}:`, memberError);
+          // Continue anyway - Discord's API will reject the command registration if permissions are missing
         }
 
-        if (!botMember) {
-          console.error(`Bot is not a member of guild ${guildId}, skipping command registration`);
-          continue;
-        }
-
-        if (!botMember.permissions.has(PermissionFlagsBits.UseApplicationCommands)) {
-          console.error(`Bot lacks application commands permission in guild ${guildId}, skipping command registration`);
-          continue;
-        }
-
+        // Register the commands with Discord API
         const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
-      
+
         const commands = guildCmds.map((cmd) => {
           const command = new SlashCommandBuilder()
             .setName(cmd.name)
@@ -105,7 +107,7 @@ export async function loadCommands(client: Client, supabase: SupabaseClient, ser
 
           // Add options based on nodes that are of type 'option'
           const optionNodes = cmd.nodes?.filter((node: any) => node.type === 'option') || [];
-          
+
           optionNodes.forEach((node: any) => {
             const optionData = node.data;
             switch (optionData.optionType) {
@@ -155,20 +157,33 @@ export async function loadCommands(client: Client, supabase: SupabaseClient, ser
           return command.toJSON();
         });
 
-        await rest.put(
-          Routes.applicationGuildCommands(client.user!.id, guildId),
-          { body: commands }
-        );
-        console.log(`Successfully registered commands for guild ${guildId}`);
-      } catch (error: any) {
-        if (error.code === 50001) {
-          console.error(`Bot lacks permissions in guild ${guildId}. Please ensure the bot:
+        try {
+          await rest.put(
+            Routes.applicationGuildCommands(client.user!.id, guildId),
+            { body: commands }
+          );
+          console.log(`Successfully registered ${commands.length} commands for guild ${guildId}`);
+        } catch (registerError: any) {
+          console.error(`Error registering commands for guild ${guildId}:`, registerError);
+          if (registerError.code === 50001) {
+            console.error(`Bot lacks permissions in guild ${guildId}. Please ensure the bot:
 1. Is in the server
 2. Has the 'applications.commands' scope
 3. Has the required permissions`);
-        } else {
-          console.error(`Error registering commands for guild ${guildId}:`, error);
+          }
         }
+
+        // Mark the event as processed if this was the target server
+        if (serverId === guildId) {
+          await supabase
+            .from('bot_events')
+            .update({ processed_at: new Date().toISOString() })
+            .eq('type', 'RELOAD_COMMANDS')
+            .eq('server_id', serverId)
+            .is('processed_at', null);
+        }
+      } catch (error) {
+        console.error(`Error processing commands for guild ${guildId}:`, error);
         
         // Mark the event as processed even if it failed
         if (serverId === guildId) {

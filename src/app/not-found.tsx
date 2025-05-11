@@ -21,7 +21,16 @@ export default function NotFound() {
     }
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center relative overflow-hidden px-4">
+        <div className="flex min-h-screen flex-col items-center justify-center">
+            <div className="mx-auto max-w-md text-center">
+                <h1 className="text-4xl font-bold">404</h1>
+                <h2 className="mt-4 text-2xl font-semibold">Page Not Found</h2>
+                <p className="mt-4 text-gray-600">
+                    We couldn&apos;t find the page you&apos;re looking for. Please check the URL or
+                    return to the homepage.
+                </p>
+            </div>
+
             {/* Background glow effect */}
             <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -z-10" />
             <div className="absolute bottom-1/4 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[80px] -z-10" />
@@ -47,8 +56,8 @@ export default function NotFound() {
                     Page Not Found
                 </h2>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                    Oops! Looks like you've ventured into uncharted territory. The page you're looking for has either been moved
-                    or doesn't exist.
+                    Oops! Looks like you&apos;ve ventured into uncharted territory. The page you&apos;re looking for has either been moved
+                    or doesn&apos;t exist.
                 </p>
             </div>
 

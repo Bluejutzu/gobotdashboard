@@ -1,7 +1,7 @@
 import { Redis } from '@upstash/redis'
 
 // Create a Redis client
-const redis = Redis.fromEnv()
+export const redis = Redis.fromEnv()
 
 // Cache TTL in seconds
 const DEFAULT_CACHE_TTL = 60 * 5 // 5 minutes

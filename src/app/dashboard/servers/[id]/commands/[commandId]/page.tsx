@@ -371,6 +371,7 @@ export default function CommandBuilderPage() {
   const serverId = params.id as string;
   const commandId = params.commandId as string;
   const isNewCommand = commandId === 'new';
+  console.log(serverId, commandId, isNewCommand)
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

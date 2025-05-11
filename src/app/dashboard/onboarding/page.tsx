@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { User } from "@supabase/supabase-js"
@@ -11,7 +11,7 @@ import { AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function OnboardingPage() {
     const router = useRouter()
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
     const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState<User>()
 

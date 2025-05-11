@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { toast } from "sonner"
 
@@ -23,7 +23,7 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
     const [requestReason, setRequestReason] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -42,7 +42,7 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
             // Get user ID from database
             const { data: userData } = await supabase
                 .from("users")
-                .select("id")
+                .select("discord_id")
                 .eq("discord_id", user.user_metadata.sub)
                 .single()
 
@@ -52,14 +52,20 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
 
             // Create data request
             const { error } = await supabase.from("data_requests").insert({
-                user_id: userData.id,
+                user_id2: userData.discord_id,
                 server_id: serverId,
                 request_type: requestType,
                 request_reason: requestReason,
                 status: "pending",
             })
 
-            if (error) throw error
+            if (error) {
+                console.error("Error inserting data request:", error)
+                toast.error("Error", {
+                    description: "Failed to submit data request. Please try again.",
+                })
+                return
+            }
 
             toast.success("Data request submitted", {
                 description: "Your request has been submitted and will be reviewed by an administrator.",

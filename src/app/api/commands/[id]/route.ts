@@ -19,7 +19,7 @@ interface Node {
     data: {
         label: string;
         description?: string;
-        [key: string]: any;
+        [key: string]: unknown;
     };
     position: {
         x: number;
@@ -27,21 +27,21 @@ interface Node {
     };
 }
 
-interface Edge {
-    id: string;
-    source: string;
-    target: string;
-    [key: string]: any;
-}
+// interface CommandEdge {
+//     id: string;
+//     source: string;
+//     target: string;
+//     [key: string]: unknown;
+// }
 
 export async function PUT(
     request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const supabase = await createClient()
         const { nodes, edges, serverId } = await request.json()
-        const { id } = params
+        const { id }: { id: string } = await params
 
         // Get the command name and description from the start node
         const startNode = nodes.find((node: Node) => node.type === 'input')

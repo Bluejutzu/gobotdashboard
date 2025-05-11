@@ -1,7 +1,7 @@
-import { getSupabaseClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 
 export async function POST(req: Request) {
-    const supabase = getSupabaseClient()
+    const supabase = createClient()
     const body = await req.json();
 
     const { session, token } = body;
