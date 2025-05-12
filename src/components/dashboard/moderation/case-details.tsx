@@ -68,7 +68,7 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
         }
 
         fetchCase()
-    }, [caseId, toast])
+    }, [caseId])
 
     const handleSave = async () => {
         if (!caseData) return

@@ -70,7 +70,77 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+/* Animation utilities */
+@layer utilities {
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .animation-delay-1500 {
+    animation-delay: 1500ms;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2000ms;
+  }
+
+  .animation-delay-2500 {
+    animation-delay: 2500ms;
+  }
+
+  .animation-delay-3000 {
+    animation-delay: 3000ms;
+  }
+
+  .animation-delay-3500 {
+    animation-delay: 3500ms;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4000ms;
+  }
+
+  .animation-delay-4500 {
+    animation-delay: 4500ms;
+  }
+
+  .animation-delay-5000 {
+    animation-delay: 5000ms;
+  }
+
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(75, 85, 99, 0.5);
+    border-radius: 20px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(75, 85, 99, 0.7);
   }
 }
 
@@ -297,6 +367,13 @@
   }
 }
 
+/* Animation for connection lines */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
 /* Animation Classes */
 .animate-float {
   animation: float 6s ease-in-out infinite;
@@ -379,6 +456,11 @@
 
 .animate-float-rotate {
   animation: float-rotate 8s ease-in-out infinite;
+}
+
+/* Animation for connection lines */
+.animate-dash {
+  animation: dash 1s linear infinite;
 }
 
 /* Animation Delays */
@@ -566,7 +648,8 @@
   .animate-blob,
   .animate-float-rotate,
   .animate-pulse-shadow,
-  .animate-shine {
+  .animate-shine,
+  .animate-dash {
     animation: none !important;
     transform: none !important;
   }
@@ -598,7 +681,8 @@
 .reduce-motion .animate-blob,
 .reduce-motion .animate-float-rotate,
 .reduce-motion .animate-pulse-shadow,
-.reduce-motion .animate-shine {
+.reduce-motion .animate-shine,
+.reduce-motion .animate-dash {
   animation: none !important;
   transform: none !important;
 }

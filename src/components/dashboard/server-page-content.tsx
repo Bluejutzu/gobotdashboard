@@ -195,7 +195,7 @@ export function ServerPageContent({ id, server }: ServerPageContentProps) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold mb-1">Prefixes</h3>
-                  <p className="text-muted-foreground text-sm">[`Update how you execute Sapphire's commands.`]</p>
+                  <p className="text-muted-foreground text-sm">{`Update how you execute Sapphire's commands.`}</p>
                 </div>
               </div>
               <Button

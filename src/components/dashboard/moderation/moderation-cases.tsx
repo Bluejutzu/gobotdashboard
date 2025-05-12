@@ -29,10 +29,6 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
     const [cases, setCases] = useState<ModerationCase[]>([])
     const [refreshing, setRefreshing] = useState(false)
 
-    useEffect(() => {
-        fetchCases()
-    }, [serverId])
-
     const fetchCases = async () => {
         try {
             setLoading(true)
@@ -47,6 +43,11 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
             setLoading(false)
         }
     }
+
+    useEffect(() => {
+        fetchCases()
+    }, [serverId, fetchCases])
+
 
     const handleDeleteCase = async (caseId: string) => {
         try {

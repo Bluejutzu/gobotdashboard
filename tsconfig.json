@@ -35,6 +35,7 @@
     ".next/types/**/*.ts"
 , "bot/commandkit.config.js"  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
 }

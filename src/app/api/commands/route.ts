@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { Node } from './[id]/route';
+import { BlockDataProperties, Connection } from "@/lib/types"
 
 // Discord command name validation regex
 const COMMAND_NAME_REGEX = /^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u;
@@ -13,13 +15,24 @@ function isValidCommandName(name: string): boolean {
         !/^[-_]|[-_]$/.test(name); // Can't start or end with hyphen/underscore
 }
 
+interface CommandData {
+    id: string
+    name: string
+    description: string
+    server_id: string
+    blocks: BlockDataProperties[]
+    connections: Connection[]
+    created_at: string
+    updated_at: string
+}
+
 export async function POST(request: Request) {
     try {
         const supabase = await createClient()
         const { nodes, edges, serverId } = await request.json()
         console.log(nodes, edges, serverId)
         // Get the command name and description from the start node
-        const startNode = nodes.find((node: any) => node.type === 'input')
+        const startNode = nodes.find((node: Node) => node.type === 'input')
         if (!startNode) {
             return NextResponse.json(
                 { error: 'Command must have a start node' },
@@ -97,6 +110,34 @@ export async function POST(request: Request) {
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }
+        )
+    }
+}
+
+export async function GET(request: Request) {
+    try {
+        const { searchParams } = new URL(request.url)
+        const serverId = searchParams.get("server_id")
+
+        const supabase = await createClient()
+
+        let query = supabase.from("commands").select("*")
+        if (serverId) {
+            query = query.eq("server_id", serverId)
+        }
+
+        const { data, error } = await query
+
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 500 })
+        }
+
+        return NextResponse.json(data as CommandData[])
+    } catch (error) {
+        console.error("Error fetching commands:", error)
+        return NextResponse.json(
+            { error: "Internal server error" },
+            { status: 500 },
         )
     }
 } 

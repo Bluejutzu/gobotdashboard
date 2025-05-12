@@ -52,7 +52,7 @@ export function AutoModeration({ serverId }: { serverId: string }) {
         }
 
         fetchSettings()
-    }, [serverId, toast])
+    }, [serverId])
 
     const saveSettings = async () => {
         try {

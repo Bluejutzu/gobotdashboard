@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { CommandHistory } from "@/components/dashboard/command-history"
@@ -28,7 +28,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
     const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
     const router = useRouter()
 
-    const fetchCommands = async () => {
+    const fetchCommands = useCallback(async () => {
         setLoading(true)
         setIsRefreshing(true)
         setError(null)
@@ -80,14 +80,14 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
 
         setLoading(false)
         setIsRefreshing(false)
-    }
+    }, [id, router])
 
     useEffect(() => {
         // If we already have commands from props, don't fetch again initially
         if (commands.length === 0) {
             fetchCommands()
         }
-    }, [id, commands.length])
+    }, [id, commands.length, fetchCommands])
 
     const handleRefresh = () => {
         fetchCommands()

@@ -1,7 +1,7 @@
 "use client"
 
 import { createClient } from "@/lib/supabase/client"
-import type { DiscordPartialGuild } from "@/lib/types"
+import type { DiscordGuild, DiscordPartialGuild } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
 import axios from "axios"
 import { redirect, useRouter } from "next/navigation"
@@ -20,9 +20,10 @@ export default function GuildList() {
     const router = useRouter()
     const supabase = createClient()
     const [user, setUser] = useState<User>()
-    const [guilds, setGuilds] = useState<DiscordPartialGuild[]>()
+    const [guilds, setGuilds] = useState<DiscordGuild[]>()
     const [isLoading, setIsLoading] = useState(true)
     const [searchQuery, setSearchQuery] = useState("")
+    const [botGuilds, setBotGuilds] = useState<Set<string>>(new Set())
 
     useEffect(() => {
         const checkSession = async () => {
@@ -60,11 +61,19 @@ export default function GuildList() {
                     return redirect("/")
                 }
 
+                // Get user's guilds
                 const { data: guildsData } = await axios.get("https://discord.com/api/v10/users/@me/guilds", {
                     headers: {
                         Authorization: `Bearer ${data?.discord_token}`,
                     },
                 })
+
+                // Get bot's guilds using the new API endpoint
+                const { data: botGuildsData } = await axios.get(`/api/bot`)
+
+                // Create a set of guild IDs where the bot is present
+                const botGuildIds: Set<string> = new Set(botGuildsData.map((guild: { id: string }) => guild.id))
+                setBotGuilds(botGuildIds)
 
                 const filteredGuilds = guildsData.filter((guild: DiscordPartialGuild) => {
                     const permInt = Number.parseInt(guild.permissions || "0")
@@ -88,6 +97,10 @@ export default function GuildList() {
         return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`
     }
 
+    const isBotinGuild = (guild: DiscordPartialGuild) => {
+        return botGuilds.has(guild.id)
+    }
+
     const hasAdminPermissions = (permissions: string | undefined) => {
         if (!permissions) return false
         const permInt = Number.parseInt(permissions)
@@ -108,7 +121,10 @@ export default function GuildList() {
         return "Member"
     }
 
-    const filteredGuilds = guilds?.filter((guild) => guild.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    const filteredGuilds = guilds?.filter((guild) => 
+        guild.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
+        isBotinGuild(guild)
+    )
 
     const containerVariants = {
         hidden: { opacity: 0 },

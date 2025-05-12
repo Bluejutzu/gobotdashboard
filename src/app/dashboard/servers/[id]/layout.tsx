@@ -202,7 +202,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
             setShowBetaAlert(false)
             setCurrentBetaFeature(null)
         }
-    }, [pathname])
+    }, [])
 
     const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id)
 

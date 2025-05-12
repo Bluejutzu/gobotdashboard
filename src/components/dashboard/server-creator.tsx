@@ -8,6 +8,19 @@ import { ServerError } from "./server-error"
 import { ServerLoading } from "./server-loading"
 import type { Server as ServerType } from "@/lib/types"
 
+interface ServerData {
+  id: string
+  name: string
+  icon?: string
+  owner: boolean
+  permissions: string
+}
+
+interface CustomError extends Error {
+  title?: string
+  code?: string
+}
+
 interface ServerCreatorProps {
   discordId: string
   userId: string
@@ -16,7 +29,7 @@ interface ServerCreatorProps {
 
 export function ServerCreator({ discordId, userId, onServerCreated }: ServerCreatorProps) {
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<any>(null)
+  const [error, setError] = useState<CustomError | null>(null)
   const supabase = createClient()
 
   const createServer = async () => {

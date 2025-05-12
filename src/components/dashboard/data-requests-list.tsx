@@ -93,7 +93,7 @@ export function DataRequestsList({ serverId }: DataRequestsListProps) {
         }
 
         fetchRequests()
-    }, [supabase, serverId, toast])
+    }, [supabase, serverId])
 
     const getStatusBadge = (status: string) => {
         switch (status) {
