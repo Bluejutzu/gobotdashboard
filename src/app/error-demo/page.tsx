@@ -8,7 +8,7 @@ import { ErrorPage } from "@/components/error-page"
 import { AlertTriangle, Bug, RefreshCw } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import Errorv2Page from "./errorv2/page"
+import Errorv2Page from "./errorv2/disabled"
 
 export default function ErrorDemoPage() {
     const [selectedError, setSelectedError] = useState<string>("none")
