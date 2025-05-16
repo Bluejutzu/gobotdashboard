@@ -1,21 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { AlertCircle, RefreshCw, Save, ShieldCheck } from "lucide-react"
+import { toast } from "sonner"
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { AlertCircle, Save, ShieldCheck, RefreshCw } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {
+    type AutoModerationSettings,
     getAutoModerationSettings,
     updateAutoModerationSettings,
-    type AutoModerationSettings,
 } from "@/lib/api/moderation"
-import { toast } from "sonner"
 
 export function AutoModeration({ serverId }: { serverId: string }) {
     const [loading, setLoading] = useState(true)

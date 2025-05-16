@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import type { Server as ServerType, CommandLog } from "@/lib/types"
+import type { CommandLog, Server as ServerType } from "@/lib/types"
 import { ServerError } from "@/components/dashboard/server-error"
 import { ServerPageContent } from "@/components/dashboard/server-page-content"
 

@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Shield, Plus, Trash2, Info } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Info, Plus, Shield, Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { createClient } from "@/lib/supabase/client"
-import { toast } from "sonner"
 
 interface Role {
     id: string
@@ -30,7 +30,7 @@ interface RoleAccessControlProps {
 export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
     const [roles, setRoles] = useState<Role[]>([])
     const [accessRoles, setAccessRoles] = useState<ServerAccessRole[]>([])
-    const [loading, setLoading] = useState(true)
+    const [, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
     const [selectedRoleId, setSelectedRoleId] = useState("")
     const [selectedAccessLevel, setSelectedAccessLevel] = useState("view")
@@ -69,7 +69,7 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
         }
 
         fetchRolesAndAccess()
-    }, [serverId, supabase, toast])
+    }, [serverId, supabase])
 
     const handleAddRole = async () => {
         if (!selectedRoleId) return

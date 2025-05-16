@@ -1,5 +1,5 @@
-import { getCachedData, invalidateCache } from '@/lib/redis'
 import { v4 as uuidv4 } from 'uuid'
+import { getCachedData, invalidateCache } from '@/lib/redis'
 import { createClient } from '../supabase/client'
 
 // Type definitions

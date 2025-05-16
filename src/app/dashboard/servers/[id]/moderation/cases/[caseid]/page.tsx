@@ -1,9 +1,9 @@
 import { Suspense } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { CaseDetailSkeleton } from "@/components/dashboard/moderation/moderation-skeleton"
 import { CaseDetail } from "@/components/dashboard/moderation/case-details"
 

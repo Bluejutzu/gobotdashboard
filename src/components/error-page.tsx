@@ -4,9 +4,9 @@ import type React from "react"
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { ArrowLeft, Home, RefreshCw, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Home, RefreshCw, ArrowLeft, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface ErrorPageProps {

@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import { BarChart3, Bot, MessageSquare, Shield, Users } from "lucide-react"
+import Link from "next/link"
 import { DiscordAuthButton } from "@/components/auth/discord-auth-button"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { motion } from "framer-motion"
-import { Bot, Shield, BarChart3, MessageSquare, Users } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 
 export default function LoginPage() {
     const [isMounted, setIsMounted] = useState(false)

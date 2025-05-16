@@ -1,9 +1,9 @@
 "use client"
 
+import { Home, RefreshCw, ServerOff } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { ServerOff, RefreshCw, Home } from "lucide-react"
-import Link from "next/link"
 
 interface ServerErrorProps {
     title?: string

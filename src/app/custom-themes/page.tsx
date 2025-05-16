@@ -1,11 +1,9 @@
 "use client"
 
-import type React from "react"
-
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { Heart, Palette, Save, Share, User } from "lucide-react"
+import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -14,96 +12,57 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import { Heart, Palette, Save, Share, User } from "lucide-react"
-import { useTheme } from "next-themes"
-import { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types"
+import { useThemeContext } from "@/contexts/theme-context"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { supabase } from "@/lib/supabase"
 
 export default function CustomThemesPage() {
     const { theme, setTheme } = useTheme()
+    const { currentTheme, savedThemes, communityThemes, saveTheme, applyTheme, likeTheme, deleteTheme } =
+        useThemeContext()
     const [mounted, setMounted] = useState(false)
     const [activeTab, setActiveTab] = useState("create")
 
-    const [primaryColor, setPrimaryColor] = useState("#0ea5e9")
-    const [secondaryColor, setSecondaryColor] = useState("#f1f5f9")
-    const [accentColor, setAccentColor] = useState("#6366f1")
-    const [borderRadius, setBorderRadius] = useState(8)
+    const [primaryColor, setPrimaryColor] = useState(currentTheme.primary)
+    const [secondaryColor, setSecondaryColor] = useState(currentTheme.secondary)
+    const [accentColor, setAccentColor] = useState(currentTheme.accent)
+    const [borderRadius, setBorderRadius] = useState(currentTheme.borderRadius)
     const [themeName, setThemeName] = useState("My Custom Theme")
+    const [isPublic, setIsPublic] = useState(false)
+    const [user, setUser] = useState<any>(null)
 
-    const communityThemes: ThemeData[] = [
-        {
-            id: 1,
-            name: "Midnight Blue",
-            creator: "alex_design",
-            likes: 342,
-            primary: "#1e3a8a",
-            secondary: "#1e293b",
-            accent: "#3b82f6",
-            borderRadius: 12,
-        },
-        {
-            id: 2,
-            name: "Forest Green",
-            creator: "nature_lover",
-            likes: 256,
-            primary: "#166534",
-            secondary: "#f1f5f9",
-            accent: "#22c55e",
-            borderRadius: 4,
-        },
-        {
-            id: 3,
-            name: "Royal Purple",
-            creator: "design_master",
-            likes: 189,
-            primary: "#7e22ce",
-            secondary: "#f3e8ff",
-            accent: "#a855f7",
-            borderRadius: 8,
-        },
-        {
-            id: 4,
-            name: "Sunset Orange",
-            creator: "color_guru",
-            likes: 145,
-            primary: "#ea580c",
-            secondary: "#fff7ed",
-            accent: "#f97316",
-            borderRadius: 16,
-        },
-        {
-            id: 5,
-            name: "Neon Dreams",
-            creator: "cyber_punk",
-            likes: 421,
-            primary: "#06b6d4",
-            secondary: "#0f172a",
-            accent: "#ec4899",
-            borderRadius: 0,
-        },
-        {
-            id: 6,
-            name: "Monochrome",
-            creator: "minimalist",
-            likes: 287,
-            primary: "#18181b",
-            secondary: "#f4f4f5",
-            accent: "#71717a",
-            borderRadius: 2,
-        },
-    ]
+    // Check for user session on mount
+    useEffect(() => {
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user || null)
+        })
 
-    const [savedThemes, setSavedThemes] = useState([
-        { id: 1, name: "My Dark Theme", primary: "#2563eb", secondary: "#1e293b", accent: "#8b5cf6", borderRadius: 8 },
-        { id: 2, name: "Light Mode", primary: "#0ea5e9", secondary: "#f8fafc", accent: "#6366f1", borderRadius: 12 },
-    ])
+        // Get initial session
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user || null)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     useEffect(() => {
         setMounted(true)
 
-        document.documentElement.style.setProperty("--theme-primary", primaryColor)
-        document.documentElement.style.setProperty("--theme-secondary", secondaryColor)
-        document.documentElement.style.setProperty("--theme-accent", accentColor)
+        // Initialize with current theme
+        setPrimaryColor(currentTheme.primary)
+        setSecondaryColor(currentTheme.secondary)
+        setAccentColor(currentTheme.accent)
+        setBorderRadius(currentTheme.borderRadius)
+    }, [currentTheme])
+
+    useEffect(() => {
+        document.documentElement.style.setProperty("--theme-primary", primaryColor || "")
+        document.documentElement.style.setProperty("--theme-secondary", secondaryColor || "")
+        document.documentElement.style.setProperty("--theme-accent", accentColor || "")
         document.documentElement.style.setProperty("--theme-radius", `${borderRadius}px`)
 
         return () => {
@@ -114,44 +73,45 @@ export default function CustomThemesPage() {
         }
     }, [primaryColor, secondaryColor, accentColor, borderRadius])
 
-    const handleSaveTheme = () => {
-        const newTheme = {
-            id: savedThemes.length + 1,
+    const handleSaveTheme = async () => {
+        if (!user) {
+            toast("Authentication Required", {
+                description: "Please sign in to save themes.",
+            })
+            return
+        }
+
+        const newTheme: ThemeData = {
+            id: Date.now().toString(),
             name: themeName,
             primary: primaryColor,
             secondary: secondaryColor,
             accent: accentColor,
             borderRadius: borderRadius,
+            isPublic: isPublic,
+            userId: user.id,
         }
+        console.log(newTheme)
 
-        setSavedThemes([...savedThemes, newTheme])
-
-        toast("Theme Saved", {
-            description: `Your theme "${themeName}" has been saved successfully.`,
-            action: (
-                <Button variant="outline" size="sm" onClick={() => setActiveTab("saved")}>
-                    View Saved
-                </Button>
-            ),
-        })
+        await saveTheme(newTheme)
     }
 
-    const applyTheme = (theme: Partial<ThemeData>) => {
-        setPrimaryColor(theme.primary!)
-        setSecondaryColor(theme.secondary!)
-        setAccentColor(theme.accent!)
-        setBorderRadius(theme.borderRadius!)
-        setThemeName(theme.name!)
+    const handleSignIn = async () => {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: "github",
+                options: {
+                    redirectTo: window.location.href,
+                },
+            })
 
-        toast("Theme Applied", {
-            description: `The theme "${theme.name}" has been applied.`,
-        })
-    }
-
-    const likeTheme = () => {
-        toast("Theme Liked", {
-            description: "You've liked this community theme.",
-        })
+            if (error) throw error
+        } catch (error) {
+            console.error("Error signing in:", error)
+            toast("Authentication Error", {
+                description: "Failed to sign in. Please try again.",
+            })
+        }
     }
 
     if (!mounted) {
@@ -160,7 +120,7 @@ export default function CustomThemesPage() {
 
     return (
         <div className="flex min-h-screen flex-col">
-            <SiteHeader />
+            <SiteHeader className="absolute top-0 left-0 right-0 z-50 bg-transparent" />
             <main className="flex-1">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden bg-background py-24 md:py-32">
@@ -310,7 +270,7 @@ export default function CustomThemesPage() {
                                                         min={0}
                                                         max={20}
                                                         step={1}
-                                                        value={[borderRadius]}
+                                                        value={[borderRadius || 0]}
                                                         onValueChange={(value) => setBorderRadius(value[0])}
                                                         className="py-4"
                                                     />
@@ -324,6 +284,17 @@ export default function CustomThemesPage() {
                                                     />
                                                     <Label htmlFor="dark-mode">Dark Mode</Label>
                                                 </div>
+
+                                                {user && (
+                                                    <div className="flex items-center space-x-2">
+                                                        <Switch
+                                                            id="public-theme"
+                                                            checked={isPublic}
+                                                            onCheckedChange={setIsPublic}
+                                                        />
+                                                        <Label htmlFor="public-theme">Share with community</Label>
+                                                    </div>
+                                                )}
                                             </CardContent>
                                             <CardFooter className="flex justify-between">
                                                 <Button
@@ -404,6 +375,33 @@ export default function CustomThemesPage() {
                                                     </div>
 
                                                     <div className="space-y-2">
+                                                        <div className="text-sm font-medium">Pricing Card Preview</div>
+                                                        <div
+                                                            className="border rounded-lg p-4 bg-white/5 backdrop-blur-sm"
+                                                            style={{
+                                                                borderRadius: `${borderRadius}px`,
+                                                                borderColor: "var(--border)",
+                                                            }}
+                                                        >
+                                                            <div className="text-center">
+                                                                <div className="font-bold text-xl mb-1">Premium</div>
+                                                                <div className="text-2xl font-bold mb-2">$4.99</div>
+                                                                <div className="text-sm text-muted-foreground mb-4">For growing communities</div>
+                                                                <Button
+                                                                    className="w-full"
+                                                                    style={{
+                                                                        backgroundColor: primaryColor,
+                                                                        color: "#fff",
+                                                                        borderRadius: `${borderRadius}px`,
+                                                                    }}
+                                                                >
+                                                                    Upgrade Now
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-2">
                                                         <div className="text-sm font-medium">Badges</div>
                                                         <div className="flex flex-wrap gap-2">
                                                             <span
@@ -438,31 +436,6 @@ export default function CustomThemesPage() {
                                                             </span>
                                                         </div>
                                                     </div>
-
-                                                    <div className="space-y-2">
-                                                        <div className="text-sm font-medium">Form Elements</div>
-                                                        <div className="space-y-2">
-                                                            <Input
-                                                                placeholder="Input field"
-                                                                style={{
-                                                                    borderRadius: `${borderRadius}px`,
-                                                                    borderColor: "var(--border)",
-                                                                }}
-                                                            />
-                                                            <div className="flex items-center space-x-2">
-                                                                <Switch
-                                                                    style={
-                                                                        {
-                                                                            "--switch-thumb-color": "#fff",
-                                                                            "--switch-active-color": primaryColor,
-                                                                            borderRadius: `${borderRadius}px`,
-                                                                        } as React.CSSProperties
-                                                                    }
-                                                                />
-                                                                <span>Toggle</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </CardContent>
                                         </Card>
@@ -476,39 +449,52 @@ export default function CustomThemesPage() {
                                     <p className="text-muted-foreground">Explore and use themes created by the community</p>
                                 </div>
 
+                                {!user && (
+                                    <div className="text-center py-8 mb-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
+                                        <p className="mb-4 text-muted-foreground">Sign in to like and save community themes</p>
+                                        <Button onClick={handleSignIn}>Sign In with GitHub</Button>
+                                    </div>
+                                )}
+
                                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {communityThemes.map((theme) => (
-                                        <Card key={theme.id} className="overflow-hidden hover-lift">
-                                            <div
-                                                className="h-24 flex"
-                                                style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})` }}
-                                            ></div>
-                                            <CardHeader>
-                                                <CardTitle>{theme.name}</CardTitle>
-                                                <CardDescription>By {theme.creator}</CardDescription>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <div className="flex space-x-2 mb-4">
-                                                    <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.primary }}></div>
-                                                    <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.secondary }}></div>
-                                                    <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.accent }}></div>
-                                                </div>
-                                                <div className="flex items-center text-sm text-muted-foreground">
-                                                    <Heart className="h-4 w-4 mr-1" />
-                                                    <span>{theme.likes} likes</span>
-                                                </div>
-                                            </CardContent>
-                                            <CardFooter className="flex justify-between">
-                                                <Button variant="ghost" size="sm" onClick={() => likeTheme()}>
-                                                    <Heart className="h-4 w-4 mr-2" />
-                                                    Like
-                                                </Button>
-                                                <Button size="sm" onClick={() => applyTheme(theme)}>
-                                                    Apply Theme
-                                                </Button>
-                                            </CardFooter>
-                                        </Card>
-                                    ))}
+                                    {communityThemes.length > 0 ? (
+                                        communityThemes.map((theme) => (
+                                            <Card key={theme.id} className="overflow-hidden hover-lift">
+                                                <div
+                                                    className="h-24 flex"
+                                                    style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})` }}
+                                                ></div>
+                                                <CardHeader>
+                                                    <CardTitle>{theme.name}</CardTitle>
+                                                    <CardDescription>By {theme.creator || "Anonymous"}</CardDescription>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <div className="flex space-x-2 mb-4">
+                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.primary }}></div>
+                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.secondary }}></div>
+                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.accent }}></div>
+                                                    </div>
+                                                    <div className="flex items-center text-sm text-muted-foreground">
+                                                        <Heart className="h-4 w-4 mr-1" />
+                                                        <span>{theme.likes || 0} likes</span>
+                                                    </div>
+                                                </CardContent>
+                                                <CardFooter className="flex justify-between">
+                                                    <Button variant="ghost" size="sm" onClick={() => likeTheme(theme.id)} disabled={!user}>
+                                                        <Heart className="h-4 w-4 mr-2" />
+                                                        Like
+                                                    </Button>
+                                                    <Button size="sm" onClick={() => applyTheme(theme)}>
+                                                        Apply Theme
+                                                    </Button>
+                                                </CardFooter>
+                                            </Card>
+                                        ))
+                                    ) : (
+                                        <div className="col-span-full text-center py-12">
+                                            <p className="text-muted-foreground">No community themes available yet</p>
+                                        </div>
+                                    )}
                                 </div>
                             </TabsContent>
 
@@ -518,7 +504,12 @@ export default function CustomThemesPage() {
                                     <p className="text-muted-foreground">Manage your custom themes</p>
                                 </div>
 
-                                {savedThemes.length > 0 ? (
+                                {!user ? (
+                                    <div className="text-center py-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
+                                        <p className="mb-4 text-muted-foreground">Sign in to save and manage your themes</p>
+                                        <Button onClick={handleSignIn}>Sign In with GitHub</Button>
+                                    </div>
+                                ) : savedThemes.length > 0 ? (
                                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {savedThemes.map((theme) => (
                                             <Card key={theme.id} className="overflow-hidden hover-lift">
@@ -541,12 +532,7 @@ export default function CustomThemesPage() {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        onClick={() => {
-                                                            setSavedThemes(savedThemes.filter((t) => t.id !== theme.id))
-                                                            toast("Theme Deleted", {
-                                                                description: `The theme "${theme.name}" has been deleted.`,
-                                                            })
-                                                        }}
+                                                        onClick={() => deleteTheme(theme.id)}
                                                     >
                                                         Delete
                                                     </Button>
@@ -557,6 +543,7 @@ export default function CustomThemesPage() {
                                             </Card>
                                         ))}
                                     </div>
+
                                 ) : (
                                     <div className="text-center py-12 border rounded-lg">
                                         <Save className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
@@ -581,17 +568,13 @@ export default function CustomThemesPage() {
                             Create and share your custom themes with the Gobot community.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in animation-delay-1000">
-                            <Button variant="secondary" className="group" asChild>
-                                <Link href="/custom-themes/share">
-                                    <Share className="mr-2 h-4 w-4" />
-                                    Share Your Theme
-                                </Link>
+                            <Button variant="secondary" className="group" onClick={() => setIsPublic(true)}>
+                                <Share className="mr-2 h-4 w-4" />
+                                Share Your Theme
                             </Button>
-                            <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" asChild>
-                                <Link href="/custom-themes/gallery">
-                                    <Palette className="mr-2 h-4 w-4" />
-                                    Browse Gallery
-                                </Link>
+                            <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" onClick={() => setActiveTab("community")}>
+                                <Palette className="mr-2 h-4 w-4" />
+                                Browse Gallery
                             </Button>
                         </div>
                     </div>

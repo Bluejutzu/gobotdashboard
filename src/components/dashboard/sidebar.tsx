@@ -4,11 +4,11 @@ import type React from "react"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BarChart3, Settings, MessageSquare, Shield, Home, LogOut } from "lucide-react"
+import { BarChart3, Home, LogOut, MessageSquare, Settings, Shield } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
     serverId?: string

@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { SettingsForm } from "@/components/dashboard/settings-form"
 import { RoleAccessControl } from "@/components/dashboard/role-access-control"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 import { ServerLoading } from "@/components/dashboard/server-loading"
-import type { Server, BotSettings, User, UserServer } from "@/lib/types"
+import type { BotSettings, Server, User, UserServer } from "@/lib/types"
 
 interface SettingsPageContentProps {
   id: string

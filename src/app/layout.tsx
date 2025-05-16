@@ -2,10 +2,12 @@ import type React from "react"
 import './globals.css';
 import "../../public/fonts/minecraft.css";
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/ThemeProvider"
 import { Toaster } from "sonner"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/next';
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
+import { ThemeProvider } from "@/contexts/theme-context"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,8 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className={`${inter.className} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider>
+          <SiteHeader />
           {children}
+          <SiteFooter />
           <Toaster />
           <Analytics />
           <SpeedInsights />

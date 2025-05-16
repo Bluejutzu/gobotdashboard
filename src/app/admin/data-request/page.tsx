@@ -1,9 +1,9 @@
 "use client"
 
-import { DataRequestsAdmin } from "@/components/admin/data-requests-admin"
-import { createClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { DataRequestsAdmin } from "@/components/admin/data-requests-admin"
+import { createClient } from "@/lib/supabase/client"
 
 export default function AdminDataRequestsPage() {
   const router = useRouter()

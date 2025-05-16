@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
+import { AlertTriangle, Info, Shield } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Shield, Info, AlertTriangle } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 interface ModerationHeaderProps {

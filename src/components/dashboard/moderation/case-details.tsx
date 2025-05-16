@@ -1,8 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import { AlertTriangle, Ban, CheckCircle, Clock, MessageSquare, RefreshCw, Save, Shield, Timer, Trash2, User } from 'lucide-react'
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -10,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { AlertTriangle, Clock, Save, User, Shield, CheckCircle, Ban, Timer, MessageSquare, Trash2, RefreshCw } from 'lucide-react'
 import {
     AlertDialog,
     AlertDialogAction,
@@ -23,13 +24,12 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
-    getModerationCase,
-    updateModerationCase,
-    deleteModerationCase,
     ModerationCase,
-    ModerationStatus
+    ModerationStatus,
+    deleteModerationCase,
+    getModerationCase,
+    updateModerationCase
 } from "@/lib/api/moderation"
-import { toast } from "sonner"
 
 interface CaseDetailProps {
     serverId: string

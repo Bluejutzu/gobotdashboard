@@ -1,19 +1,19 @@
 "use client"
 
-import { createClient } from "@/lib/supabase/client"
-import type { DiscordGuild, DiscordPartialGuild } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
 import axios from "axios"
 import { redirect, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Bot, Crown, Hash, Search, ServerCrash, Shield, UserIcon, Users } from 'lucide-react'
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { createClient } from "@/lib/supabase/client"
+import type { DiscordGuild, DiscordPartialGuild } from "@/lib/types"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Shield, Users, Crown, Search, Bot, ServerCrash, UserIcon, Hash } from 'lucide-react'
-import Link from "next/link"
 import { Input } from "@/components/ui/input"
-import { motion } from "framer-motion"
 import { Separator } from "@/components/ui/separator"
 
 export default function GuildList() {
@@ -45,6 +45,7 @@ export default function GuildList() {
                 const {
                     data: { session },
                 } = await supabase.auth.getSession()
+                console.log(session)
 
                 if (!session?.user || !session) {
                     return redirect("/auth/login")
@@ -56,11 +57,11 @@ export default function GuildList() {
                     .eq("discord_id", session?.user?.user_metadata?.provider_id)
                     .single()
 
-                if (error) {
+                if (error || !data) {
                     console.log(error)
                     return redirect("/")
                 }
-
+                console.log(data)
                 // Get user's guilds
                 const { data: guildsData } = await axios.get("https://discord.com/api/v10/users/@me/guilds", {
                     headers: {
@@ -83,6 +84,11 @@ export default function GuildList() {
                 setGuilds(filteredGuilds)
             } catch (error) {
                 console.error("Error fetching guilds:", error)
+                if (axios.isAxiosError(error) && error.response?.status === 401) {
+                    // Discord token likely expired, redirect to login to refresh
+                    router.push("/auth/login")
+                    return
+                }
             } finally {
                 setIsLoading(false)
             }

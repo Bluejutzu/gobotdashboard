@@ -4,29 +4,30 @@ import * as React from "react"
 import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/client"
 import {
-    Home,
-    Settings,
-    MessageSquare,
-    Shield,
-    PaintBucket,
-    Bell,
-    UserPlus,
-    Smile,
-    Link2,
-    FileText,
-    LogOut,
-    ChevronDown,
-    Menu,
     AlertTriangle,
-    Lock,
-    Sparkles,
-    BarChart3,
-    Plus,
     ArrowLeft,
-    User as UserIcon
+    BarChart3,
+    Bell,
+    ChevronDown,
+    FileText,
+    Home,
+    Link2,
+    Lock,
+    LogOut,
+    Menu,
+    MessageSquare,
+    PaintBucket,
+    Plus,
+    Settings,
+    Shield,
+    Smile,
+    Sparkles,
+    User as UserIcon,
+    UserPlus
 } from "lucide-react"
+import axios from "axios"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -47,7 +48,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { Server as ServerType } from "@/lib/types"
 import { SiteFooter } from "@/components/site-footer"
-import axios from "axios"
 import { getBearerToken } from "@/lib/utils"
 import { User } from "@/lib/types"
 
@@ -192,18 +192,6 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
         fetchUser()
     }, [id, supabase])
 
-    // Check if current path is a beta feature and show alert
-    useEffect(() => {
-        const currentNavItem = navItems.find((item) => item.href === pathname)
-        if (currentNavItem?.experimental === "beta") {
-            setShowBetaAlert(true)
-            setCurrentBetaFeature(currentNavItem.label)
-        } else {
-            setShowBetaAlert(false)
-            setCurrentBetaFeature(null)
-        }
-    }, [])
-
     const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id)
 
     const canAccessNavItem = (item: NavItem) => {
@@ -249,7 +237,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
         }
     }
 
-    const navItems: NavItem[] = [
+    const navItems: NavItem[] = React.useMemo(() => [
         { href: `/dashboard/servers/${id}`, label: "Home", icon: Home, experimental: "beta" },
         { href: `/dashboard/servers/${id}/settings`, label: "General Settings", icon: Settings, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/commands`, label: "Commands", icon: MessageSquare, experimental: "no_access" },
@@ -293,7 +281,18 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
             experimental: "no_access",
         },
         { href: `/dashboard/servers/${id}/ai-tools`, label: "AI Tools", icon: Sparkles, experimental: "no_access" },
-    ]
+    ], [id])
+
+    useEffect(() => {
+        const currentNavItem = navItems.find((item) => item.href === pathname)
+        if (currentNavItem?.experimental === "beta") {
+            setShowBetaAlert(true)
+            setCurrentBetaFeature(currentNavItem.label)
+        } else {
+            setShowBetaAlert(false)
+            setCurrentBetaFeature(null)
+        }
+    }, [pathname, navItems])
 
     // Filter navItems based on access
     const accessibleNavItems = navItems.filter(canAccessNavItem)

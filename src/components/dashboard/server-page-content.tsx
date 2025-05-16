@@ -1,15 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Bot, Flag, Hand, MessageSquare, Shield, Zap } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 import { ServerLoading } from "@/components/dashboard/server-loading"
 import { ServerCreator } from "@/components/dashboard/server-creator"
-import Link from "next/link"
-import { MessageSquare, Shield, Flag, Hand, Bot, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import type { Server as ServerType, CommandLog } from "@/lib/types"
+import type { CommandLog, Server as ServerType } from "@/lib/types"
 import { User } from "@/lib/types"
 
 interface ServerPageContentProps {
@@ -59,14 +59,16 @@ export function ServerPageContent({ id, server }: ServerPageContentProps) {
     return <ServerLoading />
   }
 
-  // If server doesn't exist, show server creator
+  if (!userData || !userData?.id) {
+    return <div>Loading...</div>
+  }
+
   if (!server) {
     return (
       <ServerCreator
         discordId={id}
-        userId={userData?.id!}
+        userId={userData.id}
         onServerCreated={() => {
-          // This will trigger a page refresh
           router.refresh()
         }}
       />

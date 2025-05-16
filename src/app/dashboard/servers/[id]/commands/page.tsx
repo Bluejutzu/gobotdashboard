@@ -1,14 +1,14 @@
 "use client"
 
+import { Pencil, Plus, Trash2 } from "lucide-react"
+import React, { Suspense, Usable } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import { Pencil, Plus, Trash2 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import React, { Suspense, Usable } from "react"
-import { createNewCommand, editCommand, deleteCommand } from "./actions"
-import { useState, useEffect } from "react"
+import { createNewCommand, deleteCommand, editCommand } from "./actions"
 
 function CommandsLoading() {
   return (

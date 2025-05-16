@@ -2,9 +2,9 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-import { ArrowLeft, Search, Plus, Save, X, ChevronRight } from "lucide-react"
+import { ArrowLeft, ChevronRight, Plus, Save, Search, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -51,7 +51,31 @@ const CommandBuilder = () => {
   const [isConnecting, setIsConnecting] = useState(false)
   const [connectionStart, setConnectionStart] = useState<{ id: string; socket: string } | null>(null)
 
-  // Initialize with a command block if new command
+  
+  const fetchCommandData = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      // Fetch command data from API
+      const response = await fetch(`/api/commands/${commandId}`)
+      if (!response.ok) {
+        throw new Error("Failed to fetch command data")
+      }
+
+      const data = await response.json()
+      if (data.blocks && data.connections) {
+        setBlocks(data.blocks)
+        setConnections(data.connections)
+        setCommandName(data.name || "")
+        setCommandDescription(data.description || "")
+      }
+    } catch (err) {
+      setError("Failed to load command data")
+      console.error(err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [commandId])
+  
   useEffect(() => {
     if (isNewCommand && blocks.length === 0) {
       setBlocks([
@@ -75,31 +99,7 @@ const CommandBuilder = () => {
       // Fetch existing command data
       fetchCommandData()
     }
-  }, [isNewCommand])
-
-  const fetchCommandData = async () => {
-    try {
-      setIsLoading(true)
-      // Fetch command data from API
-      const response = await fetch(`/api/commands/${commandId}`)
-      if (!response.ok) {
-        throw new Error("Failed to fetch command data")
-      }
-
-      const data = await response.json()
-      if (data.blocks && data.connections) {
-        setBlocks(data.blocks)
-        setConnections(data.connections)
-        setCommandName(data.name || "")
-        setCommandDescription(data.description || "")
-      }
-    } catch (err) {
-      setError("Failed to load command data")
-      console.error(err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  }, [isNewCommand, blocks.length, fetchCommandData])
 
   const handleSave = async () => {
     try {
@@ -365,6 +365,7 @@ const CommandBuilder = () => {
     )
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleConnectionDelete = (connectionId: string) => {
     const connection = connections.find((conn) => conn.id === connectionId)
     if (!connection) return
@@ -376,6 +377,7 @@ const CommandBuilder = () => {
     setBlocks((prev) =>
       prev.map((block) => {
         if (block.id === connection.fromId) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [connection.fromSocket]: _, ...restConnections } = block.connections
           return {
             ...block,
@@ -383,6 +385,7 @@ const CommandBuilder = () => {
           }
         }
         if (block.id === connection.toId) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [connection.toSocket]: _, ...restConnections } = block.connections
           return {
             ...block,
@@ -803,12 +806,11 @@ const ConnectionLine = ({
 }
 
 // Block component
-const BlockComponent = ({
+export const BlockComponent = ({
   block,
   isSelected,
   onSelect,
   onMove,
-  onDelete,
   onConnectionStart,
   onConnectionEnd,
   isConnecting,
@@ -818,7 +820,6 @@ const BlockComponent = ({
   isSelected: boolean
   onSelect: () => void
   onMove: (id: string, position: { x: number; y: number }) => void
-  onDelete: (id: string) => void
   onConnectionStart: (blockId: string, socket: string) => void
   onConnectionEnd: (blockId: string, socket: string) => void
   isConnecting: boolean
@@ -839,37 +840,31 @@ const BlockComponent = ({
     blockColor = "#f59e0b" // Amber for command block
   }
 
-  const handleMouseDown = (e: React.MouseEvent) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging) return
+    const x = e.clientX - dragOffset.x
+    const y = e.clientY - dragOffset.y
+    onMove(block.id, { x, y })
+  }, [isDragging, dragOffset, onMove, block.id])
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false)
+    document.removeEventListener("mousemove", handleMouseMove)
+    document.removeEventListener("mouseup", handleMouseUp)
+  }, [setIsDragging, handleMouseMove])
+
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
     onSelect()
-
-    // Start dragging
     setIsDragging(true)
     const rect = (e.target as HTMLElement).getBoundingClientRect()
     setDragOffset({
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     })
-
-    // Add event listeners for drag
     document.addEventListener("mousemove", handleMouseMove)
     document.addEventListener("mouseup", handleMouseUp)
-  }
-
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging) return
-
-    const x = e.clientX - dragOffset.x
-    const y = e.clientY - dragOffset.y
-
-    onMove(block.id, { x, y })
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false)
-    document.removeEventListener("mousemove", handleMouseMove)
-    document.removeEventListener("mouseup", handleMouseUp)
-  }
+  }, [onSelect, setIsDragging, setDragOffset, handleMouseMove, handleMouseUp])
 
   // Clean up event listeners
   useEffect(() => {
@@ -877,7 +872,7 @@ const BlockComponent = ({
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [isDragging])
+  }, [handleMouseDown, handleMouseUp, handleMouseMove])
 
   // Get block icon
   const getBlockIcon = () => {
@@ -1003,7 +998,7 @@ const BlockComponent = ({
 }
 
 // Block properties component
-const BlockProperties = ({
+export const BlockProperties = ({
   block,
   onChange,
   onDelete,

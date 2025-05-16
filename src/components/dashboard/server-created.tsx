@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
-import { CheckCircle, ArrowRight } from "lucide-react"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface ServerCreatedProps {
     serverName: string

@@ -1,8 +1,8 @@
 import { Suspense } from "react"
+import { FileText, Flag, Shield, Terminal } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
 
-import { Shield, Flag, FileText, Terminal } from "lucide-react"
 import { ModerationHeader } from "@/components/dashboard/moderation/moderation-header"
 import { ModerationTabSkeleton } from "@/components/dashboard/moderation/moderation-skeleton"
 import { CustomFlagging } from "@/components/dashboard/moderation/custom-flagging"

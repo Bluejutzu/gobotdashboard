@@ -1,5 +1,3 @@
-// guildFeatures.ts
-
 export type GuildFeature =
     | 'ACTIVITIES_ALPHA'
     | 'ACTIVITIES_EMPLOYEE'

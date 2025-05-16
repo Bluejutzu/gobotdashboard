@@ -4,11 +4,11 @@ import type React from "react"
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FileText, Shield, Users, Settings, LogOut, LayoutDashboard } from "lucide-react"
+import { FileText, LayoutDashboard, LogOut, Settings, Shield, Users } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
 
 type AdminSidebarProps = React.HTMLAttributes<HTMLElement>
 

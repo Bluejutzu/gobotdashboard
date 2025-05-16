@@ -1,19 +1,19 @@
 "use client"
 
+import { useCallback, useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion"
+import { AlertCircle, Clock, Eye, Filter, RefreshCw, Search, Trash2, User } from "lucide-react"
+import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AlertCircle, Clock, Eye, Search, Trash2, User, Filter, RefreshCw } from "lucide-react"
-import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { getModerationCases, deleteModerationCase, type ModerationCase } from "@/lib/api/moderation"
+import { type ModerationCase, deleteModerationCase, getModerationCases } from "@/lib/api/moderation"
 
 interface ModerationCasesProps {
     serverId: string
@@ -29,7 +29,7 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
     const [cases, setCases] = useState<ModerationCase[]>([])
     const [refreshing, setRefreshing] = useState(false)
 
-    const fetchCases = async () => {
+    const fetchCases = useCallback(async () => {
         try {
             setLoading(true)
             const data = await getModerationCases(serverId)
@@ -42,7 +42,7 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
         } finally {
             setLoading(false)
         }
-    }
+    }, [serverId])
 
     useEffect(() => {
         fetchCases()

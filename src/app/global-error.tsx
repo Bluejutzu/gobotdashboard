@@ -2,8 +2,8 @@
 
 import { useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { AlertOctagon, Home, RefreshCw } from 'lucide-react'
+import { Button } from "@/components/ui/button"
 
 export default function GlobalError({
     error,

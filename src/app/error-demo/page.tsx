@@ -1,14 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { AlertTriangle, Bug, RefreshCw } from "lucide-react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ErrorPage } from "@/components/error-page"
-import { AlertTriangle, Bug, RefreshCw } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import Errorv2Page from "./errorv2/disabled"
 
 export default function ErrorDemoPage() {
     const [selectedError, setSelectedError] = useState<string>("none")
@@ -32,9 +30,9 @@ export default function ErrorDemoPage() {
 
     // If showing error, render the error page
     if (showError) {
-        if (selectedError === "errorv2") {
-            return <Errorv2Page error={new Error("Demo error for errorv2 page") as Error & { digest?: string }} reset={resetError} />
-        }
+        // if (selectedError === "errorv2") {
+        //     return <Errorv2Page error={new Error("Demo error for errorv2 page") as Error & { digest?: string }} reset={resetError} />
+        // }
 
         const statusCode = selectedError !== "custom" ? Number.parseInt(selectedError, 10) : undefined
         const isMinecraft = selectedStyle === "minecraft"

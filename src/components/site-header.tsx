@@ -1,53 +1,92 @@
-import Link from "next/link"
-import { ThemeToggle } from "@/components/ui/theme-toggle"
-import { Button } from "@/components/ui/button"
-import { AnimationPreferences } from "@/components/animation-preferences"
+"use client"
 
-export function SiteHeader() {
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ThemeSelector } from "@/components/theme-selector"
+
+export function SiteHeader({ className }: { className?: string }) {
+  const pathname = usePathname()
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5 text-white"
-              >
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-              </svg>
-            </div>
-            <span className="font-bold text-xl">Gobot</span>
-          </Link>
-        </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm">
-          <Link href="/" className="font-medium transition-colors hover:text-primary">
+    <header
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        isScrolled ? "bg-black/80 backdrop-blur-md py-3 shadow-md" : "bg-transparent py-5",
+        className,
+      )}
+    >
+      <div className="container flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">
+            Gobot
+          </span>
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-6">
+          <Link
+            href="/"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/" ? "text-white" : "text-white/70",
+            )}
+          >
             Home
           </Link>
-          <Link href="/about" className="font-medium text-muted-foreground transition-colors hover:text-primary">
-            About
-          </Link>
-          <Link href="/status" className="font-medium text-muted-foreground transition-colors hover:text-primary">
-            Status
+          <Link
+            href="/features"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/features" ? "text-white" : "text-white/70",
+            )}
+          >
+            Features
           </Link>
           <Link
-            href="/custom-themes"
-            className="font-medium text-muted-foreground transition-colors hover:text-primary"
+            href="/pricing"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/pricing" ? "text-white" : "text-white/70",
+            )}
           >
-            Custom Themes
+            Pricing
+          </Link>
+          <Link
+            href="/docs"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/docs" ? "text-white" : "text-white/70",
+            )}
+          >
+            Docs
+          </Link>
+          <Link
+            href="/custom-themesv2"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/custom-themesv2" ? "text-white" : "text-white/70",
+            )}
+          >
+            Themes
           </Link>
         </nav>
-        <div className="flex items-center gap-2">
-          <AnimationPreferences />
-          <ThemeToggle />
+
+        <div className="flex items-center gap-4">
+          <ThemeSelector />
           <Button asChild>
-            <Link href="/dashboard">Open dashboard</Link>
+            <Link href="/auth/login">Login</Link>
           </Button>
         </div>
       </div>

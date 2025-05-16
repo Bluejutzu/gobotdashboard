@@ -3,13 +3,13 @@
 import type React from "react"
 
 import { useState } from "react"
+import { toast } from "sonner"
 import type { BotSettings } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
-import { toast } from "sonner"
 import { createClient } from "@/lib/supabase/client"
 
 interface SettingsFormProps {

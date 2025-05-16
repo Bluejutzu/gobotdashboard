@@ -1,18 +1,18 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
-import { createClient } from "@/lib/supabase/client"
+import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { AlertCircle, BarChart3, MessageSquare, RefreshCw, Server, Settings, Shield } from 'lucide-react'
+import Link from "next/link"
+import { Avatar } from "@radix-ui/react-avatar"
+import { createClient } from "@/lib/supabase/client"
 import { CommandHistory } from "@/components/dashboard/command-history"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
-import { RefreshCw, Settings, Shield, MessageSquare, BarChart3, AlertCircle, Server } from 'lucide-react'
-import Link from "next/link"
 import type { CommandLog, Server as ServerType } from "@/lib/types"
-import { Avatar } from "@radix-ui/react-avatar"
 import { AvatarFallback, AvatarImage } from "../ui/avatar"
 
 export interface ServerPageClientProps {

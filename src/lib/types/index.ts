@@ -91,38 +91,65 @@ export interface DiscordUser {
   banner_color?: string
 }
 
+export interface DBThemeData extends ThemeData {
+  primary_color?: string
+  secondary_color?: string
+  accent_color?: string
+  border_radius?: number
+  creator_name?: string
+
+}
+
 export interface ThemeData {
-  id: number,
-  name: string,
-  creator: string,
-  likes: number,
-  primary: string,
-  secondary: string,
-  accent: string,
-  borderRadius: number,
+  id: number | string
+  name: string
+  primary: string
+  secondary: string
+  accent: string
+  borderRadius: number
+  creator?: string
+  likes?: number
+  isPublic?: boolean
+  userId?: string
+  createdAt?: string
+  category?: string // Add category property
+}
+
+export interface ThemeContextType {
+  currentTheme: ThemeData
+  setCurrentTheme: (theme: ThemeData) => void
+  savedThemes: ThemeData[]
+  communityThemes: ThemeData[]
+  saveTheme: (theme: ThemeData) => Promise<void>
+  importTheme: (theme: ThemeData) => Promise<void>
+  applyTheme: (theme: ThemeData) => void
+  likeTheme: (themeId: number | string) => Promise<void>
+  deleteTheme: (themeId: number | string) => Promise<void>
+  isLoading: boolean
+  error: string | null
 }
 
 export interface BlockDataProperties {
   name?: string
-    description?: string
-    cooldown?: number
-    cooldownType?: 'user' | 'server'
-    hideReplies?: boolean
-    content?: string
-    channel?: 'same_channel' | 'dm' | 'custom_channel'
-    ephemeral?: boolean
-    userId?: string
-    channelId?: string
-    title?: string
-    color?: string
-    leftValue?: string
-    comparisonType?: 'equal_to' | 'not_equal_to' | 'greater_than' | 'less_than' | 'greater_than_equal' | 'less_than_equal' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with'
-    rightValue?: string
-    hasElseNode?: boolean
-    required?: boolean
-    min?: number | null
-    max?: number | null
-    errorMessage?: string
+  description?: string
+  cooldown?: number
+  cooldownType?: 'user' | 'server'
+  hideReplies?: boolean
+  content?: string
+  channel?: 'same_channel' | 'dm' | 'custom_channel'
+  ephemeral?: boolean
+  userId?: string
+  channelId?: string
+  title?: string
+  color?: string
+  leftValue?: string
+  comparisonType?: 'equal_to' | 'not_equal_to' | 'greater_than' | 'less_than' | 'greater_than_equal' | 'less_than_equal' | 'contains' | 'not_contains' | 'starts_with' | 'ends_with'
+  rightValue?: string
+  hasElseNode?: boolean
+  required?: boolean
+  min?: number | null
+  max?: number | null
+  errorMessage?: string
 }
 
 export interface Connection {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { Node } from './[id]/route';
 import { BlockDataProperties, Connection } from "@/lib/types"
+import { Node } from './[id]/route';
 
 // Discord command name validation regex
 const COMMAND_NAME_REGEX = /^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u;

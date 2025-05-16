@@ -1,20 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import axios from "axios"
 import { createClient } from "@/lib/supabase/client"
 import { getBearerToken } from "@/lib/utils"
-import axios from "axios"
+import type { Server as ServerType } from "@/lib/types"
 import { ServerError } from "./server-error"
 import { ServerLoading } from "./server-loading"
-import type { Server as ServerType } from "@/lib/types"
-
-interface ServerData {
-  id: string
-  name: string
-  icon?: string
-  owner: boolean
-  permissions: string
-}
 
 interface CustomError extends Error {
   title?: string
