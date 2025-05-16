@@ -1,4 +1,5 @@
-import { Client, GatewayIntentBits, IntentsBitField } from 'discord.js';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { Client, IntentsBitField } from 'discord.js';
 import { CommandKit } from 'commandkit';
 import { config } from 'dotenv';
 import { createClient } from '@supabase/supabase-js';

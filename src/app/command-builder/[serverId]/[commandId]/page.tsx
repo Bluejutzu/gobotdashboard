@@ -644,7 +644,6 @@ const CommandBuilder = () => {
               isSelected={selectedBlock?.id === block.id}
               onSelect={() => handleBlockSelect(block)}
               onMove={handleBlockMove}
-              onDelete={handleBlockDelete}
               onConnectionStart={handleConnectionStart}
               onConnectionEnd={handleConnectionEnd}
               isConnecting={isConnecting}
