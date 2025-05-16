@@ -36,6 +36,7 @@
 , "bot/commandkit.config.js"  ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next",
+    "bot"
   ]
 }
