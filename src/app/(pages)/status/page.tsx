@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { AlertTriangle, CheckCircle, Clock, RefreshCw } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -294,7 +293,6 @@ export default function StatusPage() {
                     </div>
                 </section>
             </main>
-            <SiteFooter />
         </div>
     )
 }

@@ -1,5 +1,4 @@
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { PricingSectionDemo } from "@/components/pricing-section-demo"
 
 export default function PricingDemoPage() {
@@ -29,8 +28,6 @@ export default function PricingDemoPage() {
 
             {/* Pricing Demo Section */}
             <PricingSectionDemo />
-
-            <SiteFooter />
         </div>
     )
 }

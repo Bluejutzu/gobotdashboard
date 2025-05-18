@@ -2,17 +2,16 @@
 
 import { useState } from "react"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ThemeSelector } from "@/components/theme-selector"
-import { ThemedButton } from "@/components/themed-button"
-import { ThemedCard } from "@/components/themed-card"
-import { ThemedBadge } from "@/components/themed-badge"
+import { ThemeSelector } from "@/components/themes/theme-selector"
+import { ThemedButton } from "@/components/themes/themed-button"
+import { ThemedCard } from "@/components/themes/themed-card"
+import { ThemedBadge } from "@/components/themes/themed-badge"
 import { useThemeContext } from "@/contexts/theme-context"
-import { ThemeWrapper } from "@/components/theme-wrapper"
+import { ThemeWrapper } from "@/components/themes/theme-wrapper"
 
 export default function ThemeDemoPage() {
     const { currentTheme } = useThemeContext()
@@ -399,7 +398,6 @@ function MyComponent() {
                     </div>
                 </section>
             </main>
-            <SiteFooter />
         </div>
     )
 }

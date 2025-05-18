@@ -15,7 +15,6 @@ import { Input } from "@/components/ui/input"
 import type { ThemeData } from "@/lib/types"
 import { useThemeContext } from "@/contexts/theme-context"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { supabase } from "@/lib/supabase"
 
 export default function CustomThemesPage() {
@@ -580,7 +579,6 @@ export default function CustomThemesPage() {
                     </div>
                 </section>
             </main>
-            <SiteFooter />
         </div>
     )
 }

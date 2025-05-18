@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -273,7 +272,6 @@ export default function AboutPage() {
                     </div>
                 </section>
             </main>
-            <SiteFooter />
         </div>
     )
 }

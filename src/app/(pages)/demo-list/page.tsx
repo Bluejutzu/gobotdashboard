@@ -36,6 +36,11 @@ const demoPages = [
         name: "Error Demo",
         path: "/error-demo",
         description: "A demo showcasing error handling"
+    },
+    {
+        name: "Theme Comparison Demo",
+        path: "/theme-comp-demo",
+        description: "A demo showcasing theme comparison"
     }
 ]
 

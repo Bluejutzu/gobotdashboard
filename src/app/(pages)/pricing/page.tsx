@@ -2,7 +2,6 @@ import Link from "next/link"
 import { ArrowRight, Check, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { PricingCard } from "@/components/pricing-card"
@@ -477,8 +476,6 @@ export default function PricingPage() {
                     </div>
                 </div>
             </section>
-
-            <SiteFooter />
         </div>
     )
 }

@@ -32,7 +32,7 @@ export default function RootLayout({
           <SiteHeader />
           {children}
           <SiteFooter />
-          <Toaster />
+          <Toaster className="dark" />
           <Analytics />
           <SpeedInsights />
         </ThemeProvider>

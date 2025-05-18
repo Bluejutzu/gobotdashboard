@@ -3,7 +3,6 @@ import { ArrowRight, BarChart, Bot, MessageSquare, Server, Settings, Shield, Use
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { PricingCard } from "@/components/pricing-card"
 
 export default function FeaturesPage() {
@@ -389,8 +388,6 @@ export default function FeaturesPage() {
                     </div>
                 </div>
             </section>
-
-            <SiteFooter />
         </div>
     )
 }

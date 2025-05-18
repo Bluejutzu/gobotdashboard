@@ -2,12 +2,11 @@
 
 import { useState } from "react"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeSelector } from "@/components/theme-selector"
+import { ThemeSelector } from "@/components/themes/theme-selector"
 import { ColorPicker } from "@/components/ui/color-picker"
-import { ThemeCreator } from "@/components/theme-creator"
+import { ThemeCreator } from "@/components/themes/theme-creator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function ThemeCategoriesDemoPage() {
@@ -195,7 +194,6 @@ export default function ThemeCategoriesDemoPage() {
                     </div>
                 </section>
             </main>
-            <SiteFooter />
         </div>
     )
 }

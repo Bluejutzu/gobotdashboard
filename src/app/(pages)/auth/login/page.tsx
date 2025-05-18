@@ -6,7 +6,6 @@ import { BarChart3, Bot, MessageSquare, Shield, Users } from "lucide-react"
 import Link from "next/link"
 import { DiscordAuthButton } from "@/components/auth/discord-auth-button"
 import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
@@ -226,8 +225,6 @@ export default function LoginPage() {
                     </>
                 )}
             </div>
-
-            <SiteFooter />
         </div>
     )
 }

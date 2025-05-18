@@ -1,5 +1,5 @@
 ## TODO
-- [ ] Add custom theme functionality
-- [ ] Fix command page
-- [ ] improve server dashboard
-- [ ] Add data request functionality
+- [x] Add custom theme functionality
+- [ ] Fix command page (partially done)
+- [x] improve server dashboard
+- [ ] Add data request functionality (make data actually downloadable)

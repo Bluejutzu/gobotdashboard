@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { ThemeSelector } from "@/components/theme-selector"
+import { ThemeSelector } from "@/components/themes/theme-selector"
 
 export function SiteHeader({ className }: { className?: string }) {
   const pathname = usePathname()
