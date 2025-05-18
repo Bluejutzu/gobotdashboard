@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient } from "@/lib/supabase/server"
 import type { BotSettings, Server } from "@/lib/types"
 import { ServerError } from "@/components/dashboard/server-error"
 import { SettingsPageContent } from "@/components/dashboard/settings-page-content"
@@ -7,7 +7,7 @@ type SettingsPageProps = Promise<{ id: string }>
 
 export default async function SettingsPage({ params }: { params: SettingsPageProps }) {
     const { id }: { id: string } = await params
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
 
     // Get server data
     const { data: server, error: serverError } = await supabase
@@ -39,7 +39,7 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
     const { data: botSettings, error: botSettingsError } = await supabase
         .from("bot_settings")
         .select("*")
-        .eq("server_id", server.id)
+        .eq("server_id", server.discord_id)
         .single<BotSettings>()
 
     if (botSettingsError) {

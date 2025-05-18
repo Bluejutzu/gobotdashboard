@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { AlertCircle, BarChart3, MessageSquare, RefreshCw, Server, Settings, Shield } from 'lucide-react'
 import Link from "next/link"
 import { Avatar } from "@radix-ui/react-avatar"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { CommandHistory } from "@/components/dashboard/command-history"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -33,7 +33,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
         setIsRefreshing(true)
         setError(null)
 
-        const supabase = createClient()
+        
 
         // Check if user is still authenticated
         const {

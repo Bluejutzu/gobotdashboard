@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { ServerLoading } from "./server-loading"
 
 interface AuthCheckProps {
@@ -17,7 +17,7 @@ export function AuthCheck({ children }: AuthCheckProps) {
         const checkSession = async () => {
             try {
                 setIsLoading(true)
-                const supabase = createClient()
+                
                 const { data, error } = await supabase.auth.getSession()
 
                 if (error || !data.session) {

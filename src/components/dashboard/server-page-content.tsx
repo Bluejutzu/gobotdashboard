@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Bot, Flag, Hand, MessageSquare, Shield, Zap } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { ServerLoading } from "@/components/dashboard/server-loading"
 import { ServerCreator } from "@/components/dashboard/server-creator"
 import { Button } from "@/components/ui/button"
@@ -22,7 +22,7 @@ export function ServerPageContent({ id, server }: ServerPageContentProps) {
   const [userData, setUserData] = useState<User>()
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClient()
+  
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -53,7 +53,7 @@ export function ServerPageContent({ id, server }: ServerPageContentProps) {
     }
 
     checkAuth()
-  }, [router, supabase])
+  }, [router])
 
   if (loading) {
     return <ServerLoading />

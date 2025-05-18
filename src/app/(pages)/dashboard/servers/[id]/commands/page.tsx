@@ -4,7 +4,7 @@ import { Pencil, Plus, Trash2 } from "lucide-react"
 import React, { Suspense, Usable } from "react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -96,7 +96,6 @@ function CommandsList({ serverId }: { serverId: string }) {
   const [commands, setCommands] = useState<Command[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const supabase = createClient()
 
   useEffect(() => {
     const fetchCommands = async () => {
@@ -122,7 +121,7 @@ function CommandsList({ serverId }: { serverId: string }) {
     }
 
     fetchCommands()
-  }, [serverId, supabase])
+  }, [serverId])
 
   if (isLoading) {
     return <CommandsLoading />

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DataRequestsAdmin } from "@/components/admin/data-requests-admin"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 export default function AdminDataRequestsPage() {
   const router = useRouter()
@@ -12,7 +12,6 @@ export default function AdminDataRequestsPage() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const supabase = createClient()
         const {
           data: { session },
         } = await supabase.auth.getSession()

@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { type ModerationCase, deleteModerationCase, getModerationCases } from "@/lib/api/moderation"
+import { type ModerationCase, deleteModerationCase, getModerationCases } from "@/lib/redis-service/moderation-service"
 
 interface ModerationCasesProps {
     serverId: string

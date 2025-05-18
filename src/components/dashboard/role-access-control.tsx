@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 interface Role {
     id: string
@@ -34,7 +34,7 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
     const [saving, setSaving] = useState(false)
     const [selectedRoleId, setSelectedRoleId] = useState("")
     const [selectedAccessLevel, setSelectedAccessLevel] = useState("view")
-    const supabase = createClient()
+    
 
     // Fetch server roles and access settings
     useEffect(() => {
@@ -69,7 +69,7 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
         }
 
         fetchRolesAndAccess()
-    }, [serverId, supabase])
+    }, [serverId])
 
     const handleAddRole = async () => {
         if (!selectedRoleId) return

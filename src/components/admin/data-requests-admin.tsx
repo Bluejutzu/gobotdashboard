@@ -19,7 +19,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 interface DataRequest {
     id: string
@@ -53,7 +53,7 @@ export function DataRequestsAdmin({ mockRequests }: DataRequestsAdminProps) {
     const [, setDataUrl] = useState("")
     const [processingRequestId, setProcessingRequestId] = useState<string | null>(null)
     const [isProcessing, setIsProcessing] = useState(false)
-    const supabase = createClient()
+    
     
 
     const fetchRequests = useCallback(async () => {
@@ -106,7 +106,7 @@ export function DataRequestsAdmin({ mockRequests }: DataRequestsAdminProps) {
         } finally {
             setLoading(false)
         }
-    }, [filter, supabase, mockRequests])
+    }, [filter, mockRequests])
 
     useEffect(() => {
         fetchRequests()

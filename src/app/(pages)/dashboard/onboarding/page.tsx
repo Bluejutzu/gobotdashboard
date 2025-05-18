@@ -4,14 +4,13 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { User } from "@supabase/supabase-js"
 import { Avatar } from "@radix-ui/react-avatar"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import supabase from "@/lib/supabase/client"
 
 export default function OnboardingPage() {
     const router = useRouter()
-    const supabase = createClient()
     const [isLoading, setIsLoading] = useState(true)
     const [user, setUser] = useState<User>()
 
@@ -31,7 +30,7 @@ export default function OnboardingPage() {
         }
 
         checkSession()
-    }, [router, supabase])
+    }, [router])
 
     const handleCreateAccount = async () => {
         if (!user) return
@@ -44,6 +43,7 @@ export default function OnboardingPage() {
                 username: user.user_metadata.full_name || user.user_metadata.name,
                 avatar_url: user.user_metadata.avatar_url,
                 email: user.email,
+                supabase_user_id: user.id,
             })
 
             if (userError?.code == "23505") {

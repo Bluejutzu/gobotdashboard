@@ -1,7 +1,7 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { createClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient } from "@/lib/supabase/server"
 
 export async function createNewCommand(formData: FormData) {
     const serverId = formData.get("serverId") as string
@@ -18,7 +18,7 @@ export async function deleteCommand(formData: FormData) {
     const commandId = formData.get("commandId") as string
     const serverId = formData.get("serverId") as string
 
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     await supabase.from("commands").delete().eq("id", commandId)
 
     // Stay on the same page after deletion

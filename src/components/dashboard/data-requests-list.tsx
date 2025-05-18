@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 interface DataRequest {
     id: string
@@ -31,7 +31,7 @@ interface DataRequestsListProps {
 export function DataRequestsList({ serverId }: DataRequestsListProps) {
     const [requests, setRequests] = useState<DataRequest[] | null>(null)
     const [loading, setLoading] = useState(true)
-    const supabase = createClient()
+    
 
     useEffect(() => {
         const fetchRequests = async () => {
@@ -93,7 +93,7 @@ export function DataRequestsList({ serverId }: DataRequestsListProps) {
         }
 
         fetchRequests()
-    }, [supabase, serverId])
+    }, [serverId])
 
     const getStatusBadge = (status: string) => {
         switch (status) {

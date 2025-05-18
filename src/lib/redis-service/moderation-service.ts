@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { getCachedData, invalidateCache } from '@/lib/redis'
-import { createClient } from '../supabase/client'
+import supabase from '../supabase/client'
 
 // Type definitions
 export type ModerationAction = 'warn' | 'mute' | 'kick' | 'ban' | 'unban'
@@ -69,7 +68,7 @@ export async function getModerationCases(serverId: string): Promise<ModerationCa
     return getCachedData(
         getCasesCacheKey(serverId),
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('moderation_cases')
@@ -155,7 +154,7 @@ export async function getModerationCase(caseId: string): Promise<ModerationCase>
     return getCachedData(
         getCaseCacheKey(caseId),
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('moderation_cases')
@@ -239,7 +238,7 @@ export async function createModerationCase(
     duration?: string,
     expiresAt?: string
 ): Promise<string> {
-    const supabase = createClient()
+    
 
     // Generate a UUID for the case ID
     const caseId = uuidv4()
@@ -279,8 +278,6 @@ export async function updateModerationCase(
         expiresAt?: string
     }
 ): Promise<void> {
-    const supabase = createClient()
-
     // First get the current case to know which server cache to invalidate
     const { data: currentCase, error: fetchError } = await supabase
         .from('moderation_cases')
@@ -321,7 +318,7 @@ export async function updateModerationCase(
 
 // Delete a moderation case
 export async function deleteModerationCase(caseId: string): Promise<void> {
-    const supabase = createClient()
+    
 
     // First get the current case to know which server cache to invalidate
     const { data: currentCase, error: fetchError } = await supabase
@@ -360,7 +357,7 @@ export async function getAutoModerationSettings(serverId: string): Promise<AutoM
     return getCachedData(
         getAutoModCacheKey(serverId),
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('auto_moderation_settings')
@@ -431,7 +428,7 @@ export async function updateAutoModerationSettings(
     serverId: string,
     settings: Partial<AutoModerationSettings>
 ): Promise<void> {
-    const supabase = createClient()
+    
 
     // Check if settings exist
     const { data, error: checkError } = await supabase
@@ -502,7 +499,7 @@ export async function getCustomFlags(serverId: string): Promise<CustomFlag[]> {
     return getCachedData(
         getFlagsCacheKey(serverId),
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('custom_flags')
@@ -543,7 +540,7 @@ export async function createCustomFlag(
     serverId: string,
     flag: Omit<CustomFlag, 'id'>
 ): Promise<string> {
-    const supabase = createClient()
+    
 
     const flagId = uuidv4()
 
@@ -575,7 +572,7 @@ export async function updateCustomFlag(
     flagId: string,
     updates: Partial<Omit<CustomFlag, 'id'>>
 ): Promise<void> {
-    const supabase = createClient()
+    
 
     // First get the current flag to know which server cache to invalidate
     const { data: currentFlag, error: fetchError } = await supabase
@@ -617,7 +614,7 @@ export async function updateCustomFlag(
 
 // Delete a custom flag
 export async function deleteCustomFlag(flagId: string): Promise<void> {
-    const supabase = createClient()
+    
 
     // First get the current flag to know which server cache to invalidate
     const { data: currentFlag, error: fetchError } = await supabase
@@ -655,7 +652,7 @@ export async function getCommandSettings(serverId: string): Promise<CommandSetti
     return getCachedData(
         getCommandsCacheKey(serverId),
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('command_settings')
@@ -731,7 +728,7 @@ export async function updateCommandSettings(
         cooldown?: number
     }
 ): Promise<void> {
-    const supabase = createClient()
+    
 
     const { error } = await supabase
         .from('command_settings')
@@ -757,7 +754,7 @@ export async function getServerSettings(serverId: string): Promise<{ prefix: str
     return getCachedData(
         `server:settings:${serverId}`,
         async () => {
-            const supabase = createClient()
+            
 
             const { data, error } = await supabase
                 .from('server_settings')
@@ -791,7 +788,7 @@ export async function updateServerSettings(
     serverId: string,
     settings: { prefix: string }
 ): Promise<void> {
-    const supabase = createClient()
+    
 
     // Check if settings exist
     const { data, error: checkError } = await supabase

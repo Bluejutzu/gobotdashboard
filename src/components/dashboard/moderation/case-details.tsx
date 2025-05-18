@@ -29,7 +29,7 @@ import {
     deleteModerationCase,
     getModerationCase,
     updateModerationCase
-} from "@/lib/api/moderation"
+} from "@/lib/redis-service/moderation-service"
 
 interface CaseDetailProps {
     serverId: string

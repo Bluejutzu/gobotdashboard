@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // Discord command name validation regex
 const COMMAND_NAME_REGEX = /^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u;
@@ -39,7 +39,7 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const supabase = await createClient()
+        const supabase = await createServerSupabaseClient()
         const { nodes, edges, serverId } = await request.json()
         const { id }: { id: string } = await params
 
@@ -127,7 +127,7 @@ export async function PUT(
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const supabase = await createClient()
+    const supabase = await createServerSupabaseClient()
     const { searchParams } = new URL(request.url)
     const serverId = searchParams.get('server_id')
     const { id }: { id: string } = await params

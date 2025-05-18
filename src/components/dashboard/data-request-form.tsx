@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 interface DataRequestFormProps {
@@ -23,7 +23,7 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
     const [requestReason, setRequestReason] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
     const router = useRouter()
-    const supabase = createClient()
+    
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

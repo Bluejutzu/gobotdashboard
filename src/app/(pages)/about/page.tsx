@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -9,7 +8,6 @@ import { Badge } from "@/components/ui/badge"
 export default function AboutPage() {
     return (
         <div className="flex min-h-screen flex-col">
-            <SiteHeader />
             <main className="flex-1">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden bg-background py-24 md:py-32">

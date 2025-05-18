@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { SettingsForm } from "@/components/dashboard/settings-form"
 import { RoleAccessControl } from "@/components/dashboard/role-access-control"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { ServerLoading } from "@/components/dashboard/server-loading"
 import type { BotSettings, Server, User, UserServer } from "@/lib/types"
 
@@ -19,7 +19,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
   const [, setUserData] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
-  const supabase = createClient()
+  
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -45,7 +45,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
           .from("user_servers")
           .select("*")
           .eq("user_id", userData.id)
-          .eq("server_id", server.id)
+          .eq("server_id", server.discord_id)
           .single<UserServer>()
 
         // Check if user is admin
@@ -63,7 +63,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
     }
 
     checkAuth()
-  }, [router, supabase, server.id, id])
+  }, [router, server.discord_id, id])
 
   if (loading) {
     return <ServerLoading />

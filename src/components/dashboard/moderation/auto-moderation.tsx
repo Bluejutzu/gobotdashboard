@@ -15,7 +15,7 @@ import {
     type AutoModerationSettings,
     getAutoModerationSettings,
     updateAutoModerationSettings,
-} from "@/lib/api/moderation"
+} from "@/lib/redis-service/moderation-service"
 
 export function AutoModeration({ serverId }: { serverId: string }) {
     const [loading, setLoading] = useState(true)

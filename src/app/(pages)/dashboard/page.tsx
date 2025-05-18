@@ -1,13 +1,5 @@
-"use client"
+import { redirect } from "next/navigation";
 
-import React from 'react'
-import GuildList from '@/components/dashboard/guild-list'
-
-export default function GuildListPage() {
-  return (
-    <div>
-      <GuildList />
-    </div>
-  )
+export default async function RedirectPage() {
+  redirect("/dashboard/guilds");
 }
-

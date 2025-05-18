@@ -5,7 +5,6 @@ import { motion } from "framer-motion"
 import { BarChart3, Bot, MessageSquare, Shield, Users } from "lucide-react"
 import Link from "next/link"
 import { DiscordAuthButton } from "@/components/auth/discord-auth-button"
-import { SiteHeader } from "@/components/site-header"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
@@ -46,7 +45,6 @@ export default function LoginPage() {
 
     return (
         <div className="flex min-h-screen flex-col bg-gradient-to-b from-background to-background/90">
-            <SiteHeader />
             <main className="flex-1 flex items-center justify-center py-12 px-4">
                 <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 items-center">
                     {/* Left Column - Login Card */}

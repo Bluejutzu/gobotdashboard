@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { useEffect, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState, useCallback } from "react" // Added useCallback
+import { redirect, usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
     AlertTriangle,
@@ -27,7 +27,6 @@ import {
     UserPlus
 } from "lucide-react"
 import axios from "axios"
-import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -46,256 +45,211 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { Server as ServerType } from "@/lib/types"
+import type { Server as ServerType } from "@/lib/types" 
 import { SiteFooter } from "@/components/site-footer"
-import { getBearerToken } from "@/lib/utils"
-import { User } from "@/lib/types"
 
-// Define the Discord guild interface
+import { User } from "@/lib/types" // Assuming User type for Supabase user data
+import supabase from "@/lib/supabase/client"
+
 interface DiscordPartialGuild {
-    id: string
-    name: string
-    icon: string | null
-    owner: boolean
-    permissions: string
-    features: string[]
+    id: string;
+    name: string;
+    icon: string | null; // Expected to be full URL from the API
+    owner: boolean;
+    permissions: string; // Still present, but filtering should occur backend
+    features: string[];
 }
 
 // Site developer Discord IDs - these users can access "no_access" features
-const SITE_DEVELOPERS = ["953708302058012702"]
+const SITE_DEVELOPERS = ["953708302058012702"];
 
 interface NavItem {
-    href?: string
-    label: string
-    icon?: React.ElementType
-    type?: string
-    experimental?: "no_access" | "beta" | "open_access"
+    href?: string;
+    label: string;
+    icon?: React.ElementType;
+    type?: string;
+    experimental?: "no_access" | "beta" | "open_access";
 }
 
 interface ServerLayoutProps {
-    children: React.ReactNode
-    params: Promise<{ id: string }>
+    children: React.ReactNode;
+    params: Promise<{ id: string }>;
 }
 
 export default function ServerLayout({ children, params }: ServerLayoutProps) {
-    const { id } = React.use(params)
-    const pathname = usePathname()
-    const router = useRouter()
-    const [server, setServer] = useState<ServerType | null>(null)
-    const [userServers, setUserServers] = useState<DiscordPartialGuild[]>([])
-    const [loading, setLoading] = useState(true)
-    const [serversLoading, setServersLoading] = useState(true)
-    const [userData, setUserData] = useState<User>()
-    const [userLoading, setUserLoading] = useState(true)
-    const [showBetaAlert, setShowBetaAlert] = useState(false)
-    const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null)
-    const [serverSelectorOpen, setServerSelectorOpen] = useState(false)
-    const supabase = createClient()
+    const { id } = React.use(params); // Current server ID from route
+    const pathname = usePathname();
+    const router = useRouter();
+    const [server, setServer] = useState<ServerType | null>(null); // Current server details
+    const [userServers, setUserServers] = useState<DiscordPartialGuild[]>([]); // User's list of manageable servers
+    const [loading, setLoading] = useState(true); // For current server details
+    const [serversLoading, setServersLoading] = useState(true); // For user's server list
+    const [userData, setUserData] = useState<User | undefined>();
+    const [userLoading, setUserLoading] = useState(true); // For user data
+    const [showBetaAlert, setShowBetaAlert] = useState(false);
+    const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null);
+    const [serverSelectorOpen, setServerSelectorOpen] = useState(false);
+
+    const fetchUserServers = useCallback(async () => {
+        try {
+            setServersLoading(true);
+
+            const response = await axios.get<DiscordPartialGuild[]>(`/api/guilds?userid=${userData?.id}&superbase_user_id=${userData?.supabase_user_id}`);
+
+            if (response.status === 200 && Array.isArray(response.data)) {
+                setUserServers(response.data);
+            } else {
+                console.error("Error fetching user servers from API or data is not an array:", response.status, "response:", response);
+                setUserServers([]);
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                if (error.response?.status === 400 || error.response?.status === 401 || error.response?.status === 500) {
+                    redirect("/auth/login");
+                } else {
+                    console.error(
+                        "Axios error fetching user servers:",
+                        error.response?.status,
+                        error.response?.data || error.message
+                    );
+                }
+            } else {
+                console.error("Exception while fetching user servers:", error);
+            }
+            setUserServers([]);
+        } finally {
+            setServersLoading(false);
+        }
+    }, [setServersLoading, setUserServers]); // Dependencies are stable setters from useState
 
     useEffect(() => {
-        const fetchServer = async () => {
+        const fetchCurrentServerDetails = async () => {
             try {
-                const { data, error } = await supabase.from("servers").select("*").eq("discord_id", id).single<ServerType>()
+                setLoading(true);
+                const { data, error } = await supabase
+                    .from("servers")
+                    .select("*")
+                    .eq("discord_id", id)
+                    .single<ServerType>();
 
                 if (error) {
-                    console.error("Error fetching server:", error)
+                    console.error("Error fetching current server details:", error);
                 }
-
                 if (data) {
-                    setServer(data)
+                    setServer(data);
                 }
             } catch (error) {
-                console.error("Error fetching server:", error)
+                console.error("Error fetching current server details:", error);
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        const fetchUser = async () => {
+        const fetchUserAndThenTheirServers = async () => {
             try {
-                setUserLoading(true)
-                const { data: sessionData } = await supabase.auth.getSession()
+                setUserLoading(true);
+                const { data: sessionData } = await supabase.auth.getSession();
 
                 if (sessionData.session) {
-                    const { data: userData, error: userError } = await supabase
+                    const { data: userDetails, error: userError } = await supabase
                         .from("users")
                         .select("*")
-                        .eq("discord_id", sessionData.session.user.user_metadata.sub)
-                        .single()
+                        .eq("supabase_user_id", sessionData.session.user.id)
+                        .single<User>();
 
                     if (userError) {
-                        console.error("Error fetching user:", userError)
+                        console.error("Error fetching user details:", userError);
+                        setUserData(undefined);
+                    } else if (userDetails) {
+                        setUserData(userDetails);
+                        // User details fetched, now fetch their list of manageable servers
+                        await fetchUserServers();
                     } else {
-                        setUserData(userData)
-
-                        // Fetch user's servers
-                        if (typeof userData.id === "string" && typeof userData.discord_id === "string") {
-                            await fetchUserServers(userData.discord_id)
-                        }
+                        setUserData(undefined); // No user record found
                     }
+                } else {
+                    setUserData(undefined); // No active session
+                    // Optionally, redirect to login or handle appropriately
                 }
             } catch (error) {
-                console.error("Error fetching user:", error)
+                console.error("Error fetching user details and their servers:", error);
+                setUserData(undefined);
             } finally {
-                setUserLoading(false)
+                setUserLoading(false);
             }
-        }
+        };
 
-        const fetchUserServers = async (discordId: string) => {
-            try {
-                setServersLoading(true)
+        fetchCurrentServerDetails();
+        fetchUserAndThenTheirServers();
+    }, [id, fetchUserServers]); // Added fetchUserServers to dependency array due to useCallback
 
-                // Get Discord bearer token
-                const bearerToken = await getBearerToken(discordId)
-
-                if (!bearerToken) {
-                    console.error("Could not retrieve Discord token")
-                    setServersLoading(false)
-                    return
-                }
-
-                // Fetch guilds from Discord API
-                try {
-                    const response = await axios.get("https://discord.com/api/v10/users/@me/guilds", {
-                        headers: {
-                            Authorization: `Bearer ${bearerToken}`,
-                        },
-                    })
-
-                    if (response.status === 200 && response.data) {
-                        // Filter guilds where user has ADMINISTRATOR or MANAGE_GUILD permission
-                        const filteredGuilds = response.data.filter((guild: DiscordPartialGuild) => {
-                            const permInt = Number.parseInt(guild.permissions, 10)
-                            return (permInt & 0x8) !== 0 || (permInt & 0x20) !== 0
-                        })
-
-                        // Add icon URLs
-                        const guildsWithIcons = filteredGuilds.map((guild: DiscordPartialGuild) => ({
-                            ...guild,
-                            icon: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : null,
-                            discord_id: guild.id, // Add discord_id for compatibility with handleServerSelect
-                        }))
-
-                        setUserServers(guildsWithIcons)
-                    }
-                } catch (error) {
-                    console.error("Error fetching Discord guilds:", error)
-                }
-            } catch (error) {
-                console.error("Error fetching user servers:", error)
-            } finally {
-                setServersLoading(false)
-            }
-        }
-
-        fetchServer()
-        fetchUser()
-    }, [id, supabase])
-
-    const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id)
+    const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id);
 
     const canAccessNavItem = (item: NavItem) => {
-        if (!userData) {
-            return !item.experimental || item.experimental === "open_access"
+        if (!userData) { // If user data is not yet loaded, assume restricted access for experimental features
+            return !item.experimental || item.experimental === "open_access";
         }
-
         if (isSiteDeveloper) {
-            return true
+            return true;
         }
-
         if (!item.experimental || item.experimental === "open_access") {
-            return true
+            return true;
         }
-
         if (item.experimental === "beta") {
-            return true
+            return true; // Or apply specific beta access logic if needed
         }
-
         if (item.experimental === "no_access") {
-            return isSiteDeveloper
+            return isSiteDeveloper;
         }
-
-        return true
-    }
+        return true; // Default to accessible if no specific restriction matches
+    };
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut()
-            router.push("/auth/login")
+            await supabase.auth.signOut();
+            router.push("/auth/login");
         } catch (error) {
-            console.error("Error signing out:", error)
+            console.error("Error signing out:", error);
         }
-    }
+    };
 
-    const handleServerSelect = (serverId: string) => {
-        // Close the dropdown
-        setServerSelectorOpen(false)
-
-        // Navigate to the selected server
-        if (serverId !== id) {
-            router.push(`/dashboard/servers/${serverId}`)
+    const handleServerSelect = (selectedServerId: string) => {
+        setServerSelectorOpen(false); // Close the dropdown
+        if (selectedServerId !== id) { // Navigate if different server
+            router.push(`/dashboard/servers/${selectedServerId}`);
         }
-    }
+    };
 
     const navItems: NavItem[] = React.useMemo(() => [
         { href: `/dashboard/servers/${id}`, label: "Home", icon: Home, experimental: "beta" },
         { href: `/dashboard/servers/${id}/settings`, label: "General Settings", icon: Settings, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/commands`, label: "Commands", icon: MessageSquare, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/messages`, label: "Messages", icon: MessageSquare, experimental: "no_access" },
-        {
-            href: `/dashboard/servers/${id}/branding`,
-            label: "Custom Branding",
-            icon: PaintBucket,
-            experimental: "no_access",
-        },
-        {
-            label: "MODULES",
-            type: "header",
-        },
+        { href: `/dashboard/servers/${id}/branding`, label: "Custom Branding", icon: PaintBucket, experimental: "no_access" },
+        { label: "MODULES", type: "header" },
         { href: `/dashboard/servers/${id}/moderation`, label: "Moderation", icon: Shield, experimental: "no_access" },
-        {
-            href: `/dashboard/servers/${id}/notifications`,
-            label: "Social Notifications",
-            icon: Bell,
-            experimental: "no_access",
-        },
+        { href: `/dashboard/servers/${id}/notifications`, label: "Social Notifications", icon: Bell, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/join-roles`, label: "Join Roles", icon: UserPlus, experimental: "no_access" },
-        {
-            href: `/dashboard/servers/${id}/reaction-roles`,
-            label: "Reaction Roles",
-            icon: Smile,
-            experimental: "no_access",
-        },
-        {
-            href: `/dashboard/servers/${id}/welcome`,
-            label: "Welcome Messages",
-            icon: MessageSquare,
-            experimental: "no_access",
-        },
+        { href: `/dashboard/servers/${id}/reaction-roles`, label: "Reaction Roles", icon: Smile, experimental: "no_access" },
+        { href: `/dashboard/servers/${id}/welcome`, label: "Welcome Messages", icon: MessageSquare, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/connections`, label: "Role Connections", icon: Link2, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/logging`, label: "Logging", icon: FileText, experimental: "no_access" },
-        {
-            href: `/dashboard/servers/${id}/analytics`,
-            label: "Advanced Analytics",
-            icon: BarChart3,
-            experimental: "no_access",
-        },
+        { href: `/dashboard/servers/${id}/analytics`, label: "Advanced Analytics", icon: BarChart3, experimental: "no_access" },
         { href: `/dashboard/servers/${id}/ai-tools`, label: "AI Tools", icon: Sparkles, experimental: "no_access" },
-    ], [id])
+    ], [id]);
 
     useEffect(() => {
-        const currentNavItem = navItems.find((item) => item.href === pathname)
+        const currentNavItem = navItems.find((item) => item.href === pathname);
         if (currentNavItem?.experimental === "beta") {
-            setShowBetaAlert(true)
-            setCurrentBetaFeature(currentNavItem.label)
+            setShowBetaAlert(true);
+            setCurrentBetaFeature(currentNavItem.label);
         } else {
-            setShowBetaAlert(false)
-            setCurrentBetaFeature(null)
+            setShowBetaAlert(false);
+            setCurrentBetaFeature(null);
         }
-    }, [pathname, navItems])
+    }, [pathname, navItems]);
 
-    // Filter navItems based on access
-    const accessibleNavItems = navItems.filter(canAccessNavItem)
+    const accessibleNavItems = navItems.filter(canAccessNavItem);
 
     return (
         <div className="flex min-h-screen bg-background">
@@ -317,9 +271,9 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                             <div className="flex items-center gap-2 overflow-hidden">
                                                 {loading ? (
                                                     <Skeleton className="h-6 w-6 rounded-full" />
-                                                ) : server?.icon_url ? (
+                                                ) : server?.icon ? (
                                                     <Avatar>
-                                                        <AvatarImage src={server.icon_url || "/placeholder.svg"}
+                                                        <AvatarImage src={server.icon || "/placeholder.svg"}
                                                             alt={server.name}
                                                             className="h-6 w-6 rounded-full" />
                                                         <AvatarFallback>
@@ -349,30 +303,29 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                             </div>
                                         ) : userServers.length > 0 ? (
                                             <ScrollArea className="h-[300px]">
-                                                {userServers.map((server) => (
+                                                {userServers.map((s) => ( // Renamed to 's' to avoid conflict if 'server' is in wider scope
                                                     <DropdownMenuItem
-                                                        key={server.id}
+                                                        key={s.id}
                                                         className="cursor-pointer"
-                                                        onClick={() => handleServerSelect(server.id)}
+                                                        onClick={() => handleServerSelect(s.id)}
                                                     >
                                                         <div className="flex items-center gap-2 w-full">
-                                                            {server.icon ? (
+                                                            {s.icon ? (
                                                                 <Avatar>
-                                                                    <AvatarImage src={server.icon || "/placeholder.svg"}
-                                                                        alt={server.name}
+                                                                    <AvatarImage src={s.icon} /* Assumes full URL */
+                                                                        alt={s.name}
                                                                         className="h-6 w-6 rounded-full" />
                                                                     <AvatarFallback>
-                                                                        {server.name.charAt(0)}
+                                                                        {s.name.charAt(0)}
                                                                     </AvatarFallback>
                                                                 </Avatar>
-
                                                             ) : (
                                                                 <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
-                                                                    <span className="text-xs font-bold text-white">{server.name.charAt(0)}</span>
+                                                                    <span className="text-xs font-bold text-white">{s.name.charAt(0)}</span>
                                                                 </div>
                                                             )}
-                                                            <span className="truncate flex-1">{server.name}</span>
-                                                            {server.id === id && (
+                                                            <span className="truncate flex-1">{s.name}</span>
+                                                            {s.id === id && (
                                                                 <Badge
                                                                     variant="outline"
                                                                     className="ml-auto text-xs bg-blue-500/10 text-blue-400 border-blue-500/20"
@@ -395,7 +348,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                             </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuItem asChild>
-                                            <Link href="/dashboard/guilds" className="cursor-pointer">
+                                            <Link href="/dashboard/guilds" className="cursor-pointer"> {/* This link might be where users add/manage servers */}
                                                 <Plus className="mr-2 h-4 w-4" />
                                                 <span>Add New Server</span>
                                             </Link>
@@ -427,35 +380,19 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                                         {item.icon && <item.icon className="h-4 w-4" />}
                                                         <span className="flex-1">{item.label}</span>
                                                         {item.experimental === "beta" && (
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="ml-auto text-xs bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                                                            >
-                                                                BETA
-                                                            </Badge>
+                                                            <Badge variant="outline" className="ml-auto text-xs bg-yellow-500/10 text-yellow-400 border-yellow-500/20">BETA</Badge>
                                                         )}
                                                         {item.experimental === "no_access" && (
-                                                            <Badge
-                                                                variant="outline"
-                                                                className="ml-auto text-xs bg-purple-500/10 text-purple-400 border-purple-500/20"
-                                                            >
-                                                                DEV
-                                                            </Badge>
+                                                            <Badge variant="outline" className="ml-auto text-xs bg-purple-500/10 text-purple-400 border-purple-500/20">DEV</Badge>
                                                         )}
                                                     </Link>
                                                 </TooltipTrigger>
                                                 <TooltipContent side="right">
                                                     {item.experimental === "beta" && (
-                                                        <p className="flex items-center gap-1">
-                                                            <AlertTriangle className="h-3 w-3 text-yellow-400" />
-                                                            <span>This feature is in beta and may not work as expected</span>
-                                                        </p>
+                                                        <p className="flex items-center gap-1"><AlertTriangle className="h-3 w-3 text-yellow-400" /><span>This feature is in beta and may not work as expected</span></p>
                                                     )}
                                                     {item.experimental === "no_access" && (
-                                                        <p className="flex items-center gap-1">
-                                                            <Lock className="h-3 w-3 text-purple-400" />
-                                                            <span>Developer-only feature</span>
-                                                        </p>
+                                                        <p className="flex items-center gap-1"><Lock className="h-3 w-3 text-purple-400" /><span>Developer-only feature</span></p>
                                                     )}
                                                 </TooltipContent>
                                             </Tooltip>
@@ -479,9 +416,9 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                     <div className="flex items-center gap-2 overflow-hidden">
                                         {loading ? (
                                             <Skeleton className="h-6 w-6 rounded-full" />
-                                        ) : server?.icon_url ? (
+                                        ) : server?.icon ? (
                                             <Avatar>
-                                                <AvatarImage src={server.icon_url || "/placeholder.svg"}
+                                                <AvatarImage src={server.icon || "/placeholder.svg"}
                                                     alt={server.name}
                                                     className="h-6 w-6 rounded-full" />
                                                 <AvatarFallback>
@@ -511,29 +448,29 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                     </div>
                                 ) : userServers.length > 0 ? (
                                     <ScrollArea className="h-[300px]">
-                                        {userServers.map((server) => (
+                                        {userServers.map((s) => ( // Renamed to 's'
                                             <DropdownMenuItem
-                                                key={server.id}
+                                                key={s.id}
                                                 className="cursor-pointer"
-                                                onClick={() => handleServerSelect(server.id)}
+                                                onClick={() => handleServerSelect(s.id)}
                                             >
                                                 <div className="flex items-center gap-2 w-full">
-                                                    {server.icon ? (
+                                                    {s.icon ? (
                                                         <Avatar>
-                                                            <AvatarImage src={server.icon || "/placeholder.svg"}
-                                                                alt={server.name}
+                                                            <AvatarImage src={s.icon} /* Assumes full URL */
+                                                                alt={s.name}
                                                                 className="h-6 w-6 rounded-full" />
                                                             <AvatarFallback>
-                                                                {server.name.charAt(0)}
+                                                                {s.name.charAt(0)}
                                                             </AvatarFallback>
                                                         </Avatar>
                                                     ) : (
                                                         <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
-                                                            <span className="text-xs font-bold text-white">{server.name.charAt(0)}</span>
+                                                            <span className="text-xs font-bold text-white">{s.name.charAt(0)}</span>
                                                         </div>
                                                     )}
-                                                    <span className="truncate flex-1">{server.name}</span>
-                                                    {server.id === id && (
+                                                    <span className="truncate flex-1">{s.name}</span>
+                                                    {s.id === id && (
                                                         <Badge
                                                             variant="outline"
                                                             className="ml-auto text-xs bg-blue-500/10 text-blue-400 border-blue-500/20"
@@ -588,35 +525,20 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                                                 {item.icon && <item.icon className="h-4 w-4" />}
                                                 <span className="flex-1">{item.label}</span>
                                                 {item.experimental === "beta" && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="ml-auto text-xs bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                                                    >
-                                                        BETA
-                                                    </Badge>
+                                                    <Badge variant="outline" className="ml-auto text-xs bg-yellow-500/10 text-yellow-400 border-yellow-500/20">BETA</Badge>
                                                 )}
                                                 {item.experimental === "no_access" && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="ml-auto text-xs bg-purple-500/10 text-purple-400 border-purple-500/20"
-                                                    >
-                                                        DEV
-                                                    </Badge>
+                                                    <Badge variant="outline" className="ml-auto text-xs bg-purple-500/10 text-purple-400 border-purple-500/20">DEV</Badge>
                                                 )}
                                             </Link>
                                         </TooltipTrigger>
                                         <TooltipContent side="right">
+                                            {item.label} {/* Simplified tooltip content, or use experimental checks as before */}
                                             {item.experimental === "beta" && (
-                                                <p className="flex items-center gap-1">
-                                                    <AlertTriangle className="h-3 w-3 text-yellow-400" />
-                                                    <span>This feature is in beta and may not work as expected</span>
-                                                </p>
+                                                <p className="flex items-center gap-1"><AlertTriangle className="h-3 w-3 text-yellow-400" /><span>This feature is in beta.</span></p>
                                             )}
                                             {item.experimental === "no_access" && (
-                                                <p className="flex items-center gap-1">
-                                                    <Lock className="h-3 w-3 text-purple-400" />
-                                                    <span>Developer-only feature</span>
-                                                </p>
+                                                <p className="flex items-center gap-1"><Lock className="h-3 w-3 text-purple-400" /><span>Developer-only.</span></p>
                                             )}
                                         </TooltipContent>
                                     </Tooltip>
@@ -624,79 +546,72 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                             ),
                         )}
                     </div>
+
+                    {/* User menu */}
+                    <div className="mt-auto p-4">
+                        {userLoading ? (
+                            <Skeleton className="h-10 w-full" />
+                        ) : userData ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" className="w-full justify-start text-left p-2">
+                                        <div className="flex items-center gap-2 w-full">
+                                            <Avatar>
+                                                <AvatarImage src={userData.avatar_url || undefined} alt={userData.username || "User"} />
+                                                <AvatarFallback>{(userData.username || "U").charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex flex-col overflow-hidden">
+                                                <span className="font-semibold truncate">{userData.username}</span>
+                                                <span className="text-xs text-muted-foreground truncate">@{userData.username}</span>
+                                            </div>
+                                            <ChevronDown className="h-4 w-4 ml-auto" />
+                                        </div>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56 mb-2" align="end" side="top">
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/dashboard/account"> {/* Example link */}
+                                                <UserIcon className="mr-2 h-4 w-4" />
+                                                <span>Profile</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <Link href="/dashboard/account/settings"> {/* Example link */}
+                                                <Settings className="mr-2 h-4 w-4" />
+                                                <span>Settings</span>
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-400 hover:!text-red-400 focus:!text-red-400">
+                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <span>Log out</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <Button onClick={() => router.push("/auth/login")} className="w-full">Login</Button>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Main content with header */}
-            <div className="flex-1 flex flex-col">
-                {/* Header with account dropdown */}
-                <header className="h-16 border-b border-slate-800 px-8 flex items-center justify-end">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                                {userLoading ? (
-                                    <Skeleton className="h-8 w-8 rounded-full" />
-                                ) : (
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage
-                                            src={userData?.avatar_url || "https://cdn.discordapp.com/embed/avatars/0.png"}
-                                            alt={userData?.username || "User"}
-                                        />
-                                        <AvatarFallback className="bg-blue-500">
-                                            {userData?.username?.charAt(0).toUpperCase() || "U"}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                )}
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56" align="end" forceMount>
-                            <DropdownMenuLabel className="font-normal">
-                                <div className="flex flex-col space-y-1">
-                                    <p className="text-sm font-medium leading-none">{userData?.username || "User"}</p>
-                                    <p className="text-xs leading-none text-muted-foreground">
-                                        {userData?.email || "No email available"}
-                                    </p>
-                                </div>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem asChild>
-                                    <Link href="/dashboard/profile" className="cursor-pointer">
-                                        <UserIcon className="mr-2 h-4 w-4" />
-                                        <span>Profile</span>
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link href="/dashboard/settings" className="cursor-pointer">
-                                        <Settings className="mr-2 h-4 w-4" />
-                                        <span>Settings</span>
-                                    </Link>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={handleLogout}>
-                                <LogOut className="mr-2 h-4 w-4" />
-                                <span>Log out</span>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </header>
-
-                {/* Beta feature alert */}
-                {showBetaAlert && (
-                    <Alert className="m-4 border-yellow-500/20 bg-yellow-500/10 text-yellow-400">
+            {/* Main content */}
+            <main className="flex-1 p-4 md:p-8 pt-20 md:pt-8"> {/* Adjusted top padding for mobile */}
+                {showBetaAlert && currentBetaFeature && (
+                    <Alert className="mb-4 border-yellow-500/50 text-yellow-200 bg-yellow-900/30 [&>svg]:text-yellow-400">
                         <AlertTriangle className="h-4 w-4" />
                         <AlertDescription>
-                            <span className="font-medium">{currentBetaFeature}</span> is currently in beta and may not work as
-                            expected.
+                            The &quot;{currentBetaFeature}&quot; feature is currently in beta. Some functionalities may not work as expected.
                         </AlertDescription>
                     </Alert>
                 )}
-
-                {/* Page content */}
-                <div className="flex-1 p-8 overflow-auto">{children}</div>
-                <SiteFooter />
-            </div>
+                {children}
+                <SiteFooter className="pt-8" />
+            </main>
         </div>
-    )
+    );
 }

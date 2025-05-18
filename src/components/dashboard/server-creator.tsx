@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import axios from "axios"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 import { getBearerToken } from "@/lib/utils"
 import type { Server as ServerType } from "@/lib/types"
 import { ServerError } from "./server-error"
@@ -22,12 +22,17 @@ interface ServerCreatorProps {
 export function ServerCreator({ discordId, userId, onServerCreated }: ServerCreatorProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<CustomError | null>(null)
-  const supabase = createClient()
+  
 
   const createServer = async () => {
     try {
-      // Get Discord token
-      const bearerToken = await getBearerToken(userId)
+      const { data: userData, error: userError } = await supabase.from("users").select("id").eq("discord_id", userId).single()
+
+      if (userError) {
+        throw new Error("User not found")
+      }
+
+      const bearerToken = await getBearerToken(userId, userData.id)
 
       if (!bearerToken) {
         throw new Error("Could not retrieve Discord token")

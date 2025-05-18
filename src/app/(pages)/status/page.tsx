@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { AlertTriangle, CheckCircle, Clock, RefreshCw } from "lucide-react"
-import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -40,7 +39,6 @@ export default function StatusPage() {
 
     return (
         <div className="flex min-h-screen flex-col">
-            <SiteHeader />
             <main className="flex-1">
                 {/* Hero Section */}
                 <section className="relative overflow-hidden bg-background py-24 md:py-32">

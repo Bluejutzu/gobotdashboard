@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { BlockDataProperties, Connection } from "@/lib/types"
 import { Node } from './[id]/route';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 // Discord command name validation regex
 const COMMAND_NAME_REGEX = /^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u;
@@ -28,7 +28,7 @@ interface CommandData {
 
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
+        const supabase = await createServerSupabaseClient()
         const { nodes, edges, serverId } = await request.json()
         console.log(nodes, edges, serverId)
         // Get the command name and description from the start node
@@ -119,7 +119,7 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url)
         const serverId = searchParams.get("server_id")
 
-        const supabase = await createClient()
+        const supabase = await createServerSupabaseClient()
 
         let query = supabase.from("commands").select("*")
         if (serverId) {

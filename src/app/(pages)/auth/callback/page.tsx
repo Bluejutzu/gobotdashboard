@@ -10,11 +10,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 function AuthCallback() {
   const router = useRouter()
-  const supabase = createClient()
   const [user, setUser] = useState<User>()
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading")
   const [errorMessage, setErrorMessage] = useState<string>("")
@@ -40,7 +39,6 @@ function AuthCallback() {
         const {
           data: { session },
         } = await supabase.auth.getSession()
-        console.log(session?.user)
 
         if (!session) {
           clearInterval(progressInterval)
@@ -51,7 +49,7 @@ function AuthCallback() {
 
         const userToken = session.provider_token;
 
-        if (userToken || logged == "true") {
+        if (userToken && logged == "true") {
           setStatus("success")
 
           setTimeout(() => {
@@ -67,6 +65,7 @@ function AuthCallback() {
               {
                 session: session,
                 token: session.provider_token,
+                refreshToken: session.provider_refresh_token,
               },
               {
                 headers: { "Content-Type": "application/json" },
@@ -95,7 +94,7 @@ function AuthCallback() {
     }
 
     checkSession()
-  }, [router, supabase, logged])
+  }, [router, logged])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted/40">

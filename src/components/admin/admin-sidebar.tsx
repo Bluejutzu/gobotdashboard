@@ -8,14 +8,14 @@ import { FileText, LayoutDashboard, LogOut, Settings, Shield, Users } from "luci
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 type AdminSidebarProps = React.HTMLAttributes<HTMLElement>
 
 export function AdminSidebar({ className, ...props }: AdminSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = createClient()
+  
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()

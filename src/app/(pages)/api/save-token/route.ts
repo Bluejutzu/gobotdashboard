@@ -1,31 +1,34 @@
-import { createClient } from "@/lib/supabase/client"
+import { createServerSupabaseClient } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
-    const supabase = createClient()
-    const body = await req.json();
+    const supabase = await createServerSupabaseClient()
+    const body = await req.json()
 
-    const { session, token } = body;
-    console.log(token, session)
+    const { session, token, refreshToken } = body
+    console.log({ token, refreshToken, session })
 
     if (!session || !session.user) {
-        return Response.json({ error: "Invalid session object" }, { status: 400 });
+        return Response.json({ error: "Invalid session object" }, { status: 400 })
     }
 
-    const user = session.user;
-    const email = user.email;
-    const userId = user.user_metadata.provider_id;
-    const fullName = user.user_metadata.full_name
+    const user = session.user
+    const email = user.email
+    const userId = user.user_metadata?.provider_id
+    const fullName = user.user_metadata?.full_name
+    const avatarUrl = user.user_metadata?.avatar_url
 
-    if (!token) {
-        return new Response(JSON.stringify({ error: "Missing provider token" }), { status: 400 });
+    if (!token || !refreshToken) {
+        return new Response(
+            JSON.stringify({ error: "Missing access or refresh token" }),
+            { status: 400 }
+        )
     }
-    
-    if (!userId) {
-        return new Response(JSON.stringify({ error: "Missing user ID" }), { status: 400 });
-    }
-    
-    if (!email) {
-        return new Response(JSON.stringify({ error: "Missing email" }), { status: 400 });
+
+    if (!userId || !email) {
+        return new Response(
+            JSON.stringify({ error: "Missing user ID or email" }),
+            { status: 400 }
+        )
     }
 
     const { data, error } = await supabase
@@ -34,12 +37,14 @@ export async function POST(req: Request) {
             {
                 username: fullName,
                 discord_token: token,
+                discord_refresh_token: refreshToken,
                 discord_id: userId,
+                supabase_user_id: user.id, // Supabase user ID
                 email,
-                avatar_url: user.user_metadata.avatar_url,
+                avatar_url: avatarUrl,
             },
             {
-                onConflict: "discord_id"
+                onConflict: "discord_id",
             }
         )
 

@@ -1,12 +1,13 @@
+import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/client'
 
 export async function POST(request: Request) {
     try {
         const { serverId } = await request.json()
 
         // Create a bot event to trigger command reload
-        const { error: webhookError } = await createClient()
+        const supabase = await createServerSupabaseClient()
+        const { error: webhookError } = await supabase
             .from('bot_events')
             .insert({
                 type: 'RELOAD_COMMANDS',

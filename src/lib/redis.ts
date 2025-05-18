@@ -1,66 +1,16 @@
-import { Redis } from '@upstash/redis'
+import { Redis } from "@upstash/redis"
 
-// Create a Redis client
-export const redis = Redis.fromEnv()
+export const redis = Redis.fromEnv();
 
-// Cache TTL in seconds
-const DEFAULT_CACHE_TTL = 60 * 5 // 5 minutes
-
-/**
- * Get data from cache or fetch it and store in cache
- */
-export async function getCachedData<T>(
-    key: string,
-    fetchFn: () => Promise<T>,
-    ttl: number = DEFAULT_CACHE_TTL
-): Promise<T> {
-    try {
-        // Try to get data from cache
-        const cachedData = await redis.get<T>(key)
-
-        if (cachedData) {
-            console.log(`Cache hit for key: ${key}`)
-            return cachedData
-        }
-
-        // If not in cache, fetch data
-        console.log(`Cache miss for key: ${key}, fetching data...`)
-        const data = await fetchFn()
-
-        // Store in cache
-        await redis.set(key, data, { ex: ttl })
-
-        return data
-    } catch (error) {
-        console.error(`Error with Redis cache for key ${key}:`, error)
-        // Fallback to direct fetch if cache fails
-        return fetchFn()
-    }
+export const CACHE_TTL = {
+    GUILDS: 60 * 30, // 30 minutes
+    GUILD: 60 * 60, // 1 hour
+    USER_GUILDS: 60 * 15, // 15 minutes
+    BOT_GUILDS: 60 * 10, // 10 minutes
 }
 
-/**
- * Invalidate a cache key
- */
-export async function invalidateCache(key: string): Promise<void> {
-    try {
-        await redis.del(key)
-        console.log(`Cache invalidated for key: ${key}`)
-    } catch (error) {
-        console.error(`Error invalidating cache for key ${key}:`, error)
-    }
-}
-
-/**
- * Invalidate multiple cache keys with a pattern
- */
-export async function invalidateCachePattern(pattern: string): Promise<void> {
-    try {
-        const keys = await redis.keys(pattern)
-        if (keys.length > 0) {
-            await redis.del(...keys)
-            console.log(`Invalidated ${keys.length} keys matching pattern: ${pattern}`)
-        }
-    } catch (error) {
-        console.error(`Error invalidating cache pattern ${pattern}:`, error)
-    }
+export const CACHE_KEYS = {
+    USER_GUILDS: "user:guilds:",
+    GUILD: "guild:",
+    BOT_GUILDS: "bot:guilds",
 }

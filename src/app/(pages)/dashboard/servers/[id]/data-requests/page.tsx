@@ -4,7 +4,7 @@ import React, { Usable, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { DataRequestForm } from "@/components/dashboard/data-request-form"
 import { DataRequestsList } from "@/components/dashboard/data-requests-list"
-import { createClient } from "@/lib/supabase/client"
+import supabase from "@/lib/supabase/client"
 
 interface PageParams {
     id: string;
@@ -26,7 +26,6 @@ export default function DataRequestsPage({ params }: { params: Usable<PageParams
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const supabase = createClient()
                 const {
                     data: { session },
                 } = await supabase.auth.getSession()
