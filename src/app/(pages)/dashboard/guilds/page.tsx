@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ServerList } from "@/components/dashboard/server-list"
-import type { Server } from "@/lib/types"
+import type { Server } from "@/lib/types/types"
 import { toast } from "sonner"
 import axios from "axios"
 import supabase from "@/lib/supabase/client"
 
 export default function GuildsPage() {
-    const [servers, setServers] = useState<Server[]>([])
+    const [stateServers, setServers] = useState<Server[]>([])
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const router = useRouter()
@@ -52,7 +52,7 @@ export default function GuildsPage() {
     return (
         <div className="pt-16 pb-16">
             <ServerList
-                servers={servers}
+                servers={stateServers}
                 loading={loading}
                 refreshing={refreshing}
                 onRefresh={handleRefresh}

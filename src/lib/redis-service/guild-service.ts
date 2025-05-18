@@ -1,5 +1,4 @@
 import supabase from "@/lib/supabase/client"
-import { getBearerToken } from "@/lib/utils"
 import {
     getCachedUserGuilds,
     cacheUserGuilds,
@@ -8,14 +7,16 @@ import {
     invalidateUserGuildsCache,
     invalidateBotGuildsCache,
 } from "@/lib/cache-utils"
-import type { DiscordPartialGuild, Server } from "@/lib/types"
-
-
+import type { DiscordPartialGuild, Server } from "../types/types"
+import axios from "axios"
+import { headers } from "next/headers"
 
 const PERMISSION_ADMIN = 0x8
 const PERMISSION_MANAGE_SERVER = 0x20
 const PERMISSION_MANAGE_CHANNELS = 0x10
 const PERMISSION_MANAGE_ROLES = 0x10000000
+
+const BASE_URL = process.env.NODE_ENV === "production" ? "https://gobotdashboard.vercel.app" : "http://localhost:3000"
 
 /**
  * Fetch user's Discord guilds with caching
@@ -32,9 +33,25 @@ export async function fetchUserGuilds(userId: string, superbase_user_id: string,
     // If not in cache or force refresh, fetch from Discord API
     try {
         // Get Discord bearer token
-        const bearerToken = await getBearerToken(userId, superbase_user_id)
+        const bearerToken = await axios.post(
+            `${BASE_URL}/api/get-token`,
+            {
+                userId,
+                superbase_user_id,
+            },
+            {
+                headers: { "Content-Type": "application/json" },
+            }
+        )
+
+        console.log(bearerToken, bearerToken.data)
+
+        if (bearerToken.status !== 200) {
+            throw new Error("Could not retrieve Discord token", { cause: bearerToken.statusText })
+        }
+
         if (!bearerToken) {
-            throw new Error("Could not retrieve Discord token")
+            throw new Error("No discord token found")
         }
 
         // Fetch guilds from Discord API
@@ -120,11 +137,11 @@ export async function getFormattedServerList(userId: string, superbase_user_id: 
                 })
 
                 .map((guild) => ({
-                    discord_id: guild.discord_id,
+                    id: guild.id,
                     name: guild.name,
-                    icon: guild.icon ? `https://cdn.discordapp.com/icons/${guild.discord_id}/${guild.icon}.png` : null,
+                    icon: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : null,
                     permissions: Number.parseInt(`${guild.permissions}`, 10),
-                    botPresent: botServerIds.has(guild.discord_id),
+                    botPresent: botServerIds.has(guild.id),
                     approximate_member_count: guild.approximate_member_count || 0, // fallback if not always available
                     approximate_presence_count: guild.approximate_presence_count || 0, // fallback if not always available
                     created_at: new Date().toISOString(),

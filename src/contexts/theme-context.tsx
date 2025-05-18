@@ -2,9 +2,8 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { toast } from "sonner"
-import type { ThemeContextType, ThemeData } from "@/lib/types"
+import type { ThemeContextType, ThemeData } from "@/lib/types/types"
 import {
-    supabase,
     getThemes,
     getUserThemes,
     saveTheme as saveThemeToDb,
@@ -13,6 +12,7 @@ import {
 } from "@/lib/supabase"
 import { hexToHSL } from "@/lib/color-utils"
 import { validateThemeData } from "@/lib/theme-export"
+import supabase from "@/lib/supabase/client"
 
 // Default theme
 const defaultTheme: ThemeData = {

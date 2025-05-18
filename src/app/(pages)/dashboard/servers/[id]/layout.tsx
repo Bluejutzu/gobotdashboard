@@ -45,10 +45,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import type { Server as ServerType } from "@/lib/types" 
+import type { Server as ServerType, User as UserType } from "@/lib/types/types"
 import { SiteFooter } from "@/components/site-footer"
 
-import { User } from "@/lib/types" // Assuming User type for Supabase user data
 import supabase from "@/lib/supabase/client"
 
 interface DiscordPartialGuild {
@@ -84,7 +83,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
     const [userServers, setUserServers] = useState<DiscordPartialGuild[]>([]); // User's list of manageable servers
     const [loading, setLoading] = useState(true); // For current server details
     const [serversLoading, setServersLoading] = useState(true); // For user's server list
-    const [userData, setUserData] = useState<User | undefined>();
+    const [userData, setUserData] = useState<UserType | undefined>();
     const [userLoading, setUserLoading] = useState(true); // For user data
     const [showBetaAlert, setShowBetaAlert] = useState(false);
     const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null);
@@ -94,7 +93,13 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
         try {
             setServersLoading(true);
 
-            const response = await axios.get<DiscordPartialGuild[]>(`/api/guilds?userid=${userData?.id}&superbase_user_id=${userData?.supabase_user_id}`);
+            const response = await axios.post<DiscordPartialGuild[]>(`/api/guilds`, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                userId: userData?.id,
+                superbase_user_id: userData?.supabase_user_id
+            });
 
             if (response.status === 200 && Array.isArray(response.data)) {
                 setUserServers(response.data);
@@ -155,7 +160,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                         .from("users")
                         .select("*")
                         .eq("supabase_user_id", sessionData.session.user.id)
-                        .single<User>();
+                        .single<UserType>();
 
                     if (userError) {
                         console.error("Error fetching user details:", userError);

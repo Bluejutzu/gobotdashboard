@@ -3,8 +3,7 @@
 import { useState } from "react"
 import axios from "axios"
 import supabase from "@/lib/supabase/client"
-import { getBearerToken } from "@/lib/utils"
-import type { Server as ServerType } from "@/lib/types"
+import type { Server as ServerType } from "@/lib/types/types"
 import { ServerError } from "./server-error"
 import { ServerLoading } from "./server-loading"
 
@@ -32,7 +31,10 @@ export function ServerCreator({ discordId, userId, onServerCreated }: ServerCrea
         throw new Error("User not found")
       }
 
-      const bearerToken = await getBearerToken(userId, userData.id)
+      const bearerToken = await axios.post("/api/get-token", {
+        userId: userId,
+        superbase_user_id: userData.id,
+      })
 
       if (!bearerToken) {
         throw new Error("Could not retrieve Discord token")

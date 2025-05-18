@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
         }
         return config
     },
-    serverExternalPackages: ['bot']
+    serverExternalPackages: ['bot'],
 };
 
 export default nextConfig;

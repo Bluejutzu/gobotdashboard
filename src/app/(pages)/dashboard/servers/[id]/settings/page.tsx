@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
-import type { BotSettings, Server } from "@/lib/types"
+import type { BotSettings, Server } from "@/lib/types/types"
 import { ServerError } from "@/components/dashboard/server-error"
 import { SettingsPageContent } from "@/components/dashboard/settings-page-content"
 

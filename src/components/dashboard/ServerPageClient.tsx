@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
-import type { CommandLog, Server as ServerType } from "@/lib/types"
+import type { CommandLog, Server as ServerType } from "@/lib/types/types"
 import { AvatarFallback, AvatarImage } from "../ui/avatar"
 
 export interface ServerPageClientProps {
@@ -64,7 +64,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
 
         if (commandsError) {
             setError("Failed to load recent commands. Please try again.")
-            console.error("Error fetching commands:", commandsError)
+            console.error("Error fetching commands sc:", commandsError)
         } else {
             const formattedCommands =
                 recentCommandsData?.map((cmd) => ({
@@ -97,9 +97,9 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    {server.icon_url ? (
+                    {server.icon ? (
                         <Avatar>    
-                            <AvatarImage src={server.icon_url || "/placeholder.svg"} alt={server.name} className="w-10 h-10 rounded-full" />
+                            <AvatarImage src={server.icon || "/placeholder.svg"} alt={server.name} className="w-10 h-10 rounded-full" />
                             <AvatarFallback>
                                 {server.name.charAt(0)}
                             </AvatarFallback>
@@ -161,7 +161,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="space-y-2">
                                     <div className="text-sm font-medium text-muted-foreground">Server ID</div>
-                                    <div className="font-mono text-sm">{server.discord_id}</div>
+                                    <div className="font-mono text-sm">{server.id}</div>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="text-sm font-medium text-muted-foreground">Created</div>
@@ -169,7 +169,7 @@ export default function ServerPageClient({ id, server, commands = [] }: ServerPa
                                 </div>
                                 <div className="space-y-2">
                                     <div className="text-sm font-medium text-muted-foreground">Members</div>
-                                    <div>{server.member_count?.toLocaleString() || "Unknown"}</div>
+                                    <div>{server.approximate_member_count?.toLocaleString() || "Unknown"}</div>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="text-sm font-medium text-muted-foreground">Bot Status</div>

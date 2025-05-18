@@ -39,52 +39,80 @@ function AuthCallback() {
         const {
           data: { session },
         } = await supabase.auth.getSession()
+        console.log(session)
 
         if (!session) {
           clearInterval(progressInterval)
           setStatus("error")
           setErrorMessage("No active session found. Please try logging in again.")
+          router.push("/auth/login")
           return
         }
 
-        const userToken = session.provider_token;
+        const { data: userData, error } = await supabase
+          .from("users")
+          .select("discord_token, discord_token_expires_at")
+          .eq("supabase_user_id", session.user.id)
+          .single()
 
-        if (userToken && logged == "true") {
+        if (error || !userData) {
+          clearInterval(progressInterval)
+          await supabase.auth.signOut()
+          setStatus("error")
+          setErrorMessage("Failed to fetch user data or user not found.")
+          return
+        }
+
+        const { discord_token, discord_token_expires_at } = userData
+
+        const isExpired =
+          discord_token_expires_at &&
+          Date.now() / 1000 > discord_token_expires_at 
+
+        if (!discord_token || isExpired) {
+          clearInterval(progressInterval)
+          await supabase.auth.signOut()
+          setStatus("error")
+          setErrorMessage("Discord token missing or expired. Please log in again.")
+          return
+        }
+
+        // ✅ Token is present and valid
+        if (logged === "true") {
+          setUser(session.user)
           setStatus("success")
-
+          setProgress(100)
           setTimeout(() => {
             router.push("/dashboard")
           }, 1000)
-        } else {
-          setUser(session.user);
-          setProgress(95);
+          return
+        }
 
-          try {
-            await axios.post(
-              "/api/save-token",
-              {
-                session: session,
-                token: session.provider_token,
-                refreshToken: session.provider_refresh_token,
-              },
-              {
-                headers: { "Content-Type": "application/json" },
-              }
-            )
+        // 👇 Save token (if new user / not logged before)
+        try {
+          await axios.post(
+            "/api/save-token",
+            {
+              session,
+              token: discord_token,
+              refreshToken: userData.discord_token,
+            },
+            {
+              headers: { "Content-Type": "application/json" },
+            }
+          )
 
-            setProgress(100)
-            setStatus("success")
-
-            setTimeout(() => {
-              router.push("/dashboard")
-            }, 1000)
-
-          } catch (err) {
-            clearInterval(progressInterval)
-            setStatus("error")
-            setErrorMessage("Failed to save authentication token. Please try again.")
-            console.error("Failed to save token:", err)
-          }
+          setUser(session.user)
+          setProgress(100)
+          setStatus("success")
+          setTimeout(() => {
+            router.push("/dashboard")
+          }, 1000)
+        } catch (err) {
+          clearInterval(progressInterval)
+          setStatus("error")
+          setErrorMessage("Failed to save authentication token. Please try again.")
+          console.error("Failed to save token:", err)
         }
       } catch (err) {
         setStatus("error")
@@ -95,6 +123,8 @@ function AuthCallback() {
 
     checkSession()
   }, [router, logged])
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-muted/40">

@@ -1,7 +1,6 @@
-import type { DBThemeData, ThemeData } from "@/lib/types"
-import { createServerSupabaseClient } from "./server"
 
-export const supabase = await createServerSupabaseClient()
+import type { DBThemeData, ThemeData } from "../types/types"
+import supabase from "./client"
 
 export async function getThemes(isPublic = true) {
     try {

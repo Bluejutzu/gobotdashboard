@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { BlockDataProperties, Connection } from "@/lib/types"
+import type { BlockDataProperties, Connection } from "@/lib/types/types"
 import { Node } from './[id]/route';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
@@ -134,7 +134,7 @@ export async function GET(request: Request) {
 
         return NextResponse.json(data as CommandData[])
     } catch (error) {
-        console.error("Error fetching commands:", error)
+        console.error("Error fetching commands r:", error)
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 },

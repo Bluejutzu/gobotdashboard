@@ -10,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { useState, useEffect } from "react"
-import type { Server } from "@/lib/types"
+import type { Server } from "@/lib/types/types"
 
 // Permission constants
 const PERMISSION_ADMIN = 0x8
@@ -97,7 +97,7 @@ export function ServerList({
         } else {
             // For servers without the bot, open the invite URL
             window.open(
-                `https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands&guild_id=${server.id}`,
+                `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&permissions=8&scope=bot%20applications.commands&guild_id=${server.id}`,
                 "_blank",
             )
         }
@@ -170,7 +170,7 @@ export function ServerList({
 
                             return (
                                 <div
-                                    key={server.id}
+                                    key={`${server.id}-${server.name}`}
                                     className={cn(
                                         "flex items-center gap-3 p-3 rounded-lg border transition-all",
                                         "hover:bg-slate-800/50 cursor-pointer",

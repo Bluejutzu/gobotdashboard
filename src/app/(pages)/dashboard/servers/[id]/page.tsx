@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 import {createServerSupabaseClient} from "@/lib/supabase/server"
-import type { CommandLog, Server as ServerType } from "@/lib/types"
+import type { CommandLog, Server as ServerType } from "@/lib/types/types"
 import { ServerError } from "@/components/dashboard/server-error"
 import { ServerPageContent } from "@/components/dashboard/server-page-content"
 
@@ -43,13 +43,13 @@ export default async function ServerPage({ params }: { params: Promise<{ id: str
   const { data: commands, error: commandsError } = await supabase
     .from("commands_log")
     .select("*")
-    .eq("server_id", server.discord_id)
+    .eq("server_id", server.id)
     .order("executed_at", { ascending: false })
     .limit(5)
     .overrideTypes<CommandLog[]>()
 
   if (commandsError) {
-    console.error("Error fetching commands:", commandsError)
+    console.error("Error fetching commands s:", commandsError)
   }
 
   return <ServerPageContent id={id} server={server} commands={commands || []} />

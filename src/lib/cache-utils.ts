@@ -1,7 +1,7 @@
 import { redis, CACHE_TTL, CACHE_KEYS } from "./redis"
 
 // Types
-import type { DiscordPartialGuild } from "@/lib/types"
+import type { DiscordPartialGuild, ModerationCase } from "./types/types" 
 
 /**
  * Cache user's Discord guilds
@@ -171,4 +171,51 @@ export async function invalidateGuildCache(guildId: string): Promise<void> {
     const key = `${CACHE_KEYS.GUILD}${guildId}`
     await redis.del(key)
     console.log(`Invalidated cache for guild ${guildId}`)
+}
+
+/**
+ * Cache moderation cases for a specific guild
+ */
+export async function cacheModerationCases(guildId: string, cases: ModerationCase[]): Promise<void> {
+    const key = `${CACHE_KEYS.MODERATION_CASES}${guildId}`
+    await redis.set(key, JSON.stringify(cases), { ex: CACHE_TTL.MODERATION_CASES })
+    console.log(`Cached ${cases.length} moderation cases for guild ${guildId}`)
+}
+
+/**
+ * Get cached moderation cases for a specific guild
+ */
+export async function getCachedModerationCases(guildId: string): Promise<ModerationCase[] | null> {
+    const key = `${CACHE_KEYS.MODERATION_CASES}${guildId}`
+    const cachedData: unknown = await redis.get(key)
+
+    if (!cachedData) return null
+
+    try {
+        if (typeof cachedData === 'string') {
+            return JSON.parse(cachedData) as ModerationCase[]
+        } else if (Array.isArray(cachedData)) {
+            return cachedData as ModerationCase[]
+        } else {
+            console.error(`Unexpected cache format for guild ${guildId}:`, cachedData)
+            await redis.del(key)
+            return null
+        }
+    } catch (error) {
+        console.error(`Error parsing moderation cases for guild ${guildId}:`, error)
+        if (typeof cachedData === 'string') {
+            console.error("Problematic data snippet:", cachedData.substring(0, 100))
+        }
+        await redis.del(key)
+        return null
+    }
+}
+
+/**
+ * Invalidate moderation cases cache for a guild
+ */
+export async function invalidateModerationCasesCache(guildId: string): Promise<void> {
+    const key = `${CACHE_KEYS.MODERATION_CASES}${guildId}`
+    await redis.del(key)
+    console.log(`Invalidated moderation case cache for guild ${guildId}`)
 }
