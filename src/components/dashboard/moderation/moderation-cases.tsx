@@ -15,6 +15,13 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getModerationCases } from "@/lib/redis-service/moderation-service"
 import type { ModerationCase } from "@/lib/types/types"
 
+/**
+ * Displays a table of moderation cases for a specified server.
+ *
+ * Fetches and renders a list of moderation actions taken on users within the given server. Shows a loading skeleton while data is being retrieved and a message if no cases exist.
+ *
+ * @param serverId - The unique identifier of the server whose moderation cases are displayed.
+ */
 export function ModerationCases({ serverId }: { serverId: string }) {
     const [cases, setCases] = useState<ModerationCase[]>([])
     const [loading, setLoading] = useState(true)

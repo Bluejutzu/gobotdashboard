@@ -1,5 +1,12 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 
+/**
+ * Handles a POST request to retrieve a Discord token for a user after validating authorization and input.
+ *
+ * Validates the `authorization` header and required body fields, then queries the Supabase "users" table for the corresponding `discord_token`. Returns the token in a JSON response if found, or an appropriate error response otherwise.
+ *
+ * @returns A JSON response containing the Discord token on success, or an error message with the appropriate HTTP status code on failure.
+ */
 export async function POST(req: Request) {
     // Add header validation
     const authHeader = req.headers.get('authorization')

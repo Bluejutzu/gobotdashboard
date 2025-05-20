@@ -35,6 +35,22 @@ interface ModerationRuleCardProps {
     type: "profanity" | "spam" | "link"
 }
 
+/**
+ * Displays a moderation rule card with toggleable enable state and expandable settings panel.
+ *
+ * Renders a card UI for a moderation rule, showing its icon, title, description, and a switch to enable or disable the rule. When expanded and enabled, displays animated detailed settings specific to the rule type (profanity, spam, or link).
+ *
+ * @param title - The title of the moderation rule.
+ * @param description - A brief description of the rule.
+ * @param icon - The icon type to display for the rule.
+ * @param enabled - Whether the rule is currently enabled.
+ * @param onToggle - Callback invoked when the enabled state is toggled.
+ * @param settings - The current settings object for the rule.
+ * @param updateSettings - Callback to update the rule's settings.
+ * @param type - The type of moderation rule ("profanity", "spam", or "link").
+ *
+ * @returns A React element representing the moderation rule card.
+ */
 export function ModerationRuleCard({
     title,
     description,

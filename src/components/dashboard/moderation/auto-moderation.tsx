@@ -21,6 +21,15 @@ interface ExtendedAutoModerationRule extends AutoModerationRule {
     }
 }
 
+/**
+ * React component for managing and editing auto-moderation settings for a server.
+ *
+ * Fetches current moderation settings for the specified server, displays controls for profanity filtering, spam protection, and link filtering, and allows users to update and save changes.
+ *
+ * @param serverId - The ID of the server whose moderation settings are being managed.
+ *
+ * @returns The moderation settings UI, or null while loading.
+ */
 export function AutoModeration({ serverId }: { serverId: string }) {
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -163,7 +172,12 @@ export function AutoModeration({ serverId }: { serverId: string }) {
     )
 }
 
-// Helper function to create default settings
+/**
+ * Generates a default auto-moderation settings object for a given server.
+ *
+ * @param serverId - The unique identifier of the server for which to create default settings.
+ * @returns An {@link ExtendedAutoModerationRule} object with default moderation rules and custom settings initialized.
+ */
 function createDefaultSettings(serverId: string): ExtendedAutoModerationRule {
     return {
         id: "new",

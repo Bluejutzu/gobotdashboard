@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server"
 import { getFormattedServerList } from "@/lib/redis-service/guild-service"
 
+/**
+ * Handles POST requests to fetch a formatted list of servers for a user.
+ *
+ * Validates that both `userId` and `supabase_user_id` are provided in the request body. Returns a JSON response containing the server list or an error message if validation fails or an internal error occurs.
+ *
+ * @returns A JSON response with the formatted server list or an error message.
+ */
 export async function POST(req: Request) {
     try {
         const body = await req.json()

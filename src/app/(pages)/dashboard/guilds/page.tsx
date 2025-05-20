@@ -8,6 +8,11 @@ import { toast } from "sonner"
 import axios from "axios"
 import supabase from "@/lib/supabase/client"
 
+/**
+ * Displays a list of servers associated with the current user and provides options to refresh the list or navigate to a server's dashboard.
+ *
+ * Fetches the user's servers on mount and allows manual refresh. Handles loading and error states, and navigates to a server-specific dashboard when a server is selected.
+ */
 export default function GuildsPage() {
     const [stateServers, setServers] = useState<Server[]>([])
     const [loading, setLoading] = useState(true)

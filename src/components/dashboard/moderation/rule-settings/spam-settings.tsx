@@ -23,6 +23,11 @@ interface SpamSettingsProps {
     updateSettings: (settings: ExtendedAutoModerationRule) => void
 }
 
+/**
+ * Renders UI controls for configuring spam detection settings in an auto-moderation rule.
+ *
+ * Allows users to adjust the message threshold for spam detection and select the action to take when spam is detected, such as deleting the message or muting the user for 5 minutes. Updates are propagated via the provided callback.
+ */
 export function SpamSettings({ settings, updateSettings }: SpamSettingsProps) {
     const spamThreshold = settings.customSettings?.spamSettings?.threshold || 5
     const spamAction = settings.actions?.find((a) => a.type === 3) ? "mute" : "delete"

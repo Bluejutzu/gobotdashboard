@@ -13,7 +13,12 @@ export async function cacheUserGuilds(userId: string, guilds: DiscordPartialGuil
 }
 
 /**
- * Get user's Discord guilds from cache
+ * Retrieves a user's cached Discord guilds from Redis.
+ *
+ * If the cached data is missing, corrupted, or in an unexpected format, the cache entry is invalidated and null is returned.
+ *
+ * @param userId - The Discord user ID whose guilds are being retrieved.
+ * @returns An array of {@link DiscordPartialGuild} objects if present and valid; otherwise, null.
  */
 export async function getCachedUserGuilds(userId: string): Promise<DiscordPartialGuild[] | null> {
     const key = `${CACHE_KEYS.USER_GUILDS}${userId}`;
@@ -69,7 +74,11 @@ export async function cacheBotGuilds(guildIds: string[]): Promise<void> {
 }
 
 /**
- * Get bot's guilds from cache
+ * Retrieves the cached list of bot guild IDs from Redis.
+ *
+ * Returns an array of guild ID strings if the cache is valid, or null if the cache is missing or corrupted.
+ *
+ * @returns An array of bot guild ID strings, or null if unavailable or invalid.
  */
 export async function getCachedBotGuilds(): Promise<string[] | null> {
     const key = CACHE_KEYS.BOT_GUILDS;
