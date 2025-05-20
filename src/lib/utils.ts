@@ -10,13 +10,13 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export async function refreshDiscordToken(userId: string, supabase_user_id: string, supabase: SupabaseClient) {
+export async function refreshDiscordToken(userId: string, supabase_user_id: string, supabase: SupabaseClient): Promise<{ success: boolean, error?: string, data?: { discord_access_token: string, discord_refresh_token: string } }> {
   if (!userId || !supabase_user_id) {
-    throw new Error("Invalid user ID or supabase user ID")
+    return { success: false, error: "Invalid user ID or supabase user ID", data: { discord_access_token: "", discord_refresh_token: "" } }
   }
 
   if (!supabase) {
-    throw new Error("Supabase client is required")
+    return { success: false, error: "Supabase client is required" }
   }
 
   console.log("Refreshing token...")
@@ -55,8 +55,15 @@ export async function refreshDiscordToken(userId: string, supabase_user_id: stri
     .eq("discord_id", userId)
 
   if (updateError) {
-    throw new Error("Could not update Discord token", { cause: updateError.message })
+    return { success: false, error: "Could not update Discord token", data: { discord_access_token: "", discord_refresh_token: "" } }
   }
 
   console.log("Token refreshed successfully")
+  return {
+    success: true,
+    data: {
+      discord_access_token: newBearerToken,
+      discord_refresh_token: refreshTokenData.refresh_token,
+    }
+  }
 }

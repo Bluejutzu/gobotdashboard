@@ -1,6 +1,4 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
-
-import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { refreshDiscordToken } from "@/lib/utils"
 
 export async function POST(req: Request) {
