@@ -41,5 +41,6 @@ export async function POST(req: Request) {
         return Response.json({ error: "Error updating tokens" }, { status: 500 })
     }
 
-    return Response.json({ token: data.discord_token }, { status: 200 })
+import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { refreshDiscordToken } from "@/lib/utils" // Add this import for the token refresh function
 }
