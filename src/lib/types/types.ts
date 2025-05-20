@@ -212,3 +212,12 @@ export interface AutoModerationRule {
     exempt_roles: string[];    // Max 20
     exempt_channels: string[]; // Max 50
 }
+
+export interface ExtendedAutoModerationRule extends AutoModerationRule {
+    customSettings?: {
+        linkFilter?: boolean
+        allowedDomains?: string[]
+        blockAllLinks?: boolean
+        spamSettings?: { enabled: boolean, threshold: number }
+    }
+}

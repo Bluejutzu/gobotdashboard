@@ -6,20 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
-import type { AutoModerationRule } from "@/lib/types/types"
-
-// Extended type to include our custom properties
-interface ExtendedAutoModerationRule extends AutoModerationRule {
-    customSettings?: {
-        linkFilter?: boolean
-        allowedDomains?: string[]
-        blockAllLinks?: boolean
-        spamSettings?: {
-            enabled: boolean
-            threshold: number
-        }
-    }
-}
+import type { ExtendedAutoModerationRule } from "@/lib/types/types"
 
 interface ProfanitySettingsProps {
     settings: ExtendedAutoModerationRule

@@ -6,20 +6,7 @@ import { Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ModerationRuleCard } from "./moderation-rule-card"
 import { getAutoModerationSettings, updateAutoModerationSettings } from "@/lib/redis-service/moderation-service"
-import type { AutoModerationRule } from "@/lib/types/types"
-
-// Extended type to include our custom properties
-interface ExtendedAutoModerationRule extends AutoModerationRule {
-    customSettings?: {
-        linkFilter?: boolean
-        allowedDomains?: string[]
-        blockAllLinks?: boolean
-        spamSettings?: {
-            enabled: boolean
-            threshold: number
-        }
-    }
-}
+import type { ExtendedAutoModerationRule } from "@/lib/types/types"
 
 export function AutoModeration({ serverId }: { serverId: string }) {
     const [loading, setLoading] = useState(true)

@@ -6,23 +6,10 @@ import { ChevronDown, Filter, Link, MessageSquare, Shield } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { cn } from "@/lib/utils"
-import type { AutoModerationRule } from "@/lib/types/types"
+import type { ExtendedAutoModerationRule } from "@/lib/types/types"
 import { ProfanitySettings } from "../moderation/rule-settings/profanity-settings"
 import { SpamSettings } from "../moderation/rule-settings/spam-settings"
 import { LinkSettings } from "../moderation/rule-settings/link-settings"
-
-// Extended type to include our custom properties
-interface ExtendedAutoModerationRule extends AutoModerationRule {
-    customSettings?: {
-        linkFilter?: boolean
-        allowedDomains?: string[]
-        blockAllLinks?: boolean
-        spamSettings?: {
-            enabled: boolean
-            threshold: number
-        }
-    }
-}
 
 interface ModerationRuleCardProps {
     title: string

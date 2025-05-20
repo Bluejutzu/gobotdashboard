@@ -7,20 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import type { AutoModerationRule } from "@/lib/types/types"
-
-// Extended type to include our custom properties
-interface ExtendedAutoModerationRule extends AutoModerationRule {
-    customSettings?: {
-        linkFilter?: boolean
-        allowedDomains?: string[]
-        blockAllLinks?: boolean
-        spamSettings?: {
-            enabled: boolean
-            threshold: number
-        }
-    }
-}
+import type { ExtendedAutoModerationRule } from "@/lib/types/types"
+import { toast } from "sonner"
 
 interface LinkSettingsProps {
     settings: ExtendedAutoModerationRule
@@ -38,7 +26,10 @@ export function LinkSettings({ settings, updateSettings }: LinkSettingsProps) {
         // Simple domain validation
         const domainRegex = /^([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z]{2,}$/i
         if (!domainRegex.test(newDomain.trim())) {
-            return // Invalid domain format
+            toast.error("Invalid domain", {
+                description: "Please enter a valid domain (e.g., example.com)",
+            })
+            return
         }
 
         const updatedDomains = [...allowedDomains, newDomain.trim().toLowerCase()]
