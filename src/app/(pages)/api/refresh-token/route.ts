@@ -1,6 +1,14 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { refreshDiscordToken } from "@/lib/utils"
 
+/**
+ * Handles a POST request to refresh a user's Discord OAuth access token.
+ *
+ * Validates the authorization header and request body, retrieves the current Discord refresh token from the database, obtains new tokens from Discord, updates the database, and returns the refreshed access token.
+ *
+ * @param req - The incoming HTTP request containing the authorization header and user identifiers in the JSON body.
+ * @returns A JSON response with the refreshed Discord access token on success, or an error message with the appropriate HTTP status code on failure.
+ */
 export async function POST(req: Request) {
     // 1. Header validation
     const authHeader = req.headers.get("authorization")

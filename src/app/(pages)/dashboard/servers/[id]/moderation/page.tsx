@@ -10,6 +10,14 @@ import { ModerationCases } from "@/components/dashboard/moderation/moderation-ca
 import { ModerationCommands } from "@/components/dashboard/moderation/moderation-commands"
 import { AutoModeration } from "@/components/dashboard/moderation/auto-moderation"
 
+/**
+ * Renders the moderation dashboard page with tabbed navigation for different moderation tools.
+ *
+ * Displays a header and a card containing tabs for Auto Moderation, Custom Flags, Cases, and Commands. Each tab loads its content asynchronously with a loading skeleton fallback.
+ *
+ * @param params - A promise resolving to an object containing the server ID.
+ * @returns The moderation dashboard React component.
+ */
 export default async function ModerationPage({ params }: { params: Promise<{ id: string }> }) {
     const { id }: { id: string } = await params
     return (

@@ -75,6 +75,16 @@ interface ServerLayoutProps {
     params: Promise<{ id: string }>;
 }
 
+/****
+ * Renders the main layout for a server dashboard page, managing user authentication, server selection, and access-controlled navigation.
+ *
+ * Displays a responsive sidebar and mobile menu for navigating between server features, handles user session state, and fetches both current server details and the user's list of manageable servers. Shows beta alerts for experimental features and restricts access to developer-only sections as appropriate.
+ *
+ * @param children - The content to render within the main dashboard area.
+ * @param params - Route parameters containing the current server ID.
+ *
+ * @remark Redirects to the login page if the user is not authenticated or user data is missing.
+ */
 export default function ServerLayout({ children, params }: ServerLayoutProps) {
     const { id } = React.use(params); // Current server ID from route
     const pathname = usePathname();

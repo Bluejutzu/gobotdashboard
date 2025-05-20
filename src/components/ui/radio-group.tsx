@@ -6,6 +6,11 @@ import { CircleIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+/**
+ * Renders a styled radio group container using Radix UI primitives.
+ *
+ * Combines a grid layout with customizable class names and forwards all props to the underlying radio group root element.
+ */
 function RadioGroup({
   className,
   ...props
@@ -19,6 +24,11 @@ function RadioGroup({
   )
 }
 
+/**
+ * Renders a styled radio button item for use within a radio group.
+ *
+ * Displays a selectable circular control with visual feedback for selection, focus, and validation states. When selected, a filled circle icon appears centered inside the item.
+ */
 function RadioGroupItem({
   className,
   ...props

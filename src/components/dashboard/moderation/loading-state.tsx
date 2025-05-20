@@ -1,5 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
+/**
+ * Displays a skeleton placeholder UI representing a loading state for the moderation dashboard.
+ *
+ * Renders animated skeleton elements arranged vertically to indicate content is loading.
+ */
 export function LoadingState() {
     return (
         <div className="space-y-6 animate-pulse">

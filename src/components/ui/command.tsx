@@ -13,6 +13,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+/**
+ * Renders a styled command menu container using the `cmdk` primitive.
+ *
+ * Combines base styles for background, text color, layout, and rounded corners with any additional class names provided.
+ */
 function Command({
   className,
   ...props
@@ -29,6 +34,16 @@ function Command({
   )
 }
 
+/**
+ * Renders a modal dialog containing a styled command palette.
+ *
+ * @param title - The accessible title for the dialog. Defaults to "Command Palette".
+ * @param description - The accessible description for the dialog. Defaults to "Search for a command to run...".
+ * @param children - The command palette content to display within the dialog.
+ *
+ * @remark
+ * The dialog includes a visually hidden header for accessibility, and applies custom styles to all nested command palette elements.
+ */
 function CommandDialog({
   title = "Command Palette",
   description = "Search for a command to run...",
@@ -53,6 +68,11 @@ function CommandDialog({
   )
 }
 
+/**
+ * Renders a styled search input field with a leading search icon for use within a command menu.
+ *
+ * @param className - Additional class names to apply to the input element.
+ */
 function CommandInput({
   className,
   ...props
@@ -75,6 +95,11 @@ function CommandInput({
   )
 }
 
+/**
+ * Renders a scrollable list container for command items with customizable styling.
+ *
+ * @param className - Additional class names to apply to the list container.
+ */
 function CommandList({
   className,
   ...props
@@ -91,6 +116,9 @@ function CommandList({
   )
 }
 
+/**
+ * Displays a styled message when no command items match the current search input.
+ */
 function CommandEmpty({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.Empty>) {
@@ -103,6 +131,11 @@ function CommandEmpty({
   )
 }
 
+/**
+ * Groups related command items together with a styled heading.
+ *
+ * Applies consistent padding and muted heading styles to visually separate command groups within a command menu.
+ */
 function CommandGroup({
   className,
   ...props
@@ -119,6 +152,11 @@ function CommandGroup({
   )
 }
 
+/**
+ * Renders a horizontal separator line within a command menu for visual grouping.
+ *
+ * @param className - Additional class names to customize the separator's appearance.
+ */
 function CommandSeparator({
   className,
   ...props
@@ -132,6 +170,11 @@ function CommandSeparator({
   )
 }
 
+/**
+ * Renders a selectable command item with custom styles for selected and disabled states.
+ *
+ * Accepts all props supported by the underlying command item primitive, along with additional class names for styling.
+ */
 function CommandItem({
   className,
   ...props
@@ -148,6 +191,12 @@ function CommandItem({
   )
 }
 
+/**
+ * Displays a keyboard shortcut hint aligned to the right within a command item.
+ *
+ * @remarks
+ * Intended for use inside command palette items to indicate available keyboard shortcuts.
+ */
 function CommandShortcut({
   className,
   ...props

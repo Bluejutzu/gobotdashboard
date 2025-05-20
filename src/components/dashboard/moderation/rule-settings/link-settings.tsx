@@ -15,6 +15,14 @@ interface LinkSettingsProps {
     updateSettings: (settings: ExtendedAutoModerationRule) => void
 }
 
+/**
+ * React component for managing link moderation settings, including blocking all links and specifying allowed domains.
+ *
+ * Renders controls to toggle blocking all links, add or remove allowed domains, and displays the current list of allowed domains. Updates moderation settings via the provided callback when changes are made.
+ *
+ * @param settings - The current moderation rule settings to display and modify.
+ * @param updateSettings - Callback to update the moderation rule settings when changes occur.
+ */
 export function LinkSettings({ settings, updateSettings }: LinkSettingsProps) {
     const [newDomain, setNewDomain] = useState("")
     const allowedDomains = settings.customSettings?.allowedDomains || []

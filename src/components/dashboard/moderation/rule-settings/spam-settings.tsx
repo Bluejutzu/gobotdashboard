@@ -10,6 +10,16 @@ interface SpamSettingsProps {
     updateSettings: (settings: ExtendedAutoModerationRule) => void
 }
 
+/**
+ * Renders controls for configuring spam detection settings in an auto-moderation rule.
+ *
+ * Provides a slider to set the message threshold for spam detection and radio buttons to select the action taken when spam is detected (delete message or mute user for 5 minutes). Updates are propagated via the provided callback.
+ *
+ * @param settings - The current auto-moderation rule settings, including spam configuration and actions.
+ * @param updateSettings - Callback to apply updated settings when the user changes the threshold or action.
+ *
+ * @returns A React element containing the spam settings UI.
+ */
 export function SpamSettings({ settings, updateSettings }: SpamSettingsProps) {
     const spamThreshold = settings.customSettings?.spamSettings?.threshold || 5
     const spamAction = settings.actions?.find((a) => a.type === 3) ? "mute" : "delete"
