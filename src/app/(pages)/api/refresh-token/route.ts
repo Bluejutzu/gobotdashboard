@@ -18,10 +18,14 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase
         .from("users")
-        .select("discord_token")
+    const { error: updateError } = await supabase
+        .from("users")
+        .update({
+            discord_token: tokenData.access_token,
+            discord_refresh_token: tokenData.refresh_token,
+        })
         .eq("discord_id", userId)
-        .eq("supabase_user_id", supabase_user_id)
-        .single()
+        .eq("supabase_user_id", superbase_user_id)
 
     if (error || !data) {
         console.error("Error fetching bearer token:", error)
