@@ -116,13 +116,13 @@ export function AutoModeration({ serverId }: { serverId: string }) {
                         updateSettings({
                             ...settings,
                             customSettings: {
-                                ...settings.customSettings,
+-                               ...settings.customSettings,
++                               ...(settings.customSettings ?? {}),
                                 spamSettings: {
                                     enabled,
                                     threshold: settings.customSettings?.spamSettings?.threshold || 5,
                                 },
                             },
-                        })
                     }
                     settings={settings}
                     updateSettings={updateSettings}
