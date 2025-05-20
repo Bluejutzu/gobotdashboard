@@ -20,16 +20,25 @@ export async function refreshDiscordToken(userId: string, supabase_user_id: stri
   }
 
   console.log("Refreshing token...")
-  const refreshToken = await axios.post(
-    `${BASE_URL}/api/refresh-token`,
-    {
-      userId,
-      supabase_user_id,
-    },
-    {
-      headers: { "Content-Type": "application/json" },
+  let refreshToken;
+  try {
+    refreshToken = await axios.post(
+      `${BASE_URL}/api/refresh-token`,
+      {
+        userId,
+        supabase_user_id,
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (error) {
+    // If axios throws an error, handle it properly
+    if (axios.isAxiosError(error)) {
+      throw new Error(`Could not refresh Discord token: ${error.response?.data?.error || error.message}`);
     }
-  )
+    throw error; // Re-throw if it's not an axios error
+  }
 
   if (refreshToken.status !== 200) {
     throw new Error("Could not refresh Discord token", { cause: refreshToken.statusText })
