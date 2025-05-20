@@ -210,8 +210,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
         // This effect should run only when the server ID changes
         // fetchUserServers is NOT included as a dependency
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id, router]);
+    }, [id, router, fetchUserServers]);
 
     const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id);
 
