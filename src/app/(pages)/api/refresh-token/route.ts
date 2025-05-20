@@ -40,8 +40,8 @@ export async function POST(req: Request) {
         const { error: updateError } = await supabase
             .from("users")
             .update({
-                discord_token: tokenData.access_token,
-                discord_refresh_token: tokenData.refresh_token,
+                discord_token: tokenData.data?.discord_access_token,
+                discord_refresh_token: tokenData.data?.discord_refresh_token,
             })
             .eq("discord_id", userId)
             .eq("supabase_user_id", supabase_user_id)
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
         }
 
         // 5. Return the refreshed access token
-        return Response.json({ token: tokenData.access_token }, { status: 200 })
+        return Response.json({ token: tokenData.data?.discord_access_token }, { status: 200 })
     } catch (err) {
         console.error("Unexpected error during token refresh:", err)
         return Response.json({ error: "Failed to refresh token" }, { status: 500 })

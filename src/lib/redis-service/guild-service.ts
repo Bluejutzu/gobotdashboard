@@ -8,108 +8,63 @@ import {
     invalidateBotGuildsCache,
 } from "@/lib/cache-utils"
 import type { DiscordPartialGuild, Server } from "../types/types"
-import { refreshDiscordToken } from "../utils"
+import axios from "axios"
 
 const PERMISSION_ADMIN = 0x8
 const PERMISSION_MANAGE_SERVER = 0x20
 const PERMISSION_MANAGE_CHANNELS = 0x10
 const PERMISSION_MANAGE_ROLES = 0x10000000
 
+const BASE_URL = process.env.NODE_ENV === "production" ? "https://gobotdashboard.vercel.app" : "http://localhost:3000"
+
 /**
  * Fetch user's Discord guilds with caching
  */
-export async function fetchUserGuilds(userId: string, supabase_user_id: string, forceRefresh = false, src: string): Promise<DiscordPartialGuild[]> {
-    console.log(`[GUILD-SERVICE ${src}]: Fetching guilds for ${userId}, ${supabase_user_id}`)
-    let retries: number = 0
-
+export async function fetchUserGuilds(userId: string, superbase_user_id: string, forceRefresh = false): Promise<DiscordPartialGuild[]> {
     // Try to get from cache first (unless force refresh is requested)
     if (!forceRefresh) {
         const cachedGuilds = await getCachedUserGuilds(userId)
-        if (cachedGuilds && cachedGuilds.length > 0) {
-            console.log(`[GUILD-SERVICE ${src}]: Returning ${cachedGuilds.length} cached guilds`)
+        if (cachedGuilds) {
             return cachedGuilds
         }
     }
 
+    // If not in cache or force refresh, fetch from Discord API
     try {
-        // Validate inputs
-        if (!userId || !supabase_user_id) {
-            throw new Error("[GUILD-SERVICE]: Missing required userId or supabase_user_id")
+        // Get Discord bearer token
+        const bearerToken = await axios.post(
+            `${BASE_URL}/api/get-token`,
+            {
+                userId,
+                superbase_user_id,
+            },
+            {
+                headers: { "Content-Type": "application/json" },
+            }
+        )
+
+        console.log(bearerToken, bearerToken.data)
+
+        if (bearerToken.status !== 200) {
+            throw new Error("Could not retrieve Discord token", { cause: bearerToken.statusText })
         }
 
-        // Get Discord bearer token - improved query with better error handling
-        console.log(`[GUILD-SERVICE ${src}]: Querying for discord_token with discord_id=${userId} and supabase_user_id=${supabase_user_id}`)
-
-        const { data: userData, error: bearerTokenError } = await supabase
-            .from("users")
-            .select("discord_token")
-            .eq("discord_id", userId)
-            .eq("supabase_user_id", supabase_user_id)
-            .single()
-
-        if (bearerTokenError) {
-            console.error("[GUILD-SERVICE]: Error retrieving Discord token:", bearerTokenError)
-            throw new Error("[GUILD-SERVICE]: Could not retrieve Discord token: " + bearerTokenError.message)
+        if (!bearerToken) {
+            throw new Error("No discord token found")
         }
-
-        if (!userData || !userData.discord_token) {
-            console.error("[GUILD-SERVICE]: No discord token found for user:", { userId, supabase_user_id })
-            throw new Error("[GUILD-SERVICE]: No discord token found")
-        }
-
-        console.log(`[GUILD-SERVICE ${src}]: Successfully retrieved token, fetching guilds from Discord API`)
 
         // Fetch guilds from Discord API
         const response = await fetch("https://discord.com/api/v10/users/@me/guilds", {
             headers: {
-                Authorization: `Bearer ${userData.discord_token}`,
+                Authorization: `Bearer ${bearerToken}`,
             },
         })
 
-// Update the function signature to carry the retry count:
--export async function fetchUserGuilds(userId: string, supabase_user_id: string, forceRefresh = false, src: string): Promise<DiscordPartialGuild[]> {
-+export async function fetchUserGuilds(
-+  userId: string,
-+  supabase_user_id: string,
-+  forceRefresh = false,
-+  src: string,
-+  retryCount = 0,
-+): Promise<DiscordPartialGuild[]> {
-   // … earlier code …
-
-   if (response.status === 401) {
-       console.log(`[GUILD-SERVICE ${src}]: 401 Unauthorized, refreshing token...`)
--      retries++
--      if (retries > 3) {
-+      if (retryCount >= 3) {
-           throw new Error(
-             "[GUILD-SERVICE]: Could not refresh Discord token",
-             { cause: response.statusText }
-           )
-       }
-
-       await refreshDiscordToken(userId, supabase_user_id, supabase)
--      return fetchUserGuilds(userId, supabase_user_id, forceRefresh, src)
-+      return fetchUserGuilds(
-+        userId,
-+        supabase_user_id,
-+        /* force a refresh on retry */ true,
-+        src,
-+        retryCount + 1
-+      )
-   }
-
-   // … rest of function …
-}
-
         if (!response.ok) {
-            console.error(`[GUILD-SERVICE ${src}]: Discord API error:`, response.status, response.statusText)
-            throw new Error(`Discord API error: ${response.status}`, { cause: response.statusText })
+            throw new Error(`Discord API error: ${response.status}`)
         }
 
         const rawDiscordGuilds: DiscordPartialGuild[] = await response.json()
-        console.log(`[GUILD-SERVICE ${src}]: Received ${rawDiscordGuilds.length} guilds from Discord API`)
-
         const discordGuilds = rawDiscordGuilds.filter((guild) => {
             const permInt = Number.parseInt(`${guild.permissions}`, 10)
             return (permInt & PERMISSION_ADMIN) !== 0 ||
@@ -118,12 +73,11 @@ export async function fetchUserGuilds(userId: string, supabase_user_id: string, 
                 (permInt & PERMISSION_MANAGE_ROLES) !== 0
         })
 
-        console.log(`[GUILD-SERVICE ${src}]: Filtered to ${discordGuilds.length} guilds with management permissions`)
-
         await cacheUserGuilds(userId, discordGuilds)
+
         return discordGuilds
     } catch (error) {
-        console.error(`[GUILD-SERVICE ${src}]: Error fetching user guilds:`, error)
+        console.error("Error fetching user guilds:", error)
         throw error
     }
 }
@@ -164,12 +118,11 @@ export async function fetchBotGuilds(forceRefresh = false): Promise<string[]> {
  * Get formatted server list with bot presence information
  * @returns discordGuilds Array of Server[]
  */
-export async function getFormattedServerList(userId: string, supabase_user_id: string, forceRefresh = false, src?: string): Promise<Server[]> {
-    console.log("[GUILD-SERVICE]: ", src, userId, supabase_user_id)
+export async function getFormattedServerList(userId: string, superbase_user_id: string, forceRefresh = false): Promise<Server[]> {
     try {
         // Fetch user guilds and bot guilds in parallel
         const [discordGuilds, botGuildIds] = await Promise.all([
-            fetchUserGuilds(userId, supabase_user_id, forceRefresh, "getFormattedServerList"),
+            fetchUserGuilds(userId, superbase_user_id, forceRefresh),
             fetchBotGuilds(forceRefresh),
         ])
 
@@ -188,8 +141,8 @@ export async function getFormattedServerList(userId: string, supabase_user_id: s
                     icon: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : null,
                     permissions: Number.parseInt(`${guild.permissions}`, 10),
                     botPresent: botServerIds.has(guild.id),
-                    approximate_member_count: guild.approximate_member_count || 0,
-                    approximate_presence_count: guild.approximate_presence_count || 0,
+                    approximate_member_count: guild.approximate_member_count || 0, // fallback if not always available
+                    approximate_presence_count: guild.approximate_presence_count || 0, // fallback if not always available
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                     features: guild.features,

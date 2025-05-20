@@ -10,10 +10,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export async function refreshDiscordToken(userId: string, supabase_user_id: string, supabase: SupabaseClient): Promise<{ success: boolean, error?: string, data?: { discord_access_token: string, discord_refresh_token: string } }> {
+export async function refreshDiscordToken(userId: string, supabase_user_id: string, supabase: SupabaseClient): Promise<{ success: boolean, error?: string, data?: { discord_access_token: any, discord_refresh_token: any } }> {
   if (!userId || !supabase_user_id) {
     return { success: false, error: "Invalid user ID or supabase user ID", data: { discord_access_token: "", discord_refresh_token: "" } }
-  }
+  } 
 
   if (!supabase) {
     return { success: false, error: "Supabase client is required" }
