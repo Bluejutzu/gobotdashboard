@@ -26,7 +26,7 @@ export async function fetchUserGuilds(userId: string, superbase_user_id: string,
         const cachedGuilds = await getCachedUserGuilds(userId)
         if (cachedGuilds) {
             return cachedGuilds
-        }
+        } 
     }
 
     // If not in cache or force refresh, fetch from Discord API
