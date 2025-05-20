@@ -1,12 +1,18 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 
 export async function POST(req: Request) {
+    // Add header validation
+    const authHeader = req.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const supabase = await createServerSupabaseClient()
     const body = await req.json()
 
-    const { userId, superbase_user_id } = body
+    const { userId, supabase_user_id } = body
 
-    if (!userId || !superbase_user_id) {
+    if (!userId || !supabase_user_id) {
         return Response.json({ error: "Invalid session object" }, { status: 400 })
     }
 
@@ -14,7 +20,7 @@ export async function POST(req: Request) {
         .from("users")
         .select("discord_token")
         .eq("discord_id", userId)
-        .eq("supabase_user_id", superbase_user_id)
+        .eq("supabase_user_id", supabase_user_id)
         .single()
 
     if (error || !data) {

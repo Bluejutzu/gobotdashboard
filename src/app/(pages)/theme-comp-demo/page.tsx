@@ -9,7 +9,7 @@ import { ThemeComparison } from "@/components/themes/theme-comparison"
 import { ThemeShowcase } from "@/components/themes/theme-showcase"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeftRight, Maximize2 } from "lucide-react"
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 
 export default function ThemeComparisonDemoPage() {
     const [showSelector, setShowSelector] = useState(false)

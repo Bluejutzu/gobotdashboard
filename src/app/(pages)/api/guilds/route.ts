@@ -2,14 +2,29 @@ import { NextResponse } from "next/server"
 import { getFormattedServerList } from "@/lib/redis-service/guild-service"
 
 export async function POST(req: Request) {
-    const body = await req.json()
-    const { userId, supabase_user_id, forceRefresh } = body
     try {
-        const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh)
-        return NextResponse.json({ servers })
+        const body = await req.json()
+        const { userId, supabase_user_id, forceRefresh } = body
+
+        // Validate required parameters
+        if (!userId || !supabase_user_id) {
+            console.error("Missing required parameters:", { userId, supabase_user_id })
+            return NextResponse.json(
+                { error: "Missing required parameters: userId and supabase_user_id are required" },
+                { status: 400 }
+            )
+        }
+
+        // Log the request for debugging
+        console.log("Fetching servers for:", { userId, supabase_user_id, forceRefresh })
+
+        const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh, "api-route")
+        return NextResponse.json(servers)
     } catch (e) {
-        console.error(e)
-        return NextResponse.json({ error: "Failed to fetch servers" + e }, { status: 500 })
+        console.error("Error in server fetch API route:", e)
+        return NextResponse.json(
+            { error: `Failed to fetch servers: ${e instanceof Error ? e.message : String(e)}` },
+            { status: 500 }
+        )
     }
 }
-

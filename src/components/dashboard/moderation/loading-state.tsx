@@ -1,8 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function ModerationTabSkeleton() {
+export function LoadingState() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-pulse">
+            <Skeleton className="h-16 w-full bg-[#232530]" />
             {[...Array(3)].map((_, i) => (
                 <Skeleton key={i} className="h-32 w-full bg-[#232530]" />
             ))}

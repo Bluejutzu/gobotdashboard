@@ -108,5 +108,10 @@ export const updateAutoModerationSettings = async (serverId: string, settings: a
 };
 
 export async function updateModerationCase(id: string, data: Partial<ModerationCase>) {
-    return supabase.from('moderation_cases').update(data).eq('id', id);
-  }
+    const { data: updated, error } =
+        await supabase.from('moderation_cases').update(data).eq('id', id).select('server_id').single()
+
+    if (error) throw error
+    await invalidateCache(`${CACHE_KEYS.MODERATION_CASES}${updated.server_id}`)
+    return updated
+}

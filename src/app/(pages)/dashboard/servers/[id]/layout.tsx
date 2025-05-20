@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useEffect, useState } from "react" // Added useCallback
-import { redirect, usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
     AlertTriangle,
@@ -89,26 +89,30 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
     const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null);
     const [serverSelectorOpen, setServerSelectorOpen] = useState(false);
 
-    const fetchUserServers = React.useCallback(async () => {
-        if (!userData) return;
+    const fetchUserServers = React.useCallback(async (userId: string, supabase_user_id: string) => {
+        if (!userId || !supabase_user_id) {
+            console.warn("Missing required parameters for fetchUserServers", { userId, supabase_user_id });
+            return;
+        }
 
         try {
             setServersLoading(true);
-            console.log("fetching servers for user:", userData);
+            console.log("Fetching servers for user:", userId);
 
-            const response = await axios.post<DiscordPartialGuild[]>(`/api/guilds?source=server-layout`,
+            const response = await axios.post<DiscordPartialGuild[]>(
+                `/api/guilds`,
                 {
-                    userId: userData.id,
-                    supabase_user_id: userData.supabase_user_id
+                    userId: userId,
+                    supabase_user_id: supabase_user_id
                 },
                 {
                     headers: {
                         "Content-Type": "application/json"
                     },
-                },
+                }
             );
 
-            if (response.status === 200 && Array.isArray(response.data)) {
+            if (response.status === 200 && response.data && response.data.length > 0) {
                 setUserServers(response.data);
             } else {
                 console.error("Invalid response for user servers:", response);
@@ -120,10 +124,9 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
         } finally {
             setServersLoading(false);
         }
-    }, [userData])
+    }, []);
 
     useEffect(() => {
-
         const fetchCurrentServerDetails = async () => {
             try {
                 setLoading(true);
@@ -146,36 +149,52 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
             }
         };
 
-        const fetchUserAndThenTheirServers = async () => {
+        const initializeUserDataAndServers = async () => {
             try {
                 setUserLoading(true);
                 const { data: sessionData } = await supabase.auth.getSession();
 
-                if (sessionData.session) {
-                    const { data: userDetails, error: userError } = await supabase
-                        .from("users")
-                        .select("*")
-                        .eq("supabase_user_id", sessionData.session.user.id)
-                        .single<UserType>();
-
-                    if (userError) {
-                        console.error("Error fetching user details:", userError);
-                        setUserData(undefined);
-                    } else if (userDetails) {
-                        setUserData(userDetails);
-                        console.log("User details fetched", userDetails)
-                        // User details fetched, now fetch their list of manageable servers
-                        await fetchUserServers();
-                    } else {
-                        setUserData(undefined); // No user record found
-                        console.error("No user record found")
-                        redirect("/auth/login")
-                    }
-                } else {
-                    setUserData(undefined); // No active session
-                    console.error("No active session")
-                    redirect("/auth/login")
+                if (!sessionData.session) {
+                    console.error("No active session");
+                    setUserData(undefined);
+                    router.push("/auth/login");
+                    return;
                 }
+
+                const { data: userDetails, error: userError } = await supabase
+                    .from("users")
+                    .select("*")
+                    .eq("supabase_user_id", sessionData.session.user.id)
+                    .single<UserType>();
+
+                if (userError) {
+                    console.error("Error fetching user details:", userError);
+                    setUserData(undefined);
+                    return;
+                }
+
+                if (!userDetails) {
+                    console.error("No user record found");
+                    setUserData(undefined);
+                    router.push("/auth/login");
+                    return;
+                }
+
+                setUserData(userDetails);
+
+                // Check if we have the necessary data to fetch servers
+                if (!userDetails.id || !userDetails.supabase_user_id) {
+                    console.error("Missing required user IDs:", {
+                        id: userDetails.id,
+                        supabase_user_id: userDetails.supabase_user_id
+                    });
+                    return;
+                }
+
+                // Only fetch servers if user data exists and either:
+                // 1. We haven't fetched servers yet, or
+                // 2. User data changed in a way that would affect servers
+                await fetchUserServers(userDetails.discord_id, userDetails.supabase_user_id);
             } catch (error) {
                 console.error("Error fetching user details and their servers:", error);
                 setUserData(undefined);
@@ -184,9 +203,15 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
             }
         };
 
+        // Only run these on component mount or when 'id' changes
         fetchCurrentServerDetails();
-        fetchUserAndThenTheirServers();
-    });
+        initializeUserDataAndServers();
+
+        // This effect should run only when the server ID changes
+        // fetchUserServers is NOT included as a dependency
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id, router]);
 
     const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id);
 

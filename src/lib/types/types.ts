@@ -164,14 +164,39 @@ export enum ModerationStatus {
     APPEALED = "APPEALED",
 }
 
+export enum AutoModEventType {
+    MESSAGE_SEND = 1,
+}
+
+export enum AutoModTriggerType {
+    KEYWORD = 1,
+    SPAM = 3,
+    MENTION_SPAM = 5,
+}
+
+export enum AutoModActionType {
+    BLOCK_MESSAGE = 1,
+    DELETE_MESSAGE = 2,
+    MUTE_USER = 3,
+    KICK_USER = 4,
+    BAN_USER = 5,
+}
+
 interface TriggerMetadata {
-    // Define the structure based on your application's requirements
-    [key: string]: any;
+    keyword_filter?: string[];
+    presets?: number[];
+    mention_total_limit?: number;
+    regex_patterns?: string[];
+    allow_list?: string[];
 }
 
 interface Action {
-    // Define the structure based on your application's requirements
-    [key: string]: any;
+    type: AutoModActionType;
+    metadata?: {
+        channel_id?: string;
+        duration_seconds?: number;
+        custom_message?: string;
+    };
 }
 
 export interface AutoModerationRule {
@@ -179,8 +204,8 @@ export interface AutoModerationRule {
     guild_id: string;
     name: string;
     creator_id: string;
-    event_type: number;
-    trigger_type: number;
+    event_type: AutoModEventType;
+    trigger_type: AutoModTriggerType;
     trigger_metadata: TriggerMetadata;
     actions: Action[];
     enabled: boolean;

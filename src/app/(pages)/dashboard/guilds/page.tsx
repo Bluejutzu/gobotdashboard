@@ -20,7 +20,8 @@ export default function GuildsPage() {
             const discordId = sessionData.session?.user.user_metadata.sub
 
             if (sessionError) {
-                throw new Error("Error fetching session data:", sessionError)
+                // Preserve the original error as `cause` (Node ≥ 16.9 / modern browsers)
+                throw new Error("Error fetching session data", { cause: sessionError })
             }
 
             console.log(

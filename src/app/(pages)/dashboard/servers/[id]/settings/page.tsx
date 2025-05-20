@@ -39,7 +39,7 @@ export default async function SettingsPage({ params }: { params: SettingsPagePro
     const { data: botSettings, error: botSettingsError } = await supabase
         .from("bot_settings")
         .select("*")
-        .eq("server_id", server.discord_id)
+        .eq("server_id", server.id)
         .single<BotSettings>()
 
     if (botSettingsError) {

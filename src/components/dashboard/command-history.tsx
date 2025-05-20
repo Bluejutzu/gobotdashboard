@@ -1,4 +1,4 @@
-import type { CommandLog } from "@/lib/types"
+import type { CommandLog } from "@/lib/types/types"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface CommandHistoryProps {

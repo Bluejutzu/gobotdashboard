@@ -23,15 +23,18 @@ export async function POST(req: Request) {
         return Response.json({ error: "Error fetching refresh token" }, { status: 500 })
     }
 
-    const response = await axios.post(`https://discord.com/api/v10/oauth2/token`, {
-        client_id: process.env.DISCORD_CLIENT_ID,
-        client_secret: process.env.DISCORD_CLIENT_SECRET,
-        grant_type: "refresh_token",
-        refresh_token: data.discord_refresh_token,
-    })
-
+    const params = new URLSearchParams();
+    params.append('client_id', process.env.DISCORD_CLIENT_ID || '');
+    params.append('client_secret', process.env.DISCORD_CLIENT_SECRET || '');
+    params.append('grant_type', 'refresh_token');
+    params.append('refresh_token', data.discord_refresh_token);
+    const response = await axios.post(
+        'https://discord.com/api/v10/oauth2/token',
+        params,
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
     if (response.status !== 200) {
-        return Response.json({ error: "Error refreshing token" }, { status: 500 })
+        return Response.json({ error: "Error refreshing token" }, { status: 500 });
     }
 
     const tokenData = response.data

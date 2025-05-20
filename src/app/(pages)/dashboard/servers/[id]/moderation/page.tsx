@@ -14,7 +14,7 @@ export default async function ModerationPage({ params }: { params: Promise<{ id:
     const { id }: { id: string } = await params
     return (
         <div className="container p-4 space-y-6 max-w-7xl mx-auto">
-            <ModerationHeader serverId={id} />
+            <ModerationHeader />
 
             <Card className="border-0 bg-[#1a1c23] shadow-md overflow-hidden">
                 <Tabs defaultValue="auto" className="w-full">
@@ -58,7 +58,7 @@ export default async function ModerationPage({ params }: { params: Promise<{ id:
 
                         <TabsContent value="flags" className="mt-0 space-y-4">
                             <Suspense fallback={<ModerationTabSkeleton />}>
-                                <CustomFlagging serverId={id} />
+                                <CustomFlagging />
                             </Suspense>
                         </TabsContent>
 
@@ -70,7 +70,7 @@ export default async function ModerationPage({ params }: { params: Promise<{ id:
 
                         <TabsContent value="commands" className="mt-0 space-y-4">
                             <Suspense fallback={<ModerationTabSkeleton />}>
-                                <ModerationCommands serverId={id} />
+                                <ModerationCommands />
                             </Suspense>
                         </TabsContent>
                     </div>
