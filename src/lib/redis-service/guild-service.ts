@@ -16,7 +16,18 @@ const PERMISSION_MANAGE_CHANNELS = 0x10
 const PERMISSION_MANAGE_ROLES = 0x10000000
 
 /**
- * Fetch user's Discord guilds with caching
+ * Retrieves a user's Discord guilds from cache or the Discord API, filtering to those where the user has management permissions.
+ *
+ * Attempts to return cached guilds unless a refresh is forced. If the Discord token is expired, automatically refreshes the token and retries up to three times. Only guilds where the user has admin, manage server, manage channels, or manage roles permissions are included.
+ *
+ * @param userId - The Discord user ID.
+ * @param supabase_user_id - The corresponding Supabase user ID.
+ * @param forceRefresh - If true, bypasses cache and fetches fresh data.
+ * @param src - Context string for logging.
+ * @returns An array of guilds where the user has management permissions.
+ *
+ * @throws {Error} If required user identifiers are missing, the Discord token cannot be retrieved, or the Discord API returns an error.
+ * @throws {Error} If the Discord token cannot be refreshed after three attempts.
  */
 export async function fetchUserGuilds(userId: string, supabase_user_id: string, forceRefresh = false, src: string): Promise<DiscordPartialGuild[]> {
     console.log(`[GUILD-SERVICE ${src}]: Fetching guilds for ${userId}, ${supabase_user_id}`)
@@ -136,8 +147,17 @@ export async function fetchBotGuilds(forceRefresh = false): Promise<string[]> {
 }
 
 /**
- * Get formatted server list with bot presence information
- * @returns discordGuilds Array of Server[]
+ * Returns a list of Discord servers the user can manage, including bot presence and server details.
+ *
+ * Filters the user's guilds to those where they have administrator or manage server permissions, and combines this with information about whether the bot is present in each guild. Each server entry includes metadata such as icon URL, permissions, member counts, features, and stickers.
+ *
+ * @param userId - The Discord user ID.
+ * @param supabase_user_id - The corresponding Supabase user ID.
+ * @param forceRefresh - If true, bypasses cache and fetches fresh data.
+ * @param src - Optional context string for logging.
+ * @returns An array of {@link Server} objects representing the user's manageable Discord servers, annotated with bot presence and additional metadata.
+ *
+ * @throws {Error} If fetching user guilds or bot guilds fails.
  */
 export async function getFormattedServerList(userId: string, supabase_user_id: string, forceRefresh = false, src?: string): Promise<Server[]> {
     console.log("[GUILD-SERVICE]: ", src, userId, supabase_user_id)

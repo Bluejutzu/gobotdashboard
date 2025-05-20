@@ -1,5 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
+/**
+ * Displays a placeholder UI with skeleton elements to indicate a loading state.
+ *
+ * Renders a vertical stack of skeleton components with pulsing animation, simulating the layout of content while data is being loaded.
+ */
 export function LoadingState() {
     return (
         <div className="space-y-6 animate-pulse">

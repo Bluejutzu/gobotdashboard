@@ -19,6 +19,12 @@ export const CACHE_KEYS = {
   AUTO_MODERATION_SETTINGS: "autoModSettings:"
 }
 
+/**
+ * Retrieves a cached value from Redis by its key.
+ *
+ * @param key - The cache key to look up.
+ * @returns The cached value typed as {@link T}, or `null` if the key does not exist.
+ */
 export async function getCache<T>(key: string): Promise<T | null> {
   return await redis.get(key);
 }

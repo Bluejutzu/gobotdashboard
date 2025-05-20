@@ -1,6 +1,13 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server"
 import axios from "axios"
 
+/**
+ * Handles a POST request to refresh a user's Discord OAuth2 access and refresh tokens.
+ *
+ * Expects a JSON body containing `userId` and `superbase_user_id`. Retrieves the user's stored Discord refresh token from the database, uses it to request new tokens from Discord, updates the database with the new tokens, and returns them in the response.
+ *
+ * @returns A JSON response with the new Discord access token and refresh token, or an error message with the appropriate HTTP status code.
+ */
 export async function POST(req: Request) {
     const supabase = await createServerSupabaseClient()
     const body = await req.json()

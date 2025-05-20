@@ -8,6 +8,11 @@ import { toast } from "sonner"
 import axios from "axios"
 import supabase from "@/lib/supabase/client"
 
+/**
+ * Displays a list of Discord servers associated with the authenticated user and provides options to refresh the list or navigate to a server's dashboard.
+ *
+ * Fetches the user's servers from the backend on mount and when refreshed, handling loading and error states. Allows navigation to a detailed dashboard for each server.
+ */
 export default function GuildsPage() {
     const [stateServers, setServers] = useState<Server[]>([])
     const [loading, setLoading] = useState(true)

@@ -1,5 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
+/**
+ * Displays a skeleton placeholder for the moderation tab layout.
+ *
+ * Renders three vertical skeleton blocks and a smaller skeleton element aligned to the right, indicating loading content in the moderation tab.
+ */
 export function ModerationTabSkeleton() {
     return (
         <div className="space-y-6">

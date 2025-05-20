@@ -4,6 +4,11 @@ import { AlertTriangle } from 'lucide-react'
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 
+/**
+ * Displays a placeholder UI for the upcoming custom flagging feature.
+ *
+ * Shows an informational alert and a disabled button indicating that advanced content moderation rules will be available soon.
+ */
 export function CustomFlagging() {
     return (
         <div className="space-y-6">

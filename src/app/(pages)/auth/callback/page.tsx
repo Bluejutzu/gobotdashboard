@@ -12,6 +12,11 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import supabase from "@/lib/supabase/client"
 
+/**
+ * Handles authentication callback logic after a login redirect, verifying user session and Discord token validity, and redirects users based on authentication outcome.
+ *
+ * Displays authentication progress, manages error and success states, and provides appropriate UI feedback and navigation for users completing the authentication process.
+ */
 function AuthCallback() {
   const router = useRouter()
   const [user, setUser] = useState<User>()

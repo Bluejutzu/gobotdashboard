@@ -1,6 +1,11 @@
 import { AlertCircle } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
+/**
+ * Displays a static alert indicating that auto-moderation is active.
+ *
+ * Renders an informational banner with an icon, title, and description to inform users that Sapphire's auto-moderation is enabled for the server.
+ */
 export function ModerationHeader() {
     return (
         <Alert className="bg-[#2b2d3a] border-blue-500/50">

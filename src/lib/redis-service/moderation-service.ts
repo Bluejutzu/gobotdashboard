@@ -25,11 +25,25 @@ async function getServer(id: string) {
     return data;
 }
 
+/**
+ * Extracts the "serverId" query parameter from a Next.js request URL.
+ *
+ * @param req - The incoming Next.js request object.
+ * @returns The value of the "serverId" query parameter, or an empty string if not present.
+ */
 function getServerIdFromRequest(req: NextRequest): string {
     const url = new URL(req.url);
     return url.searchParams.get("serverId") || "";
 }
 
+/**
+ * Retrieves moderation cases for a given server, using cache when available.
+ *
+ * @param serverId - The unique identifier of the server whose moderation cases are to be fetched.
+ * @returns An array of moderation cases associated with the specified server.
+ *
+ * @throws {Error} If the database query fails.
+ */
 export async function getModerationCases(serverId: string): Promise<ModerationCase[]> {
     const cacheKey = `${CACHE_KEYS.MODERATION_CASES}${serverId}`;
     const cached = await getCache<ModerationCase[]>(cacheKey);
@@ -47,6 +61,13 @@ export async function getModerationCases(serverId: string): Promise<ModerationCa
     return data;
 }
 
+/**
+ * Creates or updates a moderation case for a server based on the request data.
+ *
+ * Validates the request body and upserts a moderation case in the database. Returns the created or updated case as JSON. Responds with appropriate HTTP status codes for invalid input, missing server, or database errors.
+ *
+ * @returns A JSON response containing the moderation case, or an error response with status 400, 404, or 500.
+ */
 export async function createModerationCase(req: NextRequest) {
     const serverId = getServerIdFromRequest(req);
     const server = await getServer(serverId);
@@ -75,6 +96,14 @@ export async function createModerationCase(req: NextRequest) {
     return Response.json(data);
 }
 
+/**
+ * Deletes a moderation case by its ID or from a Next.js request.
+ *
+ * If a {@link NextRequest} is provided, extracts the server and moderation case ID from the request, verifies the server exists, and deletes the specified moderation case. If a string is provided, deletes the moderation case with that ID directly.
+ *
+ * @param arg - The moderation case ID as a string, or a {@link NextRequest} containing the necessary information.
+ * @returns An HTTP response: 204 on success, 404 if the server is not found, or 500 on database error.
+ */
 export async function deleteModerationCase(arg: NextRequest | string) {
     let id: string = "";
     if (typeof arg === 'string') {
@@ -107,6 +136,17 @@ export const updateAutoModerationSettings = async (serverId: string, settings: a
     await setCache(`${CACHE_KEYS.AUTO_MODERATION_SETTINGS}${serverId}`, JSON.stringify(settings), CACHE_TTL.AUTO_MODERATION_SETTINGS);
 };
 
+/**
+ * Updates fields of a moderation case by its ID.
+ *
+ * Updates the specified moderation case in the database with the provided partial data and invalidates the cache for the associated server's moderation cases.
+ *
+ * @param id - The unique identifier of the moderation case to update.
+ * @param data - An object containing the fields to update.
+ * @returns The updated moderation case record.
+ *
+ * @throws {PostgrestError} If the database update fails.
+ */
 export async function updateModerationCase(id: string, data: Partial<ModerationCase>) {
     const { data: updated, error } =
         await supabase.from('moderation_cases').update(data).eq('id', id).select('server_id').single()

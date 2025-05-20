@@ -17,6 +17,15 @@ import { useThemeContext } from "@/contexts/theme-context"
 import { SiteHeader } from "@/components/site-header"
 import  supabase  from "@/lib/supabase/client"
 
+/**
+ * Renders the Custom Themes page, allowing users to create, preview, save, and manage custom themes, as well as browse and interact with community-shared themes.
+ *
+ * Provides a theme editor with live preview, authentication via GitHub, and tabs for creating, viewing community themes, and managing saved themes. Integrates with Supabase for authentication and theme data management.
+ *
+ * @returns The Custom Themes page React component.
+ *
+ * @remark Returns `null` on initial render to prevent hydration mismatches until the component is mounted.
+ */
 export default function CustomThemesPage() {
     const { theme, setTheme } = useTheme()
     const { currentTheme, savedThemes, communityThemes, saveTheme, applyTheme, likeTheme, deleteTheme } =
