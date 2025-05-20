@@ -66,40 +66,37 @@ export async function fetchUserGuilds(userId: string, supabase_user_id: string, 
             },
         })
 
-// Update the function signature to carry the retry count:
--export async function fetchUserGuilds(userId: string, supabase_user_id: string, forceRefresh = false, src: string): Promise<DiscordPartialGuild[]> {
-+export async function fetchUserGuilds(
-+  userId: string,
-+  supabase_user_id: string,
-+  forceRefresh = false,
-+  src: string,
-+  retryCount = 0,
-+): Promise<DiscordPartialGuild[]> {
-   // … earlier code …
+export async function fetchUserGuilds(
+  userId: string,
+  supabase_user_id: string,
+  forceRefresh = false,
+  src: string,
+  retryCount = 0
+): Promise<DiscordPartialGuild[]> {
+  console.log(`[GUILD-SERVICE ${src}]: Fetching guilds for ${userId}, ${supabase_user_id}`)
 
-   if (response.status === 401) {
-       console.log(`[GUILD-SERVICE ${src}]: 401 Unauthorized, refreshing token...`)
--      retries++
--      if (retries > 3) {
-+      if (retryCount >= 3) {
-           throw new Error(
-             "[GUILD-SERVICE]: Could not refresh Discord token",
-             { cause: response.statusText }
-           )
-       }
+  // …existing code…
 
-       await refreshDiscordToken(userId, supabase_user_id, supabase)
--      return fetchUserGuilds(userId, supabase_user_id, forceRefresh, src)
-+      return fetchUserGuilds(
-+        userId,
-+        supabase_user_id,
-+        /* force a refresh on retry */ true,
-+        src,
-+        retryCount + 1
-+      )
-   }
+  if (response.status === 401) {
+    console.log(`[GUILD-SERVICE ${src}]: 401 Unauthorized, refreshing token...`)
+    if (retryCount >= 3) {
+      throw new Error(
+        "[GUILD-SERVICE]: Could not refresh Discord token",
+        { cause: response.statusText }
+      )
+    }
 
-   // … rest of function …
+    await refreshDiscordToken(userId, supabase_user_id, supabase)
+    return fetchUserGuilds(
+      userId,
+      supabase_user_id,
+      true, // force a refresh on retry
+      src,
+      retryCount + 1
+    )
+  }
+
+  // …rest of function…
 }
 
         if (!response.ok) {
