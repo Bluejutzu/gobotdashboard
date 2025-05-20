@@ -6,17 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { AutoModerationRule } from "@/lib/types/types"
 
 // Extended type to include our custom properties
-interface ExtendedAutoModerationRule extends AutoModerationRule {
-    customSettings?: {
-        linkFilter?: boolean
-        allowedDomains?: string[]
-        blockAllLinks?: boolean
-        spamSettings?: {
-            enabled: boolean
-            threshold: number
-        }
-    }
-}
+import type { ExtendedAutoModerationRule } from "@/lib/types/types"
 
 interface SpamSettingsProps {
     settings: ExtendedAutoModerationRule
