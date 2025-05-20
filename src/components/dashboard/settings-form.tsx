@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { toast } from "sonner"
-import type { BotSettings } from "@/lib/types"
+import type { BotSettings } from "@/lib/types/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

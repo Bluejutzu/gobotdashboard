@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase
         .from("users")
-        .select("discord_token")
+        .select("discord_refresh_token")
         .eq("discord_id", userId)
         .eq("supabase_user_id", superbase_user_id)
         .single()

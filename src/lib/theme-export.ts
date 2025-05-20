@@ -1,4 +1,4 @@
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 
 /**
  * Exports a theme to a JSON file that is downloaded by the browser

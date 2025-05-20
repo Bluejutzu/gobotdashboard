@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 import { ColorPicker } from "@/components/ui/color-picker"
 
 interface ThemeCreatorProps {

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 import { ChevronLeft, ChevronRight, Star } from "lucide-react"
 
 interface ThemeShowcaseProps {

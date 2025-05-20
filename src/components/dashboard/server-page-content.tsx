@@ -9,8 +9,8 @@ import { ServerLoading } from "@/components/dashboard/server-loading"
 import { ServerCreator } from "@/components/dashboard/server-creator"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import type { CommandLog, Server as ServerType } from "@/lib/types"
-import { User } from "@/lib/types"
+import type { CommandLog, Server as ServerType } from "@/lib/types/types"
+import type { User } from "@/lib/types/types"
 
 interface ServerPageContentProps {
   id: string

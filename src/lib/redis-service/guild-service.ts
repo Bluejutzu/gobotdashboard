@@ -26,7 +26,7 @@ export async function fetchUserGuilds(userId: string, superbase_user_id: string,
         const cachedGuilds = await getCachedUserGuilds(userId)
         if (cachedGuilds) {
             return cachedGuilds
-        } 
+        }
     }
 
     // If not in cache or force refresh, fetch from Discord API
@@ -118,7 +118,8 @@ export async function fetchBotGuilds(forceRefresh = false): Promise<string[]> {
  * Get formatted server list with bot presence information
  * @returns discordGuilds Array of Server[]
  */
-export async function getFormattedServerList(userId: string, superbase_user_id: string, forceRefresh = false): Promise<Server[]> {
+export async function getFormattedServerList(userId: string, superbase_user_id: string, forceRefresh = false, src?: string): Promise<Server[]> {
+    console.log(`[GUILD-SERVICE ${src}]: Getting formatted server list for ${userId}, ${superbase_user_id}`)
     try {
         // Fetch user guilds and bot guilds in parallel
         const [discordGuilds, botGuildIds] = await Promise.all([

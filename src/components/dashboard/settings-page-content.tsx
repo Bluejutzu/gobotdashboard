@@ -7,7 +7,7 @@ import { SettingsForm } from "@/components/dashboard/settings-form"
 import { RoleAccessControl } from "@/components/dashboard/role-access-control"
 import supabase from "@/lib/supabase/client"
 import { ServerLoading } from "@/components/dashboard/server-loading"
-import type { BotSettings, Server, User, UserServer } from "@/lib/types"
+import type { BotSettings, Server, User, UserServer } from "@/lib/types/types"
 
 interface SettingsPageContentProps {
   id: string
@@ -45,7 +45,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
           .from("user_servers")
           .select("*")
           .eq("user_id", userData.id)
-          .eq("server_id", server.discord_id)
+          .eq("server_id", server.id)
           .single<UserServer>()
 
         // Check if user is admin
@@ -63,7 +63,7 @@ export function SettingsPageContent({ id, server, botSettings }: SettingsPageCon
     }
 
     checkAuth()
-  }, [router, server.discord_id, id])
+  }, [router, server.id, id])
 
   if (loading) {
     return <ServerLoading />

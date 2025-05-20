@@ -5,7 +5,7 @@ import type React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { Check, X, ChevronRight, Palette, Star, Plus, Download, Upload, Filter } from "lucide-react"
 import { useThemeContext } from "@/contexts/theme-context"
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
