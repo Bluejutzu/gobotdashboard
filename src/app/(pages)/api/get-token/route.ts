@@ -13,14 +13,14 @@ export async function POST(req: Request) {
 
     const { data, error } = await supabase
         .from("users")
-        .select("discord_refresh_token")
+        .select("discord_token")
         .eq("discord_id", userId)
         .eq("supabase_user_id", superbase_user_id)
         .single()
 
     if (error || !data) {
-        console.error("Error fetching refresh token:", error)
-        return Response.json({ error: "Error fetching refresh token" }, { status: 500 })
+        console.error("Error fetching access token:", error)
+        return Response.json({ error: "Error fetching access token" }, { status: 500 })
     }
 
     const params = new URLSearchParams();
