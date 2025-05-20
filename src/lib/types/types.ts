@@ -156,3 +156,34 @@ export interface Connection {
 }
 
 export type ModerationCase = Database["public"]["Tables"]["moderation_cases"]["Row"];
+export enum ModerationStatus {
+    ACTIVE = "ACTIVE",
+    RESOLVED = "RESOLVED",
+    EXPIRED = "EXPIRED",
+    REMOVED = "REMOVED",
+    APPEALED = "APPEALED",
+}
+
+interface TriggerMetadata {
+    // Define the structure based on your application's requirements
+    [key: string]: any;
+}
+
+interface Action {
+    // Define the structure based on your application's requirements
+    [key: string]: any;
+}
+
+export interface AutoModerationRule {
+    id: string; // Snowflake ID
+    guild_id: string;
+    name: string;
+    creator_id: string;
+    event_type: number;
+    trigger_type: number;
+    trigger_metadata: TriggerMetadata;
+    actions: Action[];
+    enabled: boolean;
+    exempt_roles: string[];    // Max 20
+    exempt_channels: string[]; // Max 50
+}

@@ -9,7 +9,6 @@ import {
 } from "@/lib/cache-utils"
 import type { DiscordPartialGuild, Server } from "../types/types"
 import axios from "axios"
-import { headers } from "next/headers"
 
 const PERMISSION_ADMIN = 0x8
 const PERMISSION_MANAGE_SERVER = 0x20
@@ -21,7 +20,9 @@ const BASE_URL = process.env.NODE_ENV === "production" ? "https://gobotdashboard
 /**
  * Fetch user's Discord guilds with caching
  */
-export async function fetchUserGuilds(userId: string, superbase_user_id: string, forceRefresh = false): Promise<DiscordPartialGuild[]> {
+export async function fetchUserGuilds(userId: string, supabase_user_id: string, forceRefresh = false, src: string): Promise<DiscordPartialGuild[]> {
+    console.log("[GUILD-SERVICE]: ", src, userId, supabase_user_id)
+    let retries: number = 0
     // Try to get from cache first (unless force refresh is requested)
     if (!forceRefresh) {
         const cachedGuilds = await getCachedUserGuilds(userId)
@@ -30,39 +31,75 @@ export async function fetchUserGuilds(userId: string, superbase_user_id: string,
         }
     }
 
-    // If not in cache or force refresh, fetch from Discord API
     try {
         // Get Discord bearer token
-        const bearerToken = await axios.post(
-            `${BASE_URL}/api/get-token`,
-            {
-                userId,
-                superbase_user_id,
-            },
-            {
-                headers: { "Content-Type": "application/json" },
-            }
-        )
+        const { data: userData, error: bearerTokenError } = await supabase
+            .from("users")
+            .select("discord_token")
+            .eq("discord_id", userId)
+            .eq("supabase_user_id", supabase_user_id)
+            .single()
 
-        console.log(bearerToken, bearerToken.data)
-
-        if (bearerToken.status !== 200) {
-            throw new Error("Could not retrieve Discord token", { cause: bearerToken.statusText })
+        if (bearerTokenError) {
+            console.error(bearerTokenError)
+            throw new Error("[GUILD-SERVICE]: Could not retrieve Discord token", { cause: bearerTokenError.message })
         }
 
-        if (!bearerToken) {
+        if (!userData) {
             throw new Error("No discord token found")
         }
 
         // Fetch guilds from Discord API
         const response = await fetch("https://discord.com/api/v10/users/@me/guilds", {
             headers: {
-                Authorization: `Bearer ${bearerToken}`,
+                Authorization: `Bearer ${userData.discord_token}`,
             },
         })
 
+        if (response.status === 401) {
+            console.log("[GUILD-SERVICE]: 401 Unauthorized, refreshing token...")
+            retries++
+            if (retries > 3) {
+                throw new Error("[GUILD-SERVICE]: Could not refresh Discord token", { cause: response.statusText })
+            }
+
+            console.log("Refreshing token...")
+            const refreshToken = await axios.post(
+                `${BASE_URL}/api/refresh-token`,
+                {
+                    userId,
+                    supabase_user_id,
+                },
+                {
+                    headers: { "Content-Type": "application/json" },
+                }
+            )
+
+            if (refreshToken.status !== 200) {
+                throw new Error("Could not refresh Discord token", { cause: refreshToken.statusText })
+            }
+
+            const refreshTokenData = refreshToken.data
+            const newBearerToken = refreshTokenData.access_token
+
+            const { error: updateError } = await supabase.from("users").update({
+                discord_access_token: newBearerToken,
+                discord_refresh_token: refreshTokenData.refresh_token,
+            })
+                .eq("supabase_user_id", supabase_user_id)
+                .eq("discord_id", userId)
+
+            if (updateError) {
+                throw new Error("Could not update Discord token", { cause: updateError.message })
+            }
+
+            console.log("Token refreshed successfully")
+            return []
+        }
+
         if (!response.ok) {
-            throw new Error(`Discord API error: ${response.status}`)
+            console.error(bearerTokenError)
+            throw new Error(`Discord API error: ${response.status}`, { cause: response.statusText + bearerTokenError })
         }
 
         const rawDiscordGuilds: DiscordPartialGuild[] = await response.json()
@@ -119,11 +156,11 @@ export async function fetchBotGuilds(forceRefresh = false): Promise<string[]> {
  * Get formatted server list with bot presence information
  * @returns discordGuilds Array of Server[]
  */
-export async function getFormattedServerList(userId: string, superbase_user_id: string, forceRefresh = false): Promise<Server[]> {
+export async function getFormattedServerList(userId: string, supabase_user_id: string, forceRefresh = false): Promise<Server[]> {
     try {
         // Fetch user guilds and bot guilds in parallel
         const [discordGuilds, botGuildIds] = await Promise.all([
-            fetchUserGuilds(userId, superbase_user_id, forceRefresh),
+            fetchUserGuilds(userId, supabase_user_id, forceRefresh, "getFormattedServerList"),
             fetchBotGuilds(forceRefresh),
         ])
 
@@ -142,8 +179,8 @@ export async function getFormattedServerList(userId: string, superbase_user_id: 
                     icon: guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : null,
                     permissions: Number.parseInt(`${guild.permissions}`, 10),
                     botPresent: botServerIds.has(guild.id),
-                    approximate_member_count: guild.approximate_member_count || 0, // fallback if not always available
-                    approximate_presence_count: guild.approximate_presence_count || 0, // fallback if not always available
+                    approximate_member_count: guild.approximate_member_count || 0,
+                    approximate_presence_count: guild.approximate_presence_count || 0,
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                     features: guild.features,

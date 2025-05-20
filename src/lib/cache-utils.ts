@@ -45,7 +45,7 @@ export async function getCachedUserGuilds(userId: string): Promise<DiscordPartia
             return null;
         }
 
-        console.log(`Retrieved ${guilds.length} guilds from cache for user ${userId}`);
+        // console.log(`Retrieved ${guilds.length} guilds from cache for user ${userId}`);
         return guilds;
     } catch (error) {
         console.error(`Error processing cached guild data for user ${userId}:`, error);
@@ -92,7 +92,7 @@ export async function getCachedBotGuilds(): Promise<string[] | null> {
             console.warn(`Invalidated corrupted cache for key: ${key}`);
             return null;
         }
-        console.log("Retrieved bot guilds from cache:", guildIds);
+        // console.log("Retrieved bot guilds from cache:", guildIds);
         return guildIds;
     } catch (error) {
         console.error("Error parsing cached bot guild data:", error);

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useEffect, useState, useCallback } from "react" // Added useCallback
+import { useEffect, useState } from "react" // Added useCallback
 import { redirect, usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import {
@@ -89,45 +89,41 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
     const [currentBetaFeature, setCurrentBetaFeature] = useState<string | null>(null);
     const [serverSelectorOpen, setServerSelectorOpen] = useState(false);
 
-    const fetchUserServers = useCallback(async () => {
+    const fetchUserServers = React.useCallback(async () => {
+        if (!userData) return;
+
         try {
             setServersLoading(true);
+            console.log("fetching servers for user:", userData);
 
-            const response = await axios.post<DiscordPartialGuild[]>(`/api/guilds`, {
-                headers: {
-                    "Content-Type": "application/json"
+            const response = await axios.post<DiscordPartialGuild[]>(`/api/guilds?source=server-layout`,
+                {
+                    userId: userData.id,
+                    supabase_user_id: userData.supabase_user_id
                 },
-                userId: userData?.id,
-                superbase_user_id: userData?.supabase_user_id
-            });
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                },
+            );
 
             if (response.status === 200 && Array.isArray(response.data)) {
                 setUserServers(response.data);
             } else {
-                console.error("Error fetching user servers from API or data is not an array:", response.status, "response:", response);
+                console.error("Invalid response for user servers:", response);
                 setUserServers([]);
             }
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                if (error.response?.status === 400 || error.response?.status === 401 || error.response?.status === 500) {
-                    redirect("/auth/login");
-                } else {
-                    console.error(
-                        "Axios error fetching user servers:",
-                        error.response?.status,
-                        error.response?.data || error.message
-                    );
-                }
-            } else {
-                console.error("Exception while fetching user servers:", error);
-            }
+            console.error("Error fetching user servers:", error);
             setUserServers([]);
         } finally {
             setServersLoading(false);
         }
-    }, [setServersLoading, setUserServers]); // Dependencies are stable setters from useState
+    }, [userData])
 
     useEffect(() => {
+
         const fetchCurrentServerDetails = async () => {
             try {
                 setLoading(true);
@@ -167,14 +163,18 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
                         setUserData(undefined);
                     } else if (userDetails) {
                         setUserData(userDetails);
+                        console.log("User details fetched", userDetails)
                         // User details fetched, now fetch their list of manageable servers
                         await fetchUserServers();
                     } else {
                         setUserData(undefined); // No user record found
+                        console.error("No user record found")
+                        redirect("/auth/login")
                     }
                 } else {
                     setUserData(undefined); // No active session
-                    // Optionally, redirect to login or handle appropriately
+                    console.error("No active session")
+                    redirect("/auth/login")
                 }
             } catch (error) {
                 console.error("Error fetching user details and their servers:", error);
@@ -186,7 +186,7 @@ export default function ServerLayout({ children, params }: ServerLayoutProps) {
 
         fetchCurrentServerDetails();
         fetchUserAndThenTheirServers();
-    }, [id, fetchUserServers]); // Added fetchUserServers to dependency array due to useCallback
+    });
 
     const isSiteDeveloper = userData?.discord_id && SITE_DEVELOPERS.includes(userData.discord_id);
 

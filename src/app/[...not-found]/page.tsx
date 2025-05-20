@@ -8,6 +8,7 @@ export default function CatchAllNotFound() {
             showSearch={false}
             showPixelCharacter={true}
             footerText="You died! Score: 0"
+            
         />
     )
 }

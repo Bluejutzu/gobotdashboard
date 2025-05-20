@@ -13,7 +13,8 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { type ModerationCase, deleteModerationCase, getModerationCases } from "@/lib/redis-service/moderation-service"
+import { deleteModerationCase, getModerationCases } from "@/lib/redis-service/moderation-service"
+import type { ModerationCase } from "@/lib/types/types"
 
 interface ModerationCasesProps {
     serverId: string
@@ -125,8 +126,8 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
 
     const filteredCases = cases.filter((c) => {
         const matchesSearch =
-            c.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            c.reason.toLowerCase().includes(searchTerm.toLowerCase())
+            c.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            c.reason?.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesStatus = statusFilter === "all" || c.status === statusFilter
         const matchesAction = actionFilter === "all" || c.action === actionFilter
 
@@ -245,14 +246,14 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
                                                 <Avatar className="h-10 w-10 border border-[#3a3c47]">
                                                     <AvatarImage src={c.avatar || `/placeholder.svg?height=40&width=40`} />
                                                     <AvatarFallback className="bg-[#3a3c47] text-white">
-                                                        {c.username.substring(0, 2).toUpperCase()}
+                                                        {c.username?.substring(0, 2).toUpperCase()}
                                                     </AvatarFallback>
                                                 </Avatar>
                                                 <div>
                                                     <div className="flex items-center gap-2 flex-wrap">
-                                                        <h4 className="font-medium text-white">{c.username}</h4>
-                                                        <Badge className={`${getActionColor(c.action)} text-white`}>{c.action}</Badge>
-                                                        <Badge className={`${getStatusColor(c.status)} text-white`}>{c.status}</Badge>
+                                                        <h4 className="font-medium text-white">{c.username || "Unknown"}</h4>
+                                                        <Badge className={`${getActionColor(c.action || "warn")} text-white`}>{c.action || "warn"}</Badge>
+                                                        <Badge className={`${getStatusColor(c.status || "active")} text-white`}>{c.status || "active"}</Badge>
                                                         {c.duration && (
                                                             <Badge variant="outline" className="bg-[#1a1c23] text-gray-300 border-[#3a3c47]">
                                                                 {c.duration}
@@ -270,7 +271,7 @@ export function ModerationCases({ serverId }: ModerationCasesProps) {
                                                     </div>
                                                     <div className="flex items-center gap-1 mt-1">
                                                         <User className="h-3 w-3" />
-                                                        <span>By {c.moderatorName}</span>
+                                                        <span>By {c.moderator_name}</span>
                                                     </div>
                                                 </div>
                                                 <Button

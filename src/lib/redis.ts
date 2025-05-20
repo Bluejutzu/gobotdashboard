@@ -8,13 +8,15 @@ export const CACHE_TTL = {
   USER_GUILDS: 60 * 15, // 15 minutes
   BOT_GUILDS: 60 * 10, // 10 minutes
   MODERATION_CASES: 60 * 5, // 5 minutes
+  AUTO_MODERATION_SETTINGS: 60 * 5, // 5 minutes
 }
 
 export const CACHE_KEYS = {
   USER_GUILDS: "user:guilds:",
   GUILD: "guild:",
   BOT_GUILDS: "bot:guilds",
-  MODERATION_CASES: "moderation:cases:"
+  MODERATION_CASES: "moderation:cases:",
+  AUTO_MODERATION_SETTINGS: "autoModSettings:"
 }
 
 export async function getCache<T>(key: string): Promise<T | null> {

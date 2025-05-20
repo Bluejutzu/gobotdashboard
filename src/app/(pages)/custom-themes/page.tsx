@@ -12,10 +12,10 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import type { ThemeData } from "@/lib/types"
+import type { ThemeData } from "@/lib/types/types"
 import { useThemeContext } from "@/contexts/theme-context"
 import { SiteHeader } from "@/components/site-header"
-import { supabase } from "@/lib/supabase"
+import  supabase  from "@/lib/supabase/client"
 
 export default function CustomThemesPage() {
     const { theme, setTheme } = useTheme()

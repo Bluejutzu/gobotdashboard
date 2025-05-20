@@ -16,14 +16,32 @@ export default function GuildsPage() {
 
     const fetchServers = useCallback(async (forceRefresh = false) => {
         try {
-            const { data: sessionData } = await supabase.auth.getSession()
+            const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
             const discordId = sessionData.session?.user.user_metadata.sub
 
-            const res = await axios.post("/api/guilds", {
-                userId: discordId,
-                superbase_user_id: sessionData.session?.user.id,
+            if (sessionError) {
+                throw new Error("Error fetching session data:", sessionError)
+            }
+
+            console.log(
+                discordId,
+                sessionData.session?.user.id,
                 forceRefresh,
-            })
+            )
+
+            const res = await axios.post(
+                "/api/guilds",
+                {
+                    userId: discordId,
+                    supabase_user_id: sessionData.session?.user.id,
+                    forceRefresh,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
 
             const { servers } = res.data
             setServers(servers)

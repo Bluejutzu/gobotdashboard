@@ -24,12 +24,11 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
-    ModerationCase,
-    ModerationStatus,
     deleteModerationCase,
-    getModerationCase,
-    updateModerationCase
+    getModerationCases,
+    updateModerationCase,
 } from "@/lib/redis-service/moderation-service"
+import { ModerationCase, ModerationStatus } from "@/lib/types/types"
 
 interface CaseDetailProps {
     serverId: string
@@ -45,18 +44,18 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
 
     // Edit form state
     const [editReason, setEditReason] = useState("")
-    const [editStatus, setEditStatus] = useState<ModerationStatus>("active")
-    const [editDuration, setEditDuration] = useState("")
+    const [editStatus, setEditStatus] = useState<ModerationStatus>(ModerationStatus.ACTIVE)
+    const [editDuration, setEditDuration] = useState(0)
 
     useEffect(() => {
         const fetchCase = async () => {
             try {
                 setLoading(true)
-                const data = await getModerationCase(caseId)
-                setCaseData(data)
-                setEditReason(data.reason)
-                setEditStatus(data.status)
-                setEditDuration(data.duration || "")
+                const data = await getModerationCases(caseId)
+                setCaseData(data[0])
+                setEditReason(data[0].reason || "")
+                setEditStatus(ModerationStatus[data[0].status as keyof typeof ModerationStatus] || ModerationStatus.ACTIVE)
+                setEditDuration(data[0].duration || 0)
             } catch (error) {
                 console.error("Error fetching case:", error)
                 toast.error("Error", {
@@ -79,7 +78,7 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
             await updateModerationCase(caseId, {
                 reason: editReason,
                 status: editStatus,
-                duration: editDuration || undefined,
+                duration: editDuration || 0,
             })
 
             // Update local state
@@ -87,7 +86,7 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                 ...caseData,
                 reason: editReason,
                 status: editStatus,
-                duration: editDuration || undefined,
+                duration: editDuration || 0,
             })
 
             setEditMode(false)
@@ -130,15 +129,15 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
             setSaving(true)
 
             await updateModerationCase(caseId, {
-                status: "resolved",
+                status: ModerationStatus.RESOLVED,
             })
 
             // Update local state
             setCaseData({
                 ...caseData,
-                status: "resolved",
+                status: ModerationStatus.RESOLVED,
             })
-            setEditStatus("resolved")
+            setEditStatus(ModerationStatus.RESOLVED)
 
             toast.success("User unbanned", {
                 description: `${caseData.username} has been unbanned from the server.`,
@@ -227,12 +226,12 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                     <Avatar className="h-12 w-12 border border-[#3a3c47]">
                         <AvatarImage src={caseData.avatar || `/placeholder.svg?height=48&width=48`} />
                         <AvatarFallback className="bg-[#3a3c47] text-white">
-                            {caseData.username.substring(0, 2).toUpperCase()}
+                            {caseData?.username?.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                     </Avatar>
                     <div>
-                        <h2 className="text-xl font-bold text-white">{caseData.username}</h2>
-                        <p className="text-sm text-gray-400">User ID: {caseData.userId}</p>
+                        <h2 className="text-xl font-bold text-white">{caseData?.username || "Unknown"}</h2>
+                        <p className="text-sm text-gray-400">User ID: {caseData?.user_id || "Unknown"}</p>
                     </div>
                 </motion.div>
 
@@ -247,8 +246,8 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                         <span className="ml-1">{caseData.action}</span>
                     </Badge>
 
-                    <Badge className={`${getStatusColor(caseData.status)} text-white px-3 py-1.5`}>
-                        {caseData.status}
+                    <Badge className={`${getStatusColor(caseData.status || ModerationStatus.ACTIVE)} text-white px-3 py-1.5`}>
+                        {caseData.status || ModerationStatus.ACTIVE}
                     </Badge>
 
                     {caseData.duration && (
@@ -318,7 +317,7 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                                     <label className="text-sm font-medium text-gray-400">Duration</label>
                                     <Input
                                         value={editDuration}
-                                        onChange={(e) => setEditDuration(e.target.value)}
+                                        onChange={(e) => setEditDuration(Number(e.target.value))}
                                         className="bg-[#232530] border-[#3a3c47] text-white"
                                         placeholder="e.g. 7 days, Permanent"
                                     />
@@ -374,21 +373,21 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                     <h4 className="text-sm font-medium text-gray-400 mb-2">Moderator</h4>
                     <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-gray-500" />
-                        <span className="text-white">{caseData.moderatorName}</span>
+                        <span className="text-white">{caseData.moderator_name}</span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">ID: {caseData.moderatorId}</p>
+                    <p className="text-xs text-gray-500 mt-1">ID: {caseData.moderator_id}</p>
                 </div>
 
                 <div className="bg-[#232530] p-4 rounded-md border border-[#3a3c47]">
                     <h4 className="text-sm font-medium text-gray-400 mb-2">Timestamp</h4>
                     <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-gray-500" />
-                        <span className="text-white">{formatDate(caseData.timestamp)}</span>
+                        <span className="text-white">{formatDate(caseData.timestamp || "")}</span>
                     </div>
-                    {caseData.expiresAt && (
+                    {caseData.expires_at && (
                         <div className="flex items-center gap-2 mt-2">
                             <Timer className="h-4 w-4 text-gray-500" />
-                            <span className="text-gray-300">Expires: {formatDate(caseData.expiresAt)}</span>
+                            <span className="text-gray-300">Expires: {formatDate(`${caseData.expires_at}`)}</span>
                         </div>
                     )}
                 </div>
@@ -434,7 +433,7 @@ export function CaseDetail({ serverId, caseId }: CaseDetailProps) {
                     </AlertDialogContent>
                 </AlertDialog>
 
-                {caseData.action === "ban" && caseData.status === "active" && (
+                {caseData.action === "ban" && caseData.status === ModerationStatus.ACTIVE && (
                     <Button
                         onClick={handleUnban}
                         disabled={saving}

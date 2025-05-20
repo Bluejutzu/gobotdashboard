@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/next';
 import { SiteFooter } from "@/components/site-footer";
 import { ThemeProvider } from "@/contexts/theme-context"
+import { SiteHeader } from "@/components/site-header";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
+          <SiteHeader />
           {children}
           <SiteFooter />
           <Toaster className="dark" />

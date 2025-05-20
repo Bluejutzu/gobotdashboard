@@ -77,7 +77,6 @@ function AuthCallback() {
           return
         }
 
-        // ✅ Token is present and valid
         if (logged === "true") {
           setUser(session.user)
           setStatus("success")
@@ -88,7 +87,6 @@ function AuthCallback() {
           return
         }
 
-        // 👇 Save token (if new user / not logged before)
         try {
           await axios.post(
             "/api/save-token",
