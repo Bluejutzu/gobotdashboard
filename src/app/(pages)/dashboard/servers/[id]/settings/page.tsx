@@ -5,6 +5,14 @@ import { SettingsPageContent } from "@/components/dashboard/settings-page-conten
 
 type SettingsPageProps = Promise<{ id: string }>
 
+/**
+ * Renders the settings page for a server, fetching server and bot settings data by server ID.
+ *
+ * Displays an error component if the server or its bot settings cannot be retrieved or found.
+ *
+ * @param params - An object containing the server ID to load settings for.
+ * @returns The settings page content if data is found, or an error component if retrieval fails.
+ */
 export default async function SettingsPage({ params }: { params: SettingsPageProps }) {
     const { id }: { id: string } = await params
     const supabase = await createServerSupabaseClient()

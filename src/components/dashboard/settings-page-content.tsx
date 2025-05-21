@@ -15,6 +15,15 @@ interface SettingsPageContentProps {
   botSettings: BotSettings
 }
 
+/**
+ * Displays and manages the bot settings page for a specific server, enforcing user authentication and admin authorization.
+ *
+ * Redirects unauthenticated users to the login page and non-admin users to the appropriate dashboard page. Renders a loading indicator while authentication is in progress, and upon successful validation, displays the settings form and role access controls for the server.
+ *
+ * @param id - The unique identifier of the server.
+ * @param server - The server details.
+ * @param botSettings - The current bot configuration for the server.
+ */
 export function SettingsPageContent({ id, server, botSettings }: SettingsPageContentProps) {
   const [, setUserData] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)

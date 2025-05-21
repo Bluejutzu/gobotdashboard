@@ -8,6 +8,15 @@ import { ModerationRuleCard } from "./moderation-rule-card"
 import { getAutoModerationSettings, updateAutoModerationSettings } from "@/lib/redis-service/moderation-service"
 import type { ExtendedAutoModerationRule } from "@/lib/types/types"
 
+/**
+ * React component for managing and updating auto-moderation settings for a server.
+ *
+ * Fetches existing moderation settings for the specified server, initializes defaults if none exist, and provides UI controls for enabling or configuring profanity filtering, spam protection, and link filtering. Allows users to save changes, with feedback on loading and saving states.
+ *
+ * @param serverId - The unique identifier of the server whose moderation settings are managed.
+ *
+ * @returns The moderation settings UI, or null while loading.
+ */
 export function AutoModeration({ serverId }: { serverId: string }) {
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -151,7 +160,12 @@ export function AutoModeration({ serverId }: { serverId: string }) {
     )
 }
 
-// Helper function to create default settings
+/**
+ * Generates a default auto-moderation settings object for a given server.
+ *
+ * @param serverId - The unique identifier of the server for which to create default settings.
+ * @returns An {@link ExtendedAutoModerationRule} object with default values for moderation rules and custom settings.
+ */
 function createDefaultSettings(serverId: string): ExtendedAutoModerationRule {
     return {
         id: "new",

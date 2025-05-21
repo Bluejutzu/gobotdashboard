@@ -9,6 +9,13 @@ interface ServerCardProps {
     server: Server
 }
 
+/**
+ * Displays a card with details and management options for a server.
+ *
+ * Shows the server's icon or initial, name, member count, and ID, along with a button linking to the server management page.
+ *
+ * @param server - The server object containing details to display.
+ */
 export function ServerCard({ server }: ServerCardProps) {
     return (
         <Card className="overflow-hidden">

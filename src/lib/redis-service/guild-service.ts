@@ -115,8 +115,17 @@ export async function fetchBotGuilds(forceRefresh = false): Promise<string[]> {
 }
 
 /**
- * Get formatted server list with bot presence information
- * @returns discordGuilds Array of Server[]
+ * Retrieves a list of Discord servers where the user has administrative or management permissions, including bot presence and server metadata.
+ *
+ * Fetches the user's guilds and the bot's guild IDs in parallel, filters for servers where the user has sufficient permissions, and formats each server with relevant details such as icon URL, permissions, bot presence, member counts, features, and stickers.
+ *
+ * @param userId - The Discord user ID.
+ * @param superbase_user_id - The corresponding Supabase user ID.
+ * @param forceRefresh - If true, bypasses cache and fetches fresh data.
+ * @param src - Optional source identifier for logging.
+ * @returns An array of formatted {@link Server} objects representing the user's manageable Discord servers.
+ *
+ * @throws {Error} If fetching guild data fails.
  */
 export async function getFormattedServerList(userId: string, superbase_user_id: string, forceRefresh = false, src?: string): Promise<Server[]> {
     console.log(`[GUILD-SERVICE ${src}]: Getting formatted server list for ${userId}, ${superbase_user_id}`)
@@ -157,7 +166,11 @@ export async function getFormattedServerList(userId: string, superbase_user_id: 
 }
 
 /**
- * Invalidate all guild-related caches for a user
+ * Invalidates cached guild data for the specified user and all bot guilds.
+ *
+ * Removes both the user's guild cache and the bot's guild cache to ensure fresh data is fetched on subsequent requests.
+ *
+ * @param userId - The Discord user ID whose guild cache should be invalidated.
  */
 export async function invalidateGuildCaches(userId: string): Promise<void> {
     await Promise.all([invalidateUserGuildsCache(userId), invalidateBotGuildsCache()])

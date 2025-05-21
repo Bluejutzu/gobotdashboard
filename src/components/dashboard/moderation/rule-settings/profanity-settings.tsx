@@ -13,6 +13,16 @@ interface ProfanitySettingsProps {
     updateSettings: (settings: ExtendedAutoModerationRule) => void
 }
 
+/**
+ * React component for managing a list of blocked words in an auto-moderation rule.
+ *
+ * Provides an interface to add new blocked words and remove existing ones from the rule's keyword filter.
+ *
+ * @param settings - The current auto-moderation rule settings, including the keyword filter.
+ * @param updateSettings - Callback to update the rule settings when the blocked words list changes.
+ *
+ * @returns The rendered profanity settings UI.
+ */
 export function ProfanitySettings({ settings, updateSettings }: ProfanitySettingsProps) {
     const [newWord, setNewWord] = useState("")
     const keywords = settings.trigger_metadata?.keyword_filter || []

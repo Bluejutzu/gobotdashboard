@@ -11,6 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeftRight, Maximize2 } from "lucide-react"
 import type { ThemeData } from "@/lib/types/types"
 
+/**
+ * Renders the theme comparison and showcase demo page with interactive sections, including a hero area, feature highlights, demo tabs for comparing and showcasing themes, and a step-by-step guide.
+ *
+ * The page allows users to open a theme selector, compare two sample themes side by side, explore a showcase of multiple themes, and learn how the comparison and showcase features work through illustrative sections.
+ */
 export default function ThemeComparisonDemoPage() {
     const [showSelector, setShowSelector] = useState(false)
     const [activeTab, setActiveTab] = useState("comparison")

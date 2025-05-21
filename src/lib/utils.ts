@@ -6,10 +6,28 @@ import { twMerge } from "tailwind-merge"
 const BASE_URL = process.env.NODE_ENV === "production" ? "https://gobotdashboard.vercel.app" : "http://localhost:3000"
 
 
+/**
+ * Merges multiple class name values into a single string, resolving Tailwind CSS conflicts.
+ *
+ * Accepts any combination of string, array, or object class values and returns a deduplicated, merged class name string.
+ *
+ * @returns A single string of merged class names.
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+/**
+ * Refreshes a user's Discord OAuth token and updates the tokens in the Supabase database.
+ *
+ * Attempts to obtain new Discord access and refresh tokens for the specified user by calling an internal API endpoint, then updates the user's record in the Supabase `users` table with the new tokens.
+ *
+ * @param userId - The Discord user ID.
+ * @param supabase_user_id - The Supabase user ID associated with the Discord user.
+ * @returns An object indicating success or failure. On success, includes the new Discord access and refresh tokens.
+ *
+ * @throws {Error} If the token refresh API request fails or returns a non-200 status.
+ */
 export async function refreshDiscordToken(userId: string, supabase_user_id: string, supabase: SupabaseClient): Promise<{ success: boolean, error?: string, data?: { discord_access_token: any, discord_refresh_token: any } }> {
   if (!userId || !supabase_user_id) {
     return { success: false, error: "Invalid user ID or supabase user ID", data: { discord_access_token: "", discord_refresh_token: "" } }

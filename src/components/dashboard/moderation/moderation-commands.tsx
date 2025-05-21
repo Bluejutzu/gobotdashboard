@@ -2,6 +2,11 @@
 
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
+/**
+ * Displays a searchable list of moderation commands for server moderators.
+ *
+ * Renders a command palette interface with descriptions, usage, and examples for each moderation command.
+ */
 export function ModerationCommands() {
   const commands = [
     {
