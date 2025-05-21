@@ -1,49 +1,49 @@
-"use client"
+"use client";
 
-import { type ReactNode, useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import supabase from "@/lib/supabase/client"
-import { ServerLoading } from "./server-loading"
+import { type ReactNode, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import supabase from "@/lib/supabase/client";
+import { ServerLoading } from "./server-loading";
 
 interface AuthCheckProps {
-    children: ReactNode
+	children: ReactNode;
 }
 
 export function AuthCheck({ children }: AuthCheckProps) {
-    const [isLoading, setIsLoading] = useState(true)
-    const router = useRouter()
+	const [isLoading, setIsLoading] = useState(true);
+	const router = useRouter();
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                setIsLoading(true)
-                
-                const { data, error } = await supabase.auth.getSession()
+	useEffect(() => {
+		const checkSession = async () => {
+			try {
+				setIsLoading(true);
 
-                if (error || !data.session) {
-                    console.error("Auth check failed:", error)
-                    router.push("/auth/login")
-                    return
-                }
+				const { data, error } = await supabase.auth.getSession();
 
-                // Session is valid, continue
-                setIsLoading(false)
-            } catch (error) {
-                console.error("Error checking session:", error)
-                router.push("/auth/login")
-            }
-        }
+				if (error || !data.session) {
+					console.error("Auth check failed:", error);
+					router.push("/auth/login");
+					return;
+				}
 
-        checkSession()
-    }, [router])
+				// Session is valid, continue
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error checking session:", error);
+				router.push("/auth/login");
+			}
+		};
 
-    if (isLoading) {
-        return (
-            <div className="py-8">
-                <ServerLoading message="Verifying your session..." />
-            </div>
-        )
-    }
+		checkSession();
+	}, [router]);
 
-    return <>{children}</>
+	if (isLoading) {
+		return (
+			<div className="py-8">
+				<ServerLoading message="Verifying your session..." />
+			</div>
+		);
+	}
+
+	return <>{children}</>;
 }

@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import Prism from "prismjs"
-import "prismjs/themes/prism-tomorrow.css"
-import "prismjs/components/prism-typescript"
-import "prismjs/components/prism-jsx"
-import "prismjs/components/prism-tsx"
+import { useEffect } from "react";
+import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
 
 interface CodeBlockProps {
-    code: string
-    language: string
-    filename?: string
+	code: string;
+	language: string;
+	filename?: string;
 }
 
 export function CodeBlock({ code, language, filename }: CodeBlockProps) {
-    useEffect(() => {
-        Prism.highlightAll()
-    }, [code])
+	useEffect(() => {
+		Prism.highlightAll();
+	}, [code]);
 
-    return (
-        <div className="code-block-wrapper">
-            {filename && (
-                <div className="code-filename">
-                    <span>{filename}</span>
-                </div>
-            )}
-            <pre className={`language-${language}`}>
-                <code>{code}</code>
-            </pre>
-            <style jsx>{`
+	return (
+		<div className="code-block-wrapper">
+			{filename && (
+				<div className="code-filename">
+					<span>{filename}</span>
+				</div>
+			)}
+			<pre className={`language-${language}`}>
+				<code>{code}</code>
+			</pre>
+			<style jsx>{`
         .code-block-wrapper {
           position: relative;
           margin: 1rem 0;
@@ -55,6 +55,6 @@ export function CodeBlock({ code, language, filename }: CodeBlockProps) {
           line-height: 1.5;
         }
       `}</style>
-        </div>
-    )
+		</div>
+	);
 }
