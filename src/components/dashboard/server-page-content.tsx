@@ -68,7 +68,7 @@ export function ServerPageContent({ id, server }: ServerPageContentProps) {
                 discordId={id}
                 userId={userData.id}
                 onServerCreated={() => {
-                    router.refresh();
+                    // router.refresh();
                 }}
             />
         );
