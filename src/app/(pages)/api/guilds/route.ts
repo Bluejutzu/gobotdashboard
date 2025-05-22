@@ -12,46 +12,40 @@ import { getFormattedServerList } from "@/lib/redis-service/guild-service";
  * @remark Returns a 400 status if `userId` or `supabase_user_id` is missing, and a 500 status for unexpected errors.
  */
 export async function POST(req: Request) {
-	try {
-		const body = await req.json();
-		const { userId, supabase_user_id, forceRefresh } = body;
+    try {
+        const body = await req.json();
+        const { userId, supabase_user_id, forceRefresh } = body;
 
-		// Validate required parameters
-		if (!userId || !supabase_user_id) {
-			console.error("Missing required parameters:", {
-				userId,
-				supabase_user_id,
-			});
-			return NextResponse.json(
-				{
-					error:
-						"Missing required parameters: userId and supabase_user_id are required",
-				},
-				{ status: 400 },
-			);
-		}
+        // Validate required parameters
+        if (!userId || !supabase_user_id) {
+            console.error("Missing required parameters:", {
+                userId,
+                supabase_user_id
+            });
+            return NextResponse.json(
+                {
+                    error: "Missing required parameters: userId and supabase_user_id are required"
+                },
+                { status: 400 }
+            );
+        }
 
-		// Log the request for debugging
-		console.log("Fetching servers for:", {
-			userId,
-			supabase_user_id,
-			forceRefresh,
-		});
+        // Log the request for debugging
+        console.log("Fetching servers for:", {
+            userId,
+            supabase_user_id,
+            forceRefresh
+        });
 
-		const servers = await getFormattedServerList(
-			userId,
-			supabase_user_id,
-			forceRefresh,
-			"api-route",
-		);
-		return NextResponse.json(servers);
-	} catch (e) {
-		console.error("Error in server fetch API route:", e);
-		return NextResponse.json(
-			{
-				error: `Failed to fetch servers: ${e instanceof Error ? e.message : String(e)}`,
-			},
-			{ status: 500 },
-		);
-	}
+        const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh, "api-route");
+        return NextResponse.json({ servers });
+    } catch (e) {
+        console.error("Error in server fetch API route:", e);
+        return NextResponse.json(
+            {
+                error: `Failed to fetch servers: ${e instanceof Error ? e.message : String(e)}`
+            },
+            { status: 500 }
+        );
+    }
 }

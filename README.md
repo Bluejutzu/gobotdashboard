@@ -1,4 +1,5 @@
 ## TODO
+
 - [x] Add custom theme functionality
 - [ ] Fix command page (partially done)
 - [x] improve server dashboard

@@ -2,16 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
     eslint: {
-        ignoreDuringBuilds: true,
+        ignoreDuringBuilds: true
     },
-    webpack: (config) => {
+    webpack: config => {
         config.watchOptions = {
             ...config.watchOptions,
-            ignored: ['**/bot/**']
-        }
-        return config
+            ignored: ["**/bot/**"]
+        };
+        return config;
     },
-    serverExternalPackages: ['bot'],
+    serverExternalPackages: ["bot"]
 };
 
 export default nextConfig;
