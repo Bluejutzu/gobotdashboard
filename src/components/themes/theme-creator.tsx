@@ -1,42 +1,42 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { toast } from "sonner"
-import { useThemeContext } from "@/contexts/theme-context"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { ThemeData } from "@/lib/types"
-import { ColorPicker } from "@/components/ui/color-picker"
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useThemeContext } from "@/contexts/theme-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { ThemeData } from "@/lib/types/types";
+import { ColorPicker } from "@/components/ui/color-picker";
 
 interface ThemeCreatorProps {
-    initialTheme?: ThemeData
-    onSave?: (theme: ThemeData) => void
-    onCancel?: () => void
+    initialTheme?: ThemeData;
+    onSave?: (theme: ThemeData) => void;
+    onCancel?: () => void;
 }
 
 export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorProps) {
-    const { currentTheme, saveTheme } = useThemeContext()
+    const { currentTheme, saveTheme } = useThemeContext();
 
     // Initialize with provided theme or current theme
-    const [themeName, setThemeName] = useState(initialTheme?.name || "My Custom Theme")
-    const [primaryColor, setPrimaryColor] = useState(initialTheme?.primary || currentTheme.primary)
-    const [secondaryColor, setSecondaryColor] = useState(initialTheme?.secondary || currentTheme.secondary)
-    const [accentColor, setAccentColor] = useState(initialTheme?.accent || currentTheme.accent)
-    const [borderRadius, setBorderRadius] = useState(initialTheme?.borderRadius || currentTheme.borderRadius)
-    const [isPublic, setIsPublic] = useState(initialTheme?.isPublic || false)
-    const [category, setCategory] = useState(initialTheme?.category || "custom")
+    const [themeName, setThemeName] = useState(initialTheme?.name || "My Custom Theme");
+    const [primaryColor, setPrimaryColor] = useState(initialTheme?.primary || currentTheme.primary);
+    const [secondaryColor, setSecondaryColor] = useState(initialTheme?.secondary || currentTheme.secondary);
+    const [accentColor, setAccentColor] = useState(initialTheme?.accent || currentTheme.accent);
+    const [borderRadius, setBorderRadius] = useState(initialTheme?.borderRadius || currentTheme.borderRadius);
+    const [isPublic, setIsPublic] = useState(initialTheme?.isPublic || false);
+    const [category, setCategory] = useState(initialTheme?.category || "custom");
 
     // Preview styles
     const [previewStyles, setPreviewStyles] = useState({
         primary: primaryColor,
         secondary: secondaryColor,
         accent: accentColor,
-        borderRadius: `${borderRadius}px`,
-    })
+        borderRadius: `${borderRadius}px`
+    });
 
     // Update preview when colors change
     useEffect(() => {
@@ -44,15 +44,15 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
             primary: primaryColor,
             secondary: secondaryColor,
             accent: accentColor,
-            borderRadius: `${borderRadius}px`,
-        })
-    }, [primaryColor, secondaryColor, accentColor, borderRadius])
+            borderRadius: `${borderRadius}px`
+        });
+    }, [primaryColor, secondaryColor, accentColor, borderRadius]);
 
     // Handle save
     const handleSave = async () => {
         if (!themeName.trim()) {
-            toast.error("Please enter a theme name")
-            return
+            toast.error("Please enter a theme name");
+            return;
         }
 
         const newTheme: ThemeData = {
@@ -63,37 +63,37 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
             accent: accentColor,
             borderRadius: borderRadius,
             isPublic: isPublic,
-            category: category,
-        }
+            category: category
+        };
 
         try {
-            await saveTheme(newTheme)
-            if (onSave) onSave(newTheme)
+            await saveTheme(newTheme);
+            if (onSave) onSave(newTheme);
         } catch (error) {
-            console.error("Error saving theme:", error)
+            console.error("Error saving theme:", error);
         }
-    }
+    };
 
     // Handle reset
     const handleReset = () => {
         if (initialTheme) {
-            setThemeName(initialTheme.name)
-            setPrimaryColor(initialTheme.primary)
-            setSecondaryColor(initialTheme.secondary)
-            setAccentColor(initialTheme.accent)
-            setBorderRadius(initialTheme.borderRadius)
-            setIsPublic(initialTheme.isPublic || false)
-            setCategory(initialTheme.category || "custom")
+            setThemeName(initialTheme.name);
+            setPrimaryColor(initialTheme.primary);
+            setSecondaryColor(initialTheme.secondary);
+            setAccentColor(initialTheme.accent);
+            setBorderRadius(initialTheme.borderRadius);
+            setIsPublic(initialTheme.isPublic || false);
+            setCategory(initialTheme.category || "custom");
         } else {
-            setThemeName("My Custom Theme")
-            setPrimaryColor("#0ea5e9")
-            setSecondaryColor("#f1f5f9")
-            setAccentColor("#6366f1")
-            setBorderRadius(8)
-            setIsPublic(false)
-            setCategory("custom")
+            setThemeName("My Custom Theme");
+            setPrimaryColor("#0ea5e9");
+            setSecondaryColor("#f1f5f9");
+            setAccentColor("#6366f1");
+            setBorderRadius(8);
+            setIsPublic(false);
+            setCategory("custom");
         }
-    }
+    };
 
     return (
         <div className="space-y-6">
@@ -102,7 +102,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                 <Input
                     id="theme-name"
                     value={themeName}
-                    onChange={(e) => setThemeName(e.target.value)}
+                    onChange={e => setThemeName(e.target.value)}
                     placeholder="My Awesome Theme"
                 />
             </div>
@@ -125,7 +125,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                     max={20}
                     step={1}
                     value={[borderRadius]}
-                    onValueChange={(value) => setBorderRadius(value[0])}
+                    onValueChange={value => setBorderRadius(value[0])}
                     className="py-4"
                 />
             </div>
@@ -165,7 +165,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                     className="px-4 py-2 text-white rounded-md"
                                     style={{
                                         backgroundColor: previewStyles.primary,
-                                        borderRadius: previewStyles.borderRadius,
+                                        borderRadius: previewStyles.borderRadius
                                     }}
                                 >
                                     Primary Button
@@ -175,7 +175,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                     style={{
                                         borderColor: previewStyles.primary,
                                         color: previewStyles.primary,
-                                        borderRadius: previewStyles.borderRadius,
+                                        borderRadius: previewStyles.borderRadius
                                     }}
                                 >
                                     Outline Button
@@ -189,7 +189,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                 className="p-4 border rounded-md"
                                 style={{
                                     borderColor: "rgba(255, 255, 255, 0.1)",
-                                    borderRadius: previewStyles.borderRadius,
+                                    borderRadius: previewStyles.borderRadius
                                 }}
                             >
                                 <div className="font-medium mb-2">Card Title</div>
@@ -199,7 +199,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                         className="px-3 py-1 text-xs text-white rounded-md"
                                         style={{
                                             backgroundColor: previewStyles.accent,
-                                            borderRadius: previewStyles.borderRadius,
+                                            borderRadius: previewStyles.borderRadius
                                         }}
                                     >
                                         Action
@@ -216,7 +216,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                     style={{
                                         backgroundColor: previewStyles.primary,
                                         color: "#fff",
-                                        borderRadius: previewStyles.borderRadius,
+                                        borderRadius: previewStyles.borderRadius
                                     }}
                                 >
                                     Primary
@@ -226,7 +226,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                     style={{
                                         backgroundColor: previewStyles.secondary,
                                         color: "#000",
-                                        borderRadius: previewStyles.borderRadius,
+                                        borderRadius: previewStyles.borderRadius
                                     }}
                                 >
                                     Secondary
@@ -236,7 +236,7 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                                     style={{
                                         backgroundColor: previewStyles.accent,
                                         color: "#fff",
-                                        borderRadius: previewStyles.borderRadius,
+                                        borderRadius: previewStyles.borderRadius
                                     }}
                                 >
                                     Accent
@@ -261,5 +261,5 @@ export function ThemeCreator({ initialTheme, onSave, onCancel }: ThemeCreatorPro
                 </div>
             </div>
         </div>
-    )
+    );
 }

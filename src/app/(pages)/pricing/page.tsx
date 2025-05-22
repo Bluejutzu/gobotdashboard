@@ -1,10 +1,10 @@
-import Link from "next/link"
-import { ArrowRight, Check, HelpCircle } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { SiteHeader } from "@/components/site-header"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { PricingCard } from "@/components/pricing-card"
+import Link from "next/link";
+import { ArrowRight, Check, HelpCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { SiteHeader } from "@/components/site-header";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { PricingCard } from "@/components/pricing-card";
 
 export default function PricingPage() {
     return (
@@ -48,7 +48,9 @@ export default function PricingPage() {
                                     className="rounded-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-blue-600 data-[state=active]:text-white"
                                 >
                                     Yearly{" "}
-                                    <span className="ml-1.5 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">Save 20%</span>
+                                    <span className="ml-1.5 text-xs bg-green-500 text-white px-1.5 py-0.5 rounded-full">
+                                        Save 20%
+                                    </span>
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs>
@@ -98,7 +100,7 @@ export default function PricingPage() {
                                         key="role"
                                         feature="Basic role management"
                                         tooltip="Simple role assignment and management"
-                                    />,
+                                    />
                                 ]}
                                 buttonText="Get Started"
                                 buttonLink="/auth/login"
@@ -142,7 +144,7 @@ export default function PricingPage() {
                                         key="branding"
                                         feature="Custom branding"
                                         tooltip="Customize the bot's appearance in your server"
-                                    />,
+                                    />
                                 ]}
                                 buttonText="Upgrade Now"
                                 buttonLink="/pricing/checkout"
@@ -187,7 +189,7 @@ export default function PricingPage() {
                                         key="api"
                                         feature="API access"
                                         tooltip="Access the bot's API for custom development"
-                                    />,
+                                    />
                                 ]}
                                 buttonText="Upgrade Now"
                                 buttonLink="/pricing/checkout"
@@ -232,7 +234,7 @@ export default function PricingPage() {
                                         key="api"
                                         feature="API access"
                                         tooltip="Full API access with higher rate limits and custom endpoints"
-                                    />,
+                                    />
                                 ]}
                                 buttonText="Contact Us"
                                 buttonLink="/contact"
@@ -248,8 +250,8 @@ export default function PricingPage() {
                         <div className="inline-block mx-auto p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl max-w-3xl">
                             <h3 className="text-xl font-semibold mb-3">Need a custom solution?</h3>
                             <p className="text-white/70 mb-4">
-                                We offer tailored plans for large communities and special use cases. Contact our sales team to discuss
-                                your needs.
+                                We offer tailored plans for large communities and special use cases. Contact our sales
+                                team to discuss your needs.
                             </p>
                             <div className="flex flex-wrap justify-center gap-4 mt-6">
                                 <div className="flex items-center gap-2">
@@ -294,8 +296,12 @@ export default function PricingPage() {
                                 <tr className="border-b border-white/10">
                                     <th className="py-4 px-6 text-left font-medium text-white/70">Feature</th>
                                     <th className="py-4 px-6 text-center font-medium text-white/70">Free</th>
-                                    <th className="py-4 px-6 text-center font-medium text-white/70 bg-purple-500/5">Premium</th>
-                                    <th className="py-4 px-6 text-center font-medium text-white/70 bg-teal-500/5">Business</th>
+                                    <th className="py-4 px-6 text-center font-medium text-white/70 bg-purple-500/5">
+                                        Premium
+                                    </th>
+                                    <th className="py-4 px-6 text-center font-medium text-white/70 bg-teal-500/5">
+                                        Business
+                                    </th>
                                     <th className="py-4 px-6 text-center font-medium text-white/70">Enterprise</th>
                                 </tr>
                             </thead>
@@ -445,7 +451,9 @@ export default function PricingPage() {
 
                 <div className="container relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ready to transform your Discord server?</h2>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+                            Ready to transform your Discord server?
+                        </h2>
                         <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
                             Join thousands of servers already using Gobot to improve their Discord experience.
                         </p>
@@ -477,7 +485,7 @@ export default function PricingPage() {
                 </div>
             </section>
         </div>
-    )
+    );
 }
 
 // Feature Row Component for the comparison table
@@ -487,14 +495,14 @@ function FeatureRow({
     premium,
     business,
     enterprise,
-    tooltip,
+    tooltip
 }: {
-    feature: string
-    free: string | boolean
-    premium: string | boolean
-    business: string | boolean
-    enterprise: string | boolean
-    tooltip?: string
+    feature: string;
+    free: string | boolean;
+    premium: string | boolean;
+    business: string | boolean;
+    enterprise: string | boolean;
+    tooltip?: string;
 }) {
     return (
         <TooltipProvider>
@@ -560,7 +568,7 @@ function FeatureRow({
                 </td>
             </tr>
         </TooltipProvider>
-    )
+    );
 }
 
 // Feature with Tooltip Component for pricing cards
@@ -579,7 +587,7 @@ function FeatureWithTooltip({ feature, tooltip }: { feature: string; tooltip: st
                 </Tooltip>
             </div>
         </TooltipProvider>
-    )
+    );
 }
 
 // FAQ Item Component
@@ -589,5 +597,5 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
             <h3 className="text-xl font-semibold mb-3">{question}</h3>
             <p className="text-white/70">{answer}</p>
         </div>
-    )
+    );
 }

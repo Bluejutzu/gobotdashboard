@@ -1,19 +1,24 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeSelector } from "@/components/themes/theme-selector"
-import { ThemeComparison } from "@/components/themes/theme-comparison"
-import { ThemeShowcase } from "@/components/themes/theme-showcase"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeftRight, Maximize2 } from "lucide-react"
-import type { ThemeData } from "@/lib/types"
+import { useState } from "react";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeSelector } from "@/components/themes/theme-selector";
+import { ThemeComparison } from "@/components/themes/theme-comparison";
+import { ThemeShowcase } from "@/components/themes/theme-showcase";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeftRight, Maximize2 } from "lucide-react";
+import type { ThemeData } from "@/lib/types/types";
 
+/**
+ * Renders the theme comparison and showcase demo page with interactive sections, including a hero area, feature highlights, demo tabs for comparing and showcasing themes, and a step-by-step guide.
+ *
+ * The page allows users to open a theme selector, compare two sample themes side by side, explore a showcase of multiple themes, and learn how the comparison and showcase features work through illustrative sections.
+ */
 export default function ThemeComparisonDemoPage() {
-    const [showSelector, setShowSelector] = useState(false)
-    const [activeTab, setActiveTab] = useState("comparison")
+    const [showSelector, setShowSelector] = useState(false);
+    const [activeTab, setActiveTab] = useState("comparison");
 
     // Sample themes for demo
     const demoThemes: ThemeData[] = [
@@ -24,7 +29,7 @@ export default function ThemeComparisonDemoPage() {
             secondary: "#f1f5f9",
             accent: "#6366f1",
             borderRadius: 8,
-            category: "light",
+            category: "light"
         },
         {
             id: "dark",
@@ -33,7 +38,7 @@ export default function ThemeComparisonDemoPage() {
             secondary: "#1f2937",
             accent: "#f43f5e",
             borderRadius: 8,
-            category: "dark",
+            category: "dark"
         },
         {
             id: "sunset",
@@ -42,7 +47,7 @@ export default function ThemeComparisonDemoPage() {
             secondary: "#fff7ed",
             accent: "#8b5cf6",
             borderRadius: 16,
-            category: "colorful",
+            category: "colorful"
         },
         {
             id: "minimal",
@@ -51,9 +56,9 @@ export default function ThemeComparisonDemoPage() {
             secondary: "#f8fafc",
             accent: "#94a3b8",
             borderRadius: 2,
-            category: "minimal",
-        },
-    ]
+            category: "minimal"
+        }
+    ];
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -68,7 +73,9 @@ export default function ThemeComparisonDemoPage() {
 
                     <div className="container relative z-10">
                         <div className="max-w-3xl mx-auto text-center">
-                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6">Theme Comparison & Showcase</h1>
+                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6">
+                                Theme Comparison & Showcase
+                            </h1>
                             <p className="text-xl text-muted-foreground mb-8">
                                 Compare themes side-by-side and explore detailed theme showcases
                             </p>
@@ -98,8 +105,8 @@ export default function ThemeComparisonDemoPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="mb-4">
-                                        Compare two themes side-by-side to see the visual differences and make an informed choice. The
-                                        comparison tool shows:
+                                        Compare two themes side-by-side to see the visual differences and make an
+                                        informed choice. The comparison tool shows:
                                     </p>
                                     <ul className="list-disc pl-5 space-y-1 text-muted-foreground">
                                         <li>Visual UI element differences</li>
@@ -136,7 +143,12 @@ export default function ThemeComparisonDemoPage() {
                 {/* Demo Section */}
                 <section className="py-16">
                     <div className="container">
-                        <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="max-w-5xl mx-auto">
+                        <Tabs
+                            defaultValue={activeTab}
+                            value={activeTab}
+                            onValueChange={setActiveTab}
+                            className="max-w-5xl mx-auto"
+                        >
                             <TabsList className="grid w-full grid-cols-2">
                                 <TabsTrigger value="comparison">Theme Comparison</TabsTrigger>
                                 <TabsTrigger value="showcase">Theme Showcase</TabsTrigger>
@@ -144,13 +156,17 @@ export default function ThemeComparisonDemoPage() {
 
                             <TabsContent value="comparison" className="border rounded-md mt-6 overflow-hidden">
                                 <div className="h-[600px]">
-                                    <ThemeComparison themes={[demoThemes[0], demoThemes[1]]} onApply={() => { }} onClose={() => { }} />
+                                    <ThemeComparison
+                                        themes={[demoThemes[0], demoThemes[1]]}
+                                        onApply={() => {}}
+                                        onClose={() => {}}
+                                    />
                                 </div>
                             </TabsContent>
 
                             <TabsContent value="showcase" className="border rounded-md mt-6 overflow-hidden">
                                 <div className="h-[600px]">
-                                    <ThemeShowcase themes={demoThemes} onApply={() => { }} onClose={() => { }} />
+                                    <ThemeShowcase themes={demoThemes} onApply={() => {}} onClose={() => {}} />
                                 </div>
                             </TabsContent>
                         </Tabs>
@@ -167,8 +183,9 @@ export default function ThemeComparisonDemoPage() {
                                 <div className="md:w-1/2">
                                     <h3 className="text-xl font-bold mb-4">1. Select Themes to Compare</h3>
                                     <p>
-                                        In the theme selector, choose two themes you want to compare by clicking the comparison checkbox.
-                                        Once you've selected two themes, click the "Compare" button to see them side by side.
+                                        In the theme selector, choose two themes you want to compare by clicking the
+                                        comparison checkbox. Once you've selected two themes, click the "Compare" button
+                                        to see them side by side.
                                     </p>
                                 </div>
                                 <div className="md:w-1/2 bg-white/5 p-4 rounded-lg">
@@ -235,9 +252,9 @@ export default function ThemeComparisonDemoPage() {
                                 <div className="md:w-1/2 order-0 md:order-1">
                                     <h3 className="text-xl font-bold mb-4">2. Compare Visual Differences</h3>
                                     <p>
-                                        The comparison view shows both themes side by side, highlighting the visual differences in UI
-                                        elements, colors, and styles. You can see how each theme affects buttons, cards, form elements, and
-                                        more.
+                                        The comparison view shows both themes side by side, highlighting the visual
+                                        differences in UI elements, colors, and styles. You can see how each theme
+                                        affects buttons, cards, form elements, and more.
                                     </p>
                                 </div>
                             </div>
@@ -246,8 +263,9 @@ export default function ThemeComparisonDemoPage() {
                                 <div className="md:w-1/2">
                                     <h3 className="text-xl font-bold mb-4">3. Explore Theme Showcase</h3>
                                     <p>
-                                        The theme showcase provides a comprehensive view of each theme with interactive previews and
-                                        detailed information. Browse through featured themes and see how they look in various UI contexts.
+                                        The theme showcase provides a comprehensive view of each theme with interactive
+                                        previews and detailed information. Browse through featured themes and see how
+                                        they look in various UI contexts.
                                     </p>
                                 </div>
                                 <div className="md:w-1/2 bg-white/5 p-4 rounded-lg">
@@ -270,7 +288,7 @@ export default function ThemeComparisonDemoPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }
 
 function ChevronLeft(props: any) {
@@ -289,7 +307,7 @@ function ChevronLeft(props: any) {
         >
             <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
-    )
+    );
 }
 
 function ChevronRight(props: any) {
@@ -308,5 +326,5 @@ function ChevronRight(props: any) {
         >
             <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
-    )
+    );
 }

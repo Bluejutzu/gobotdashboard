@@ -1,4 +1,4 @@
-import { PricingCard } from "@/components/pricing-card"
+import { PricingCard } from "@/components/pricing-card";
 
 export function PricingSection() {
     return (
@@ -19,7 +19,8 @@ export function PricingSection() {
                         Choose the perfect plan for your needs
                     </h2>
                     <p className="text-xl text-white/70">
-                        Gobot offers flexible pricing options to fit any Discord community, from small servers to large enterprises.
+                        Gobot offers flexible pricing options to fit any Discord community, from small servers to large
+                        enterprises.
                     </p>
                 </div>
 
@@ -33,7 +34,7 @@ export function PricingSection() {
                             "Basic auto-moderation",
                             "Custom commands (up to 10)",
                             "Welcome messages",
-                            "Basic role management",
+                            "Basic role management"
                         ]}
                         buttonText="Get Started"
                         buttonLink="/auth/login"
@@ -51,7 +52,7 @@ export function PricingSection() {
                             "Unlimited custom commands",
                             "Advanced analytics",
                             "Priority support",
-                            "Custom branding",
+                            "Custom branding"
                         ]}
                         buttonText="Upgrade Now"
                         buttonLink="/pricing"
@@ -69,7 +70,7 @@ export function PricingSection() {
                             "Custom feature development",
                             "SLA guarantees",
                             "Multiple server management",
-                            "API access",
+                            "API access"
                         ]}
                         buttonText="Contact Us"
                         buttonLink="/contact"
@@ -83,8 +84,8 @@ export function PricingSection() {
                     <div className="inline-block mx-auto p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl max-w-3xl">
                         <h3 className="text-xl font-semibold mb-3">Need a custom solution?</h3>
                         <p className="text-white/70 mb-4">
-                            We offer tailored plans for large communities and special use cases. Contact our sales team to discuss
-                            your needs.
+                            We offer tailored plans for large communities and special use cases. Contact our sales team
+                            to discuss your needs.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 mt-6">
                             <div className="flex items-center gap-2">
@@ -108,5 +109,5 @@ export function PricingSection() {
                 </div>
             </div>
         </section>
-    )
+    );
 }

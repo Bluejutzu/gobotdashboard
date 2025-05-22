@@ -1,11 +1,11 @@
-import { ArrowRight, CheckCircle } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight, CheckCircle } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ServerCreatedProps {
-    serverName: string
-    serverId: string
+    serverName: string;
+    serverId: string;
 }
 
 export function ServerCreated({ serverName, serverId }: ServerCreatedProps) {
@@ -37,7 +37,10 @@ export function ServerCreated({ serverName, serverId }: ServerCreatedProps) {
                 </CardContent>
                 <CardFooter>
                     <Button asChild className="w-full">
-                        <Link href={`/dashboard/servers/${serverId}`} className="flex items-center justify-center gap-2">
+                        <Link
+                            href={`/dashboard/servers/${serverId}`}
+                            className="flex items-center justify-center gap-2"
+                        >
                             Continue to Server Dashboard
                             <ArrowRight className="h-4 w-4" />
                         </Link>
@@ -45,5 +48,5 @@ export function ServerCreated({ serverName, serverId }: ServerCreatedProps) {
                 </CardFooter>
             </Card>
         </div>
-    )
+    );
 }

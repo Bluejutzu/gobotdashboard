@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ErrorPage } from "@/components/error-page"
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ErrorPage } from "@/components/error-page";
 
 export default function NotFound() {
-    const router = useRouter()
+    const router = useRouter();
 
     // Custom actions to match the original design
     const customActions = (
@@ -21,7 +21,7 @@ export default function NotFound() {
                 Go to previous Page
             </Button>
         </div>
-    )
+    );
 
     return (
         <ErrorPage
@@ -33,5 +33,5 @@ export default function NotFound() {
             footerText="You died! Score: 0"
             description="Oops! Looks like you've ventured into uncharted territory. The page you're looking for has either been moved or doesn't exist."
         />
-    )
+    );
 }

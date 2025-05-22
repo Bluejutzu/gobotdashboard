@@ -1,419 +1,194 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { AlertCircle, RefreshCw, Save, ShieldCheck } from "lucide-react"
-import { toast } from "sonner"
-import { Switch } from "@/components/ui/switch"
-import { Slider } from "@/components/ui/slider"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {
-    type AutoModerationSettings,
-    getAutoModerationSettings,
-    updateAutoModerationSettings,
-} from "@/lib/redis-service/moderation-service"
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ModerationRuleCard } from "./moderation-rule-card";
+import { getAutoModerationSettings, updateAutoModerationSettings } from "@/lib/redis-service/moderation-service";
+import type { ExtendedAutoModerationRule } from "@/lib/types/types";
 
+/**
+ * React component for managing and updating auto-moderation settings for a server.
+ *
+ * Fetches existing moderation settings for the specified server, initializes defaults if none exist, and provides UI controls for enabling or configuring profanity filtering, spam protection, and link filtering. Allows users to save changes, with feedback on loading and saving states.
+ *
+ * @param serverId - The unique identifier of the server whose moderation settings are managed.
+ *
+ * @returns The moderation settings UI, or null while loading.
+ */
 export function AutoModeration({ serverId }: { serverId: string }) {
-    const [loading, setLoading] = useState(true)
-    const [saving, setSaving] = useState(false)
-    const [settings, setSettings] = useState<AutoModerationSettings>({
-        profanityFilter: true,
-        profanityLevel: 2,
-        profanityAction: "delete",
-        spamProtection: true,
-        spamThreshold: 5,
-        spamAction: "mute",
-        linkFilter: false,
-        linkAction: "delete",
-        mentionProtection: true,
-        mentionAction: "warn",
-        capsFilter: false,
-        capsAction: "warn",
-    })
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [settings, setSettings] = useState<ExtendedAutoModerationRule | null>(null);
+    const [hasChanges, setHasChanges] = useState(false);
 
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                setLoading(true)
-                const data = await getAutoModerationSettings(serverId)
-                setSettings(data)
-            } catch (error) {
-                console.error("Error fetching auto-moderation settings:", error)
-                toast.error("Error", {
-                    description: "Failed to load auto-moderation settings. Using defaults.",
-                })
+                setLoading(true);
+                const data = await getAutoModerationSettings(serverId);
+
+                // If no settings exist, create default settings
+                if (!data) {
+                    setSettings(createDefaultSettings(serverId));
+                } else {
+                    setSettings(data as ExtendedAutoModerationRule);
+                }
+            } catch (err) {
+                console.error("Failed to load settings:", err);
+                toast.error("Failed to load settings", {
+                    description: "Using default moderation configuration."
+                });
+                setSettings(createDefaultSettings(serverId));
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        fetchSettings()
-    }, [serverId])
+        fetchSettings();
+    }, [serverId]);
 
-    const saveSettings = async () => {
+    // Create a function to update settings and track changes
+    const updateSettings = (updatedSettings: ExtendedAutoModerationRule) => {
+        setSettings(updatedSettings);
+        setHasChanges(true);
+    };
+
+    const handleSave = async () => {
+        if (!settings) return;
+
         try {
-            setSaving(true)
-            await updateAutoModerationSettings(serverId, settings)
-            
+            setSaving(true);
+            await updateAutoModerationSettings(serverId, settings);
             toast.success("Settings saved", {
-                description: "Your auto-moderation settings have been updated.",
-            })
-        } catch (error) {
-            console.error("Error saving auto-moderation settings:", error)
-            toast.error("Error", {
-                description: "Failed to save settings. Please try again.",
-            })
+                description: "Auto-moderation settings updated successfully."
+            });
+            setHasChanges(false);
+        } catch (err) {
+            console.error("Save failed:", err);
+            toast.error("Save failed", {
+                description: "Try again in a few seconds."
+            });
         } finally {
-            setSaving(false)
+            setSaving(false);
         }
-    }
+    };
 
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    }
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 },
-    }
-
-    if (loading) {
-        return (
-            <div className="space-y-6 animate-pulse">
-                <Skeleton className="h-20 w-full bg-[#232530]" />
-                <Skeleton className="h-40 w-full bg-[#232530]" />
-                <Skeleton className="h-40 w-full bg-[#232530]" />
-                <div className="flex justify-end">
-                    <Skeleton className="h-10 w-32 bg-[#232530]" />
-                </div>
-            </div>
-        )
+    if (loading || !settings) {
+        // We don't need to render a loading state here since the parent component
+        // is using Suspense with ModerationTabSkeleton as the fallback
+        return null;
     }
 
     return (
-        <motion.div variants={container} initial="hidden" animate="show" className="space-y-6">
-            <motion.div variants={item}>
-                <Alert className="bg-[#2b2d3a] border-blue-500/50">
-                    <AlertCircle className="h-4 w-4 text-blue-500" />
-                    <AlertTitle className="text-blue-500">Auto-moderation is active</AlertTitle>
-                    <AlertDescription className="text-gray-300">
-                        Sapphire will automatically moderate your server based on these settings.
-                    </AlertDescription>
-                </Alert>
-            </motion.div>
+        <div className="space-y-6">
+            <div className="space-y-4">
+                <ModerationRuleCard
+                    title="Profanity Filter"
+                    description="Automatically detect and remove messages containing profanity"
+                    icon="filter"
+                    enabled={settings.trigger_metadata?.keyword_filter?.length ? true : false}
+                    onToggle={enabled =>
+                        updateSettings({
+                            ...settings,
+                            trigger_metadata: {
+                                ...settings.trigger_metadata,
+                                keyword_filter: enabled ? ["fuck", "shit", "asshole"] : []
+                            }
+                        })
+                    }
+                    settings={settings}
+                    updateSettings={updateSettings}
+                    type="profanity"
+                />
 
-            <Accordion type="multiple" defaultValue={["profanity", "spam"]} className="w-full">
-                <motion.div variants={item}>
-                    <AccordionItem value="profanity" className="border-[#3a3c47]">
-                        <AccordionTrigger className="text-white hover:text-white hover:no-underline py-4 px-4 bg-[#2b2d3a] rounded-t-md">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-blue-500" />
-                                <span>Profanity Filter</span>
-                                {settings.profanityFilter && <Badge className="ml-2 bg-green-600 text-white">Enabled</Badge>}
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="bg-[#232530] p-4 rounded-b-md border-t border-[#3a3c47]">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-white">Enable Profanity Filter</h4>
-                                        <p className="text-sm text-gray-400">Automatically filter profane language</p>
-                                    </div>
-                                    <Switch
-                                        checked={settings.profanityFilter}
-                                        onCheckedChange={(checked) => setSettings({ ...settings, profanityFilter: checked })}
-                                        className="data-[state=checked]:bg-blue-600"
-                                    />
-                                </div>
+                <ModerationRuleCard
+                    title="Spam Protection"
+                    description="Prevent message spam and repetitive content"
+                    icon="shield"
+                    enabled={settings.customSettings?.spamSettings?.enabled || false}
+                    onToggle={enabled =>
+                        updateSettings({
+                            ...settings,
+                            customSettings: {
+                                ...settings.customSettings,
+                                ...(settings.customSettings ?? {}),
+                                spamSettings: {
+                                    enabled,
+                                    threshold: settings.customSettings?.spamSettings?.threshold || 5
+                                }
+                            }
+                        })
+                    }
+                    settings={settings}
+                    updateSettings={updateSettings}
+                    type="spam"
+                />
 
-                                {settings.profanityFilter && (
-                                    <>
-                                        <div className="space-y-2">
-                                            <h4 className="font-medium text-white">Filter Strictness</h4>
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-sm text-gray-400">Low</span>
-                                                <Slider
-                                                    value={[settings.profanityLevel]}
-                                                    min={1}
-                                                    max={3}
-                                                    step={1}
-                                                    onValueChange={(value) => setSettings({ ...settings, profanityLevel: value[0] })}
-                                                    className="flex-1"
-                                                />
-                                                <span className="text-sm text-gray-400">High</span>
-                                            </div>
-                                            <p className="text-xs text-gray-500">
-                                                Current level:{" "}
-                                                {settings.profanityLevel === 1 ? "Low" : settings.profanityLevel === 2 ? "Medium" : "High"}
-                                            </p>
-                                        </div>
+                <ModerationRuleCard
+                    title="Link Filter"
+                    description="Control which links can be shared in your server"
+                    icon="link"
+                    enabled={settings.customSettings?.linkFilter || false}
+                    onToggle={enabled =>
+                        updateSettings({
+                            ...settings,
+                            customSettings: {
+                                ...settings.customSettings,
+                                linkFilter: enabled
+                            }
+                        })
+                    }
+                    settings={settings}
+                    updateSettings={updateSettings}
+                    type="link"
+                />
+            </div>
 
-                                        <div className="space-y-2">
-                                            <h4 className="font-medium text-white">Action on Detection</h4>
-                                            <Select
-                                                value={settings.profanityAction}
-                                                onValueChange={(value) => setSettings({ ...settings, profanityAction: value })}
-                                            >
-                                                <SelectTrigger className="bg-[#232530] border-[#3a3c47] text-white">
-                                                    <SelectValue placeholder="Select action" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#232530] border-[#3a3c47]">
-                                                    <SelectItem value="warn">Warn User</SelectItem>
-                                                    <SelectItem value="delete">Delete Message</SelectItem>
-                                                    <SelectItem value="mute">Mute User (5 minutes)</SelectItem>
-                                                    <SelectItem value="kick">Kick User</SelectItem>
-                                                    <SelectItem value="ban">Ban User</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-
-                <motion.div variants={item}>
-                    <AccordionItem value="spam" className="border-[#3a3c47] mt-2">
-                        <AccordionTrigger className="text-white hover:text-white hover:no-underline py-4 px-4 bg-[#2b2d3a] rounded-t-md">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-blue-500" />
-                                <span>Spam Protection</span>
-                                {settings.spamProtection && <Badge className="ml-2 bg-green-600 text-white">Enabled</Badge>}
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="bg-[#232530] p-4 rounded-b-md border-t border-[#3a3c47]">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-white">Enable Spam Protection</h4>
-                                        <p className="text-sm text-gray-400">Prevent message spam in your server</p>
-                                    </div>
-                                    <Switch
-                                        checked={settings.spamProtection}
-                                        onCheckedChange={(checked) => setSettings({ ...settings, spamProtection: checked })}
-                                        className="data-[state=checked]:bg-blue-600"
-                                    />
-                                </div>
-
-                                {settings.spamProtection && (
-                                    <>
-                                        <div className="space-y-2">
-                                            <h4 className="font-medium text-white">Message Threshold</h4>
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-sm text-gray-400">3</span>
-                                                <Slider
-                                                    value={[settings.spamThreshold]}
-                                                    min={3}
-                                                    max={10}
-                                                    step={1}
-                                                    onValueChange={(value) => setSettings({ ...settings, spamThreshold: value[0] })}
-                                                    className="flex-1"
-                                                />
-                                                <span className="text-sm text-gray-400">10</span>
-                                            </div>
-                                            <p className="text-xs text-gray-500">
-                                                Trigger after {settings.spamThreshold} messages in 5 seconds
-                                            </p>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <h4 className="font-medium text-white">Action on Detection</h4>
-                                            <Select
-                                                value={settings.spamAction}
-                                                onValueChange={(value) => setSettings({ ...settings, spamAction: value })}
-                                            >
-                                                <SelectTrigger className="bg-[#232530] border-[#3a3c47] text-white">
-                                                    <SelectValue placeholder="Select action" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-[#232530] border-[#3a3c47]">
-                                                    <SelectItem value="warn">Warn User</SelectItem>
-                                                    <SelectItem value="delete">Delete Messages</SelectItem>
-                                                    <SelectItem value="mute">Mute User (10 minutes)</SelectItem>
-                                                    <SelectItem value="kick">Kick User</SelectItem>
-                                                    <SelectItem value="ban">Ban User</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-
-                <motion.div variants={item}>
-                    <AccordionItem value="links" className="border-[#3a3c47] mt-2">
-                        <AccordionTrigger className="text-white hover:text-white hover:no-underline py-4 px-4 bg-[#2b2d3a] rounded-t-md">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-blue-500" />
-                                <span>Link Filter</span>
-                                {settings.linkFilter && <Badge className="ml-2 bg-green-600 text-white">Enabled</Badge>}
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="bg-[#232530] p-4 rounded-b-md border-t border-[#3a3c47]">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-white">Enable Link Filter</h4>
-                                        <p className="text-sm text-gray-400">Filter links posted in your server</p>
-                                    </div>
-                                    <Switch
-                                        checked={settings.linkFilter}
-                                        onCheckedChange={(checked) => setSettings({ ...settings, linkFilter: checked })}
-                                        className="data-[state=checked]:bg-blue-600"
-                                    />
-                                </div>
-
-                                {settings.linkFilter && (
-                                    <div className="space-y-2">
-                                        <h4 className="font-medium text-white">Action on Detection</h4>
-                                        <Select
-                                            value={settings.linkAction}
-                                            onValueChange={(value) => setSettings({ ...settings, linkAction: value })}
-                                        >
-                                            <SelectTrigger className="bg-[#232530] border-[#3a3c47] text-white">
-                                                <SelectValue placeholder="Select action" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#232530] border-[#3a3c47]">
-                                                <SelectItem value="warn">Warn User</SelectItem>
-                                                <SelectItem value="delete">Delete Message</SelectItem>
-                                                <SelectItem value="mute">Mute User (5 minutes)</SelectItem>
-                                                <SelectItem value="kick">Kick User</SelectItem>
-                                                <SelectItem value="ban">Ban User</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-
-                <motion.div variants={item}>
-                    <AccordionItem value="mentions" className="border-[#3a3c47] mt-2">
-                        <AccordionTrigger className="text-white hover:text-white hover:no-underline py-4 px-4 bg-[#2b2d3a] rounded-t-md">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-blue-500" />
-                                <span>Mention Protection</span>
-                                {settings.mentionProtection && <Badge className="ml-2 bg-green-600 text-white">Enabled</Badge>}
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="bg-[#232530] p-4 rounded-b-md border-t border-[#3a3c47]">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-white">Enable Mention Protection</h4>
-                                        <p className="text-sm text-gray-400">Prevent mention spam in your server</p>
-                                    </div>
-                                    <Switch
-                                        checked={settings.mentionProtection}
-                                        onCheckedChange={(checked) => setSettings({ ...settings, mentionProtection: checked })}
-                                        className="data-[state=checked]:bg-blue-600"
-                                    />
-                                </div>
-
-                                {settings.mentionProtection && (
-                                    <div className="space-y-2">
-                                        <h4 className="font-medium text-white">Action on Detection</h4>
-                                        <Select
-                                            value={settings.mentionAction}
-                                            onValueChange={(value) => setSettings({ ...settings, mentionAction: value })}
-                                        >
-                                            <SelectTrigger className="bg-[#232530] border-[#3a3c47] text-white">
-                                                <SelectValue placeholder="Select action" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#232530] border-[#3a3c47]">
-                                                <SelectItem value="warn">Warn User</SelectItem>
-                                                <SelectItem value="delete">Delete Message</SelectItem>
-                                                <SelectItem value="mute">Mute User (5 minutes)</SelectItem>
-                                                <SelectItem value="kick">Kick User</SelectItem>
-                                                <SelectItem value="ban">Ban User</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-
-                <motion.div variants={item}>
-                    <AccordionItem value="caps" className="border-[#3a3c47] mt-2">
-                        <AccordionTrigger className="text-white hover:text-white hover:no-underline py-4 px-4 bg-[#2b2d3a] rounded-t-md">
-                            <div className="flex items-center gap-2">
-                                <ShieldCheck className="h-4 w-4 text-blue-500" />
-                                <span>Excessive Caps Filter</span>
-                                {settings.capsFilter && <Badge className="ml-2 bg-green-600 text-white">Enabled</Badge>}
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="bg-[#232530] p-4 rounded-b-md border-t border-[#3a3c47]">
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h4 className="font-medium text-white">Enable Caps Filter</h4>
-                                        <p className="text-sm text-gray-400">Filter messages with excessive capital letters</p>
-                                    </div>
-                                    <Switch
-                                        checked={settings.capsFilter}
-                                        onCheckedChange={(checked) => setSettings({ ...settings, capsFilter: checked })}
-                                        className="data-[state=checked]:bg-blue-600"
-                                    />
-                                </div>
-
-                                {settings.capsFilter && (
-                                    <div className="space-y-2">
-                                        <h4 className="font-medium text-white">Action on Detection</h4>
-                                        <Select
-                                            value={settings.capsAction}
-                                            onValueChange={(value) => setSettings({ ...settings, capsAction: value })}
-                                        >
-                                            <SelectTrigger className="bg-[#232530] border-[#3a3c47] text-white">
-                                                <SelectValue placeholder="Select action" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-[#232530] border-[#3a3c47]">
-                                                <SelectItem value="warn">Warn User</SelectItem>
-                                                <SelectItem value="delete">Delete Message</SelectItem>
-                                                <SelectItem value="mute">Mute User (5 minutes)</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                            </div>
-                        </AccordionContent>
-                    </AccordionItem>
-                </motion.div>
-            </Accordion>
-
-            <motion.div variants={item} className="flex justify-end">
-                <Button onClick={saveSettings} disabled={saving} className="bg-blue-600 hover:bg-blue-700 text-white">
-                    {saving ? (
-                        <>
-                            <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                            Saving...
-                        </>
-                    ) : (
-                        <>
-                            <Save className="mr-2 h-4 w-4" />
-                            Save Settings
-                        </>
-                    )}
+            <div className="flex justify-end">
+                <Button
+                    onClick={handleSave}
+                    disabled={saving || !hasChanges}
+                    className="transition-all bg-blue-600 hover:bg-blue-700"
+                >
+                    <Save className="w-4 h-4 mr-2" />
+                    {saving ? "Saving..." : "Save Changes"}
                 </Button>
-            </motion.div>
-        </motion.div>
-    )
+            </div>
+        </div>
+    );
 }
 
-function Skeleton({ className }: { className: string }) {
-    return <div className={`animate-pulse ${className}`} />
+/**
+ * Generates a default auto-moderation settings object for a given server.
+ *
+ * @param serverId - The unique identifier of the server for which to create default settings.
+ * @returns An {@link ExtendedAutoModerationRule} object with default values for moderation rules and custom settings.
+ */
+function createDefaultSettings(serverId: string): ExtendedAutoModerationRule {
+    return {
+        id: "new",
+        guild_id: serverId,
+        name: "Auto Moderation",
+        creator_id: "",
+        event_type: 1,
+        trigger_type: 1,
+        trigger_metadata: {
+            keyword_filter: []
+        },
+        actions: [{ type: 2 }], // Delete message by default
+        enabled: true,
+        exempt_roles: [],
+        exempt_channels: [],
+        customSettings: {
+            linkFilter: false,
+            allowedDomains: [],
+            blockAllLinks: false,
+            spamSettings: {
+                enabled: false,
+                threshold: 5
+            }
+        }
+    };
 }

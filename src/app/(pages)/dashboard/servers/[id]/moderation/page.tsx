@@ -1,20 +1,28 @@
-import { Suspense } from "react"
-import { FileText, Flag, Shield, Terminal } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card } from "@/components/ui/card"
+import { Suspense } from "react";
+import { FileText, Flag, Shield, Terminal } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 
-import { ModerationHeader } from "@/components/dashboard/moderation/moderation-header"
-import { ModerationTabSkeleton } from "@/components/dashboard/moderation/moderation-skeleton"
-import { CustomFlagging } from "@/components/dashboard/moderation/custom-flagging"
-import { ModerationCases } from "@/components/dashboard/moderation/moderation-cases"
-import { ModerationCommands } from "@/components/dashboard/moderation/moderation-commands"
-import { AutoModeration } from "@/components/dashboard/moderation/auto-moderation"
+import { ModerationHeader } from "@/components/dashboard/moderation/moderation-header";
+import { ModerationTabSkeleton } from "@/components/dashboard/moderation/moderation-skeleton";
+import { CustomFlagging } from "@/components/dashboard/moderation/custom-flagging";
+import { ModerationCases } from "@/components/dashboard/moderation/moderation-cases";
+import { ModerationCommands } from "@/components/dashboard/moderation/moderation-commands";
+import { AutoModeration } from "@/components/dashboard/moderation/auto-moderation";
 
+/**
+ * Renders the moderation dashboard page with tabbed navigation for different moderation tools.
+ *
+ * Displays a header and a card containing tabs for Auto Moderation, Custom Flags, Cases, and Commands. Each tab loads its content asynchronously with a loading skeleton fallback.
+ *
+ * @param params - A promise resolving to an object containing the server ID.
+ * @returns The moderation dashboard React component.
+ */
 export default async function ModerationPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id }: { id: string } = await params
+    const { id }: { id: string } = await params;
     return (
         <div className="container p-4 space-y-6 max-w-7xl mx-auto">
-            <ModerationHeader serverId={id} />
+            <ModerationHeader />
 
             <Card className="border-0 bg-[#1a1c23] shadow-md overflow-hidden">
                 <Tabs defaultValue="auto" className="w-full">
@@ -58,7 +66,7 @@ export default async function ModerationPage({ params }: { params: Promise<{ id:
 
                         <TabsContent value="flags" className="mt-0 space-y-4">
                             <Suspense fallback={<ModerationTabSkeleton />}>
-                                <CustomFlagging serverId={id} />
+                                <CustomFlagging />
                             </Suspense>
                         </TabsContent>
 
@@ -70,12 +78,12 @@ export default async function ModerationPage({ params }: { params: Promise<{ id:
 
                         <TabsContent value="commands" className="mt-0 space-y-4">
                             <Suspense fallback={<ModerationTabSkeleton />}>
-                                <ModerationCommands serverId={id} />
+                                <ModerationCommands />
                             </Suspense>
                         </TabsContent>
                     </div>
                 </Tabs>
             </Card>
         </div>
-    )
+    );
 }

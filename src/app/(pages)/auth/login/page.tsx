@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
-import { BarChart3, Bot, MessageSquare, Shield, Users } from "lucide-react"
-import Link from "next/link"
-import { DiscordAuthButton } from "@/components/auth/discord-auth-button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { BarChart3, Bot, MessageSquare, Shield, Users } from "lucide-react";
+import Link from "next/link";
+import { DiscordAuthButton } from "@/components/auth/discord-auth-button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
-    const [isMounted, setIsMounted] = useState(false)
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
-        setIsMounted(true)
-    }, [])
+        setIsMounted(true);
+    }, []);
 
     const features = [
         {
             icon: Shield,
             title: "Moderation",
-            description: "Powerful tools to keep your server safe and clean",
+            description: "Powerful tools to keep your server safe and clean"
         },
         {
             icon: BarChart3,
             title: "Analytics",
-            description: "Detailed insights about your server activity",
+            description: "Detailed insights about your server activity"
         },
         {
             icon: MessageSquare,
             title: "Custom Commands",
-            description: "Create personalized commands for your community",
+            description: "Create personalized commands for your community"
         },
         {
             icon: Users,
             title: "Role Management",
-            description: "Easily manage roles and permissions",
-        },
-    ]
+            description: "Easily manage roles and permissions"
+        }
+    ];
 
     if (!isMounted) {
-        return null
+        return null;
     }
 
     return (
@@ -72,11 +72,7 @@ export default function LoginPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6 pt-4">
-                                <motion.div
-                                    whileHover={{ scale: 1.03 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="w-full"
-                                >
+                                <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full">
                                     <DiscordAuthButton />
                                 </motion.div>
 
@@ -85,7 +81,9 @@ export default function LoginPage() {
                                         <Separator className="w-full" />
                                     </div>
                                     <div className="relative flex justify-center">
-                                        <span className="bg-card px-2 text-xs text-muted-foreground">OR CONTINUE WITH</span>
+                                        <span className="bg-card px-2 text-xs text-muted-foreground">
+                                            OR CONTINUE WITH
+                                        </span>
                                     </div>
                                 </div>
 
@@ -207,16 +205,16 @@ export default function LoginPage() {
                                     width: Math.random() * 100 + 50,
                                     height: Math.random() * 100 + 50,
                                     left: `${Math.random() * 100}%`,
-                                    top: `${Math.random() * 100}%`,
+                                    top: `${Math.random() * 100}%`
                                 }}
                                 animate={{
                                     y: [0, Math.random() * 20 - 10],
-                                    x: [0, Math.random() * 20 - 10],
+                                    x: [0, Math.random() * 20 - 10]
                                 }}
                                 transition={{
                                     duration: Math.random() * 5 + 5,
-                                    repeat: Infinity,
-                                    repeatType: "reverse",
+                                    repeat: Number.POSITIVE_INFINITY,
+                                    repeatType: "reverse"
                                 }}
                             />
                         ))}
@@ -224,5 +222,5 @@ export default function LoginPage() {
                 )}
             </div>
         </div>
-    )
+    );
 }

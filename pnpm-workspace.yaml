@@ -1,8 +1,8 @@
 packages:
-  - .
-  - bot
+    - .
+    - bot
 onlyBuiltDependencies:
-  - '@vercel/speed-insights'
-  - esbuild
-  - sharp
-  - unrs-resolver
+    - "@vercel/speed-insights"
+    - esbuild
+    - sharp
+    - unrs-resolver

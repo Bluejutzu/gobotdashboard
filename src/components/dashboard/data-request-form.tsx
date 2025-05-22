@@ -1,42 +1,41 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { FileText, Info } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import supabase from "@/lib/supabase/client"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FileText, Info } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import supabase from "@/lib/supabase/client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface DataRequestFormProps {
-    serverId: string
-    serverName: string
+    serverId: string;
+    serverName: string;
 }
 
 export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) {
-    const [requestType, setRequestType] = useState("full_export")
-    const [requestReason, setRequestReason] = useState("")
-    const [isSubmitting, setIsSubmitting] = useState(false)
-    const router = useRouter()
-    
+    const [requestType, setRequestType] = useState("full_export");
+    const [requestReason, setRequestReason] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsSubmitting(true)
+        e.preventDefault();
+        setIsSubmitting(true);
 
         try {
             // Get current user
             const {
-                data: { user },
-            } = await supabase.auth.getUser()
+                data: { user }
+            } = await supabase.auth.getUser();
 
             if (!user) {
-                throw new Error("User not authenticated")
+                throw new Error("User not authenticated");
             }
 
             // Get user ID from database
@@ -44,10 +43,10 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
                 .from("users")
                 .select("discord_id")
                 .eq("discord_id", user.user_metadata.sub)
-                .single()
+                .single();
 
             if (!userData) {
-                throw new Error("User not found in database")
+                throw new Error("User not found in database");
             }
 
             // Create data request
@@ -56,32 +55,32 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
                 server_id: serverId,
                 request_type: requestType,
                 request_reason: requestReason,
-                status: "pending",
-            })
+                status: "pending"
+            });
 
             if (error) {
-                console.error("Error inserting data request:", error)
+                console.error("Error inserting data request:", error);
                 toast.error("Error", {
-                    description: "Failed to submit data request. Please try again.",
-                })
-                return
+                    description: "Failed to submit data request. Please try again."
+                });
+                return;
             }
 
             toast.success("Data request submitted", {
-                description: "Your request has been submitted and will be reviewed by an administrator.",
-            })
+                description: "Your request has been submitted and will be reviewed by an administrator."
+            });
 
             // Refresh the page to show the new request
-            router.refresh()
+            router.refresh();
         } catch (error) {
-            console.error("Error submitting data request:", error)
+            console.error("Error submitting data request:", error);
             toast.error("Error", {
-                description: "Failed to submit data request. Please try again.",
-            })
+                description: "Failed to submit data request. Please try again."
+            });
         } finally {
-            setIsSubmitting(false)
+            setIsSubmitting(false);
         }
-    }
+    };
 
     return (
         <Card>
@@ -95,7 +94,8 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
                         <Info className="h-4 w-4" />
                         <AlertTitle>Information</AlertTitle>
                         <AlertDescription>
-                            Data requests are reviewed by administrators. You will be notified when your request is processed.
+                            Data requests are reviewed by administrators. You will be notified when your request is
+                            processed.
                         </AlertDescription>
                     </Alert>
 
@@ -124,7 +124,7 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
                             id="request-reason"
                             placeholder="Please explain why you need this data export..."
                             value={requestReason}
-                            onChange={(e) => setRequestReason(e.target.value)}
+                            onChange={e => setRequestReason(e.target.value)}
                             rows={4}
                             required
                         />
@@ -141,5 +141,5 @@ export function DataRequestForm({ serverId, serverName }: DataRequestFormProps) 
                 </Button>
             </CardFooter>
         </Card>
-    )
+    );
 }

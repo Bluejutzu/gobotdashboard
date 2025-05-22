@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import type { ThemeData } from "@/lib/types"
-import { ChevronLeft, ChevronRight, Star } from "lucide-react"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import type { ThemeData } from "@/lib/types/types";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 
 interface ThemeShowcaseProps {
-    themes: ThemeData[]
-    onApply: (theme: ThemeData) => void
-    onClose: () => void
+    themes: ThemeData[];
+    onApply: (theme: ThemeData) => void;
+    onClose: () => void;
 }
 
 export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) {
-    const [activeThemeIndex, setActiveThemeIndex] = useState(0)
-    const activeTheme = themes[activeThemeIndex]
+    const [activeThemeIndex, setActiveThemeIndex] = useState(0);
+    const activeTheme = themes[activeThemeIndex];
 
     const goToNextTheme = () => {
-        setActiveThemeIndex((prev) => (prev + 1) % themes.length)
-    }
+        setActiveThemeIndex(prev => (prev + 1) % themes.length);
+    };
 
     const goToPrevTheme = () => {
-        setActiveThemeIndex((prev) => (prev - 1 + themes.length) % themes.length)
-    }
+        setActiveThemeIndex(prev => (prev - 1 + themes.length) % themes.length);
+    };
 
     if (!themes.length) {
         return (
@@ -30,7 +30,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                 <p className="text-white/60 mb-4">No themes available to showcase.</p>
                 <Button onClick={onClose}>Back to Themes</Button>
             </div>
-        )
+        );
     }
 
     return (
@@ -63,7 +63,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                         <div
                             className="h-48 rounded-xl mb-4 relative overflow-hidden"
                             style={{
-                                background: `linear-gradient(135deg, ${activeTheme.primary}, ${activeTheme.accent})`,
+                                background: `linear-gradient(135deg, ${activeTheme.primary}, ${activeTheme.accent})`
                             }}
                         >
                             {/* Animated background elements */}
@@ -117,11 +117,19 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                         <div className="text-center mb-6">
                             <p className="text-sm text-white/70 mb-2">Border Radius: {activeTheme.borderRadius}px</p>
                             <div className="flex items-center justify-center gap-4">
-                                <div className="w-8 h-8 bg-primary" style={{ borderRadius: `${activeTheme.borderRadius}px` }}></div>
-                                <div className="w-16 h-8 bg-primary" style={{ borderRadius: `${activeTheme.borderRadius}px` }}></div>
+                                <div
+                                    className="w-8 h-8 bg-primary"
+                                    style={{ borderRadius: `${activeTheme.borderRadius}px` }}
+                                ></div>
+                                <div
+                                    className="w-16 h-8 bg-primary"
+                                    style={{ borderRadius: `${activeTheme.borderRadius}px` }}
+                                ></div>
                                 <div
                                     className="w-8 h-8 bg-primary rounded-full"
-                                    style={{ borderRadius: `${Math.max(activeTheme.borderRadius, 9999)}px` }}
+                                    style={{
+                                        borderRadius: `${Math.max(activeTheme.borderRadius, 9999)}px`
+                                    }}
                                 ></div>
                             </div>
                         </div>
@@ -136,7 +144,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                                     className="px-4 py-2 text-white w-full"
                                     style={{
                                         backgroundColor: activeTheme.primary,
-                                        borderRadius: `${activeTheme.borderRadius}px`,
+                                        borderRadius: `${activeTheme.borderRadius}px`
                                     }}
                                 >
                                     Primary Button
@@ -146,7 +154,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                                     style={{
                                         borderColor: activeTheme.primary,
                                         color: activeTheme.primary,
-                                        borderRadius: `${activeTheme.borderRadius}px`,
+                                        borderRadius: `${activeTheme.borderRadius}px`
                                     }}
                                 >
                                     Outline Button
@@ -160,7 +168,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                                 className="p-4 border rounded-md"
                                 style={{
                                     borderColor: "rgba(255, 255, 255, 0.1)",
-                                    borderRadius: `${activeTheme.borderRadius}px`,
+                                    borderRadius: `${activeTheme.borderRadius}px`
                                 }}
                             >
                                 <div className="font-medium mb-2" style={{ color: activeTheme.primary }}>
@@ -171,7 +179,7 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                                     className="px-3 py-1 text-xs text-white rounded-md"
                                     style={{
                                         backgroundColor: activeTheme.accent,
-                                        borderRadius: `${activeTheme.borderRadius}px`,
+                                        borderRadius: `${activeTheme.borderRadius}px`
                                     }}
                                 >
                                     Action
@@ -189,5 +197,5 @@ export function ThemeShowcase({ themes, onApply, onClose }: ThemeShowcaseProps) 
                 <Button onClick={() => onApply(activeTheme)}>Apply This Theme</Button>
             </div>
         </div>
-    )
+    );
 }

@@ -1,9 +1,9 @@
-import { ServerCrash } from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { ServerCrash } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 interface ServerLoadingProps {
-    message?: string
+    message?: string;
 }
 
 export function ServerLoading({ message }: ServerLoadingProps) {
@@ -13,12 +13,14 @@ export function ServerLoading({ message }: ServerLoadingProps) {
                 <div className="flex flex-col items-center gap-2">
                     <ServerCrash className="h-10 w-10 text-primary animate-pulse" />
                     <h2 className="text-xl font-semibold">{message || "Loading server data..."}</h2>
-                    <div className="text-sm text-muted-foreground">Please wait while we fetch your server information</div>
+                    <div className="text-sm text-muted-foreground">
+                        Please wait while we fetch your server information
+                    </div>
                 </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3].map(i => (
                     <Card key={i}>
                         <CardHeader className="pb-2">
                             <Skeleton className="h-6 w-32" />
@@ -38,5 +40,5 @@ export function ServerLoading({ message }: ServerLoadingProps) {
                 </div>
             </div>
         </div>
-    )
+    );
 }

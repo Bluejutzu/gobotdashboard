@@ -1,38 +1,37 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { toast } from "sonner"
-import type { BotSettings } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import supabase from "@/lib/supabase/client"
+import { useState } from "react";
+import { toast } from "sonner";
+import type { BotSettings } from "@/lib/types/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import supabase from "@/lib/supabase/client";
 
 interface SettingsFormProps {
-    settings: BotSettings
+    settings: BotSettings;
 }
 
 export function SettingsForm({ settings }: SettingsFormProps) {
-    const [isLoading, setIsLoading] = useState(false)
-    const [formData, setFormData] = useState<BotSettings>(settings)
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState<BotSettings>(settings);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData((prev) => ({ ...prev, [name]: value }))
-    }
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
 
     const handleSwitchChange = (checked: boolean) => {
-        setFormData((prev) => ({ ...prev, moderation_enabled: checked }))
-    }
+        setFormData(prev => ({ ...prev, moderation_enabled: checked }));
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
+        e.preventDefault();
+        setIsLoading(true);
 
         try {
             const { error } = await supabase
@@ -41,24 +40,24 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                     prefix: formData.prefix,
                     welcome_message: formData.welcome_message,
                     auto_role: formData.auto_role,
-                    moderation_enabled: formData.moderation_enabled,
+                    moderation_enabled: formData.moderation_enabled
                 })
-                .eq("id", settings.id)
+                .eq("id", settings.id);
 
-            if (error) throw error
+            if (error) throw error;
 
             toast("Settings updated", {
-                description: "Your bot settings have been updated successfully.",
-            })
+                description: "Your bot settings have been updated successfully."
+            });
         } catch (error) {
-            console.error("Error updating settings:", error)
+            console.error("Error updating settings:", error);
             toast("Error", {
-                description: "Failed to update settings. Please try again.",
-            })
+                description: "Failed to update settings. Please try again."
+            });
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -88,7 +87,11 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Switch id="moderation_enabled" checked={formData.moderation_enabled} onCheckedChange={handleSwitchChange} />
+                    <Switch
+                        id="moderation_enabled"
+                        checked={formData.moderation_enabled}
+                        onCheckedChange={handleSwitchChange}
+                    />
                     <Label htmlFor="moderation_enabled">Enable Moderation</Label>
                 </div>
             </div>
@@ -97,5 +100,5 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                 {isLoading ? "Saving..." : "Save Changes"}
             </Button>
         </form>
-    )
+    );
 }

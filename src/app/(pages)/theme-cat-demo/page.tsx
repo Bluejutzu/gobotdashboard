@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeSelector } from "@/components/themes/theme-selector"
-import { ColorPicker } from "@/components/ui/color-picker"
-import { ThemeCreator } from "@/components/themes/theme-creator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeSelector } from "@/components/themes/theme-selector";
+import { ColorPicker } from "@/components/ui/color-picker";
+import { ThemeCreator } from "@/components/themes/theme-creator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ThemeCategoriesDemoPage() {
-    const [color, setColor] = useState("#0ea5e9")
-    const [showSelector, setShowSelector] = useState(false)
+    const [color, setColor] = useState("#0ea5e9");
+    const [showSelector, setShowSelector] = useState(false);
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -26,7 +26,9 @@ export default function ThemeCategoriesDemoPage() {
 
                     <div className="container relative z-10">
                         <div className="max-w-3xl mx-auto text-center">
-                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6">Theme Categories & Color Picker</h1>
+                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6">
+                                Theme Categories & Color Picker
+                            </h1>
                             <p className="text-xl text-muted-foreground mb-8">
                                 Explore our improved theme selector with categories and color customization
                             </p>
@@ -53,8 +55,8 @@ export default function ThemeCategoriesDemoPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p>
-                                        Themes are now organized into categories like Light, Dark, Colorful, and Minimal for easier browsing
-                                        and filtering.
+                                        Themes are now organized into categories like Light, Dark, Colorful, and Minimal
+                                        for easier browsing and filtering.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -65,8 +67,8 @@ export default function ThemeCategoriesDemoPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p>
-                                        A powerful color picker allows you to select custom colors for your themes with hex input and color
-                                        swatches.
+                                        A powerful color picker allows you to select custom colors for your themes with
+                                        hex input and color swatches.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -77,8 +79,8 @@ export default function ThemeCategoriesDemoPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p>
-                                        Easily find themes with the new search and filter functionality, allowing you to narrow down themes
-                                        by name or category.
+                                        Easily find themes with the new search and filter functionality, allowing you to
+                                        narrow down themes by name or category.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -98,8 +100,8 @@ export default function ThemeCategoriesDemoPage() {
                             <TabsContent value="color-picker" className="p-6 border rounded-md mt-6">
                                 <h2 className="text-2xl font-bold mb-6">Color Picker Component</h2>
                                 <p className="mb-6">
-                                    The new color picker component allows for intuitive color selection with hex input and predefined
-                                    color swatches.
+                                    The new color picker component allows for intuitive color selection with hex input
+                                    and predefined color swatches.
                                 </p>
 
                                 <div className="max-w-md mx-auto">
@@ -108,7 +110,9 @@ export default function ThemeCategoriesDemoPage() {
                                     <div className="mt-8 p-4 rounded-md" style={{ backgroundColor: color }}>
                                         <p
                                             className="text-center font-medium"
-                                            style={{ color: color === "#ffffff" ? "#000000" : "#ffffff" }}
+                                            style={{
+                                                color: color === "#ffffff" ? "#000000" : "#ffffff"
+                                            }}
                                         >
                                             Selected Color: {color}
                                         </p>
@@ -118,7 +122,9 @@ export default function ThemeCategoriesDemoPage() {
 
                             <TabsContent value="theme-creator" className="p-6 border rounded-md mt-6">
                                 <h2 className="text-2xl font-bold mb-6">Theme Creator</h2>
-                                <p className="mb-6">Create and customize your own themes with our intuitive theme creator interface.</p>
+                                <p className="mb-6">
+                                    Create and customize your own themes with our intuitive theme creator interface.
+                                </p>
 
                                 <ThemeCreator />
                             </TabsContent>
@@ -136,20 +142,31 @@ export default function ThemeCategoriesDemoPage() {
                                 <div className="md:w-1/2">
                                     <h3 className="text-xl font-bold mb-4">1. Browse by Category</h3>
                                     <p>
-                                        Themes are organized into intuitive categories like Light, Dark, Colorful, and Minimal. Use the
-                                        category filter to quickly find themes that match your style preference.
+                                        Themes are organized into intuitive categories like Light, Dark, Colorful, and
+                                        Minimal. Use the category filter to quickly find themes that match your style
+                                        preference.
                                     </p>
                                 </div>
                                 <div className="md:w-1/2 bg-white/5 p-4 rounded-lg">
                                     <div className="flex flex-wrap gap-2">
-                                        <div className="px-3 py-1.5 rounded-full bg-primary/20 text-primary text-sm">Light</div>
-                                        <div className="px-3 py-1.5 rounded-full bg-slate-700/80 text-white text-sm">Dark</div>
+                                        <div className="px-3 py-1.5 rounded-full bg-primary/20 text-primary text-sm">
+                                            Light
+                                        </div>
+                                        <div className="px-3 py-1.5 rounded-full bg-slate-700/80 text-white text-sm">
+                                            Dark
+                                        </div>
                                         <div className="px-3 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm">
                                             Colorful
                                         </div>
-                                        <div className="px-3 py-1.5 rounded-full bg-gray-200 text-gray-800 text-sm">Minimal</div>
-                                        <div className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-400 text-sm">Modern</div>
-                                        <div className="px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-400 text-sm">Classic</div>
+                                        <div className="px-3 py-1.5 rounded-full bg-gray-200 text-gray-800 text-sm">
+                                            Minimal
+                                        </div>
+                                        <div className="px-3 py-1.5 rounded-full bg-blue-500/20 text-blue-400 text-sm">
+                                            Modern
+                                        </div>
+                                        <div className="px-3 py-1.5 rounded-full bg-amber-500/20 text-amber-400 text-sm">
+                                            Classic
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -157,17 +174,30 @@ export default function ThemeCategoriesDemoPage() {
                             <div className="flex flex-col md:flex-row gap-8 items-center">
                                 <div className="md:w-1/2 bg-white/5 p-4 rounded-lg order-1 md:order-0">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: "#0ea5e9" }}></div>
-                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: "#8b5cf6" }}></div>
-                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: "#10b981" }}></div>
-                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: "#f97316" }}></div>
+                                        <div
+                                            className="w-8 h-8 rounded-full"
+                                            style={{ backgroundColor: "#0ea5e9" }}
+                                        ></div>
+                                        <div
+                                            className="w-8 h-8 rounded-full"
+                                            style={{ backgroundColor: "#8b5cf6" }}
+                                        ></div>
+                                        <div
+                                            className="w-8 h-8 rounded-full"
+                                            style={{ backgroundColor: "#10b981" }}
+                                        ></div>
+                                        <div
+                                            className="w-8 h-8 rounded-full"
+                                            style={{ backgroundColor: "#f97316" }}
+                                        ></div>
                                     </div>
                                 </div>
                                 <div className="md:w-1/2 order-0 md:order-1">
                                     <h3 className="text-xl font-bold mb-4">2. Customize Colors</h3>
                                     <p>
-                                        Use the color picker to select custom colors for your theme. Choose from predefined swatches or
-                                        enter specific hex values to get exactly the color you want.
+                                        Use the color picker to select custom colors for your theme. Choose from
+                                        predefined swatches or enter specific hex values to get exactly the color you
+                                        want.
                                     </p>
                                 </div>
                             </div>
@@ -176,8 +206,8 @@ export default function ThemeCategoriesDemoPage() {
                                 <div className="md:w-1/2">
                                     <h3 className="text-xl font-bold mb-4">3. Create & Save</h3>
                                     <p>
-                                        Create your own custom themes with the theme creator. Preview how your theme will look in real-time,
-                                        then save it to your collection for easy access later.
+                                        Create your own custom themes with the theme creator. Preview how your theme
+                                        will look in real-time, then save it to your collection for easy access later.
                                     </p>
                                 </div>
                                 <div className="md:w-1/2 bg-white/5 p-4 rounded-lg">
@@ -195,5 +225,5 @@ export default function ThemeCategoriesDemoPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }

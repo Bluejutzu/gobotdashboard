@@ -1,6 +1,5 @@
 /* Pixel art animations */
 @keyframes pixel-float {
-
     0%,
     100% {
         transform: translateY(0);

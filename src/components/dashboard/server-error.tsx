@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { Home, RefreshCw, ServerOff } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Home, RefreshCw, ServerOff } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ServerErrorProps {
-    title?: string
-    message?: string
-    code?: string
-    retry?: () => void
+    title?: string;
+    message?: string;
+    code?: string;
+    retry?: () => void;
 }
 
 export function ServerError({
     title = "Error Loading Server",
     message = "We encountered an issue while loading your server data.",
     code,
-    retry,
+    retry
 }: ServerErrorProps) {
     return (
         <div className="flex flex-col items-center justify-center py-12 px-4">
@@ -50,5 +50,5 @@ export function ServerError({
                 </Button>
             </div>
         </div>
-    )
+    );
 }

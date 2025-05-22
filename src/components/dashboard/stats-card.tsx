@@ -1,12 +1,12 @@
-import type { LucideIcon } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import type { LucideIcon } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface StatsCardProps {
-    title: string
-    value: string | number
-    description?: string
-    icon: LucideIcon
-    className?: string
+    title: string;
+    value: string | number;
+    description?: string;
+    icon: LucideIcon;
+    className?: string;
 }
 
 export function StatsCard({ title, value, description, icon: Icon, className }: StatsCardProps) {
@@ -21,5 +21,5 @@ export function StatsCard({ title, value, description, icon: Icon, className }: 
                 {description && <p className="text-xs text-muted-foreground">{description}</p>}
             </CardContent>
         </Card>
-    )
+    );
 }

@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useThemeContext } from "@/contexts/theme-context"
-import { darkenColor, getContrastingTextColor } from "@/lib/color-utils"
+import { useEffect, useState } from "react";
+import { useThemeContext } from "@/contexts/theme-context";
+import { darkenColor, getContrastingTextColor } from "@/lib/utils/color-utils";
 
 interface ThemeStyles {
-    primary: string
-    secondary: string
-    accent: string
-    borderRadius: string
-    primaryHover: string
-    secondaryHover: string
-    accentHover: string
-    primaryActive: string
-    secondaryActive: string
-    accentActive: string
-    primaryText: string
-    secondaryText: string
-    accentText: string
+    primary: string;
+    secondary: string;
+    accent: string;
+    borderRadius: string;
+    primaryHover: string;
+    secondaryHover: string;
+    accentHover: string;
+    primaryActive: string;
+    secondaryActive: string;
+    accentActive: string;
+    primaryText: string;
+    secondaryText: string;
+    accentText: string;
 }
 
 export function useThemeStyles(): ThemeStyles {
-    const { currentTheme } = useThemeContext()
+    const { currentTheme } = useThemeContext();
     const [styles, setStyles] = useState<ThemeStyles>({
         primary: "#0ea5e9",
         secondary: "#f1f5f9",
@@ -35,8 +35,8 @@ export function useThemeStyles(): ThemeStyles {
         accentActive: "#4338ca",
         primaryText: "#ffffff",
         secondaryText: "#000000",
-        accentText: "#ffffff",
-    })
+        accentText: "#ffffff"
+    });
 
     useEffect(() => {
         if (currentTheme.primary && currentTheme.secondary && currentTheme.accent) {
@@ -53,10 +53,10 @@ export function useThemeStyles(): ThemeStyles {
                 accentActive: darkenColor(currentTheme.accent, 15),
                 primaryText: getContrastingTextColor(currentTheme.primary),
                 secondaryText: getContrastingTextColor(currentTheme.secondary),
-                accentText: getContrastingTextColor(currentTheme.accent),
-            })
+                accentText: getContrastingTextColor(currentTheme.accent)
+            });
         }
-    }, [currentTheme])
+    }, [currentTheme]);
 
-    return styles
+    return styles;
 }

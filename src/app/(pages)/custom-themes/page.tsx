@@ -1,83 +1,91 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
-import { Heart, Palette, Save, Share, User } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import type { ThemeData } from "@/lib/types"
-import { useThemeContext } from "@/contexts/theme-context"
-import { SiteHeader } from "@/components/site-header"
-import { supabase } from "@/lib/supabase"
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Heart, Palette, Save, Share, User } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import type { ThemeData } from "@/lib/types/types";
+import { useThemeContext } from "@/contexts/theme-context";
+import { SiteHeader } from "@/components/site-header";
+import supabase from "@/lib/supabase/client";
 
+/****
+ * Renders the Custom Themes page, allowing users to create, preview, save, and manage custom UI themes, as well as browse and interact with community-shared themes.
+ *
+ * @remark
+ * - Requires user authentication for saving, liking, and managing themes.
+ * - Applies theme color and border radius settings to CSS variables for live preview.
+ * - Integrates with Supabase for authentication and theme persistence.
+ */
 export default function CustomThemesPage() {
-    const { theme, setTheme } = useTheme()
+    const { theme, setTheme } = useTheme();
     const { currentTheme, savedThemes, communityThemes, saveTheme, applyTheme, likeTheme, deleteTheme } =
-        useThemeContext()
-    const [mounted, setMounted] = useState(false)
-    const [activeTab, setActiveTab] = useState("create")
+        useThemeContext();
+    const [mounted, setMounted] = useState(false);
+    const [activeTab, setActiveTab] = useState("create");
 
-    const [primaryColor, setPrimaryColor] = useState(currentTheme.primary)
-    const [secondaryColor, setSecondaryColor] = useState(currentTheme.secondary)
-    const [accentColor, setAccentColor] = useState(currentTheme.accent)
-    const [borderRadius, setBorderRadius] = useState(currentTheme.borderRadius)
-    const [themeName, setThemeName] = useState("My Custom Theme")
-    const [isPublic, setIsPublic] = useState(false)
-    const [user, setUser] = useState<any>(null)
+    const [primaryColor, setPrimaryColor] = useState(currentTheme.primary);
+    const [secondaryColor, setSecondaryColor] = useState(currentTheme.secondary);
+    const [accentColor, setAccentColor] = useState(currentTheme.accent);
+    const [borderRadius, setBorderRadius] = useState(currentTheme.borderRadius);
+    const [themeName, setThemeName] = useState("My Custom Theme");
+    const [isPublic, setIsPublic] = useState(false);
+    const [user, setUser] = useState<any>(null);
 
     // Check for user session on mount
     useEffect(() => {
         const {
-            data: { subscription },
+            data: { subscription }
         } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user || null)
-        })
+            setUser(session?.user || null);
+        });
 
         // Get initial session
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user || null)
-        })
+            setUser(session?.user || null);
+        });
 
-        return () => subscription.unsubscribe()
-    }, [])
+        return () => subscription.unsubscribe();
+    }, []);
 
     useEffect(() => {
-        setMounted(true)
+        setMounted(true);
 
         // Initialize with current theme
-        setPrimaryColor(currentTheme.primary)
-        setSecondaryColor(currentTheme.secondary)
-        setAccentColor(currentTheme.accent)
-        setBorderRadius(currentTheme.borderRadius)
-    }, [currentTheme])
+        setPrimaryColor(currentTheme.primary);
+        setSecondaryColor(currentTheme.secondary);
+        setAccentColor(currentTheme.accent);
+        setBorderRadius(currentTheme.borderRadius);
+    }, [currentTheme]);
 
     useEffect(() => {
-        document.documentElement.style.setProperty("--theme-primary", primaryColor || "")
-        document.documentElement.style.setProperty("--theme-secondary", secondaryColor || "")
-        document.documentElement.style.setProperty("--theme-accent", accentColor || "")
-        document.documentElement.style.setProperty("--theme-radius", `${borderRadius}px`)
+        document.documentElement.style.setProperty("--theme-primary", primaryColor || "");
+        document.documentElement.style.setProperty("--theme-secondary", secondaryColor || "");
+        document.documentElement.style.setProperty("--theme-accent", accentColor || "");
+        document.documentElement.style.setProperty("--theme-radius", `${borderRadius}px`);
 
         return () => {
-            document.documentElement.style.removeProperty("--theme-primary")
-            document.documentElement.style.removeProperty("--theme-secondary")
-            document.documentElement.style.removeProperty("--theme-accent")
-            document.documentElement.style.removeProperty("--theme-radius")
-        }
-    }, [primaryColor, secondaryColor, accentColor, borderRadius])
+            document.documentElement.style.removeProperty("--theme-primary");
+            document.documentElement.style.removeProperty("--theme-secondary");
+            document.documentElement.style.removeProperty("--theme-accent");
+            document.documentElement.style.removeProperty("--theme-radius");
+        };
+    }, [primaryColor, secondaryColor, accentColor, borderRadius]);
 
     const handleSaveTheme = async () => {
         if (!user) {
             toast("Authentication Required", {
-                description: "Please sign in to save themes.",
-            })
-            return
+                description: "Please sign in to save themes."
+            });
+            return;
         }
 
         const newTheme: ThemeData = {
@@ -88,33 +96,33 @@ export default function CustomThemesPage() {
             accent: accentColor,
             borderRadius: borderRadius,
             isPublic: isPublic,
-            userId: user.id,
-        }
-        console.log(newTheme)
+            userId: user.id
+        };
+        console.log(newTheme);
 
-        await saveTheme(newTheme)
-    }
+        await saveTheme(newTheme);
+    };
 
     const handleSignIn = async () => {
         try {
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: "github",
                 options: {
-                    redirectTo: window.location.href,
-                },
-            })
+                    redirectTo: window.location.href
+                }
+            });
 
-            if (error) throw error
+            if (error) throw error;
         } catch (error) {
-            console.error("Error signing in:", error)
+            console.error("Error signing in:", error);
             toast("Authentication Error", {
-                description: "Failed to sign in. Please try again.",
-            })
+                description: "Failed to sign in. Please try again."
+            });
         }
-    }
+    };
 
     if (!mounted) {
-        return null
+        return null;
     }
 
     return (
@@ -140,7 +148,9 @@ export default function CustomThemesPage() {
                             <Badge variant="outline" className="mb-4 animate-fade-in">
                                 PERSONALIZATION
                             </Badge>
-                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">Custom Themes</h1>
+                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">
+                                Custom Themes
+                            </h1>
                             <p className="text-xl text-muted-foreground animate-slide-in animation-delay-500">
                                 Personalize your Gobot experience with custom color schemes and themes.
                             </p>
@@ -181,7 +191,7 @@ export default function CustomThemesPage() {
                                                     <Input
                                                         id="theme-name"
                                                         value={themeName}
-                                                        onChange={(e) => setThemeName(e.target.value)}
+                                                        onChange={e => setThemeName(e.target.value)}
                                                         placeholder="My Awesome Theme"
                                                     />
                                                 </div>
@@ -200,12 +210,12 @@ export default function CustomThemesPage() {
                                                                 id="primary-color"
                                                                 type="color"
                                                                 value={primaryColor}
-                                                                onChange={(e) => setPrimaryColor(e.target.value)}
+                                                                onChange={e => setPrimaryColor(e.target.value)}
                                                                 className="w-12 h-10 p-1"
                                                             />
                                                             <Input
                                                                 value={primaryColor}
-                                                                onChange={(e) => setPrimaryColor(e.target.value)}
+                                                                onChange={e => setPrimaryColor(e.target.value)}
                                                                 className="flex-1"
                                                             />
                                                         </div>
@@ -224,12 +234,12 @@ export default function CustomThemesPage() {
                                                                 id="secondary-color"
                                                                 type="color"
                                                                 value={secondaryColor}
-                                                                onChange={(e) => setSecondaryColor(e.target.value)}
+                                                                onChange={e => setSecondaryColor(e.target.value)}
                                                                 className="w-12 h-10 p-1"
                                                             />
                                                             <Input
                                                                 value={secondaryColor}
-                                                                onChange={(e) => setSecondaryColor(e.target.value)}
+                                                                onChange={e => setSecondaryColor(e.target.value)}
                                                                 className="flex-1"
                                                             />
                                                         </div>
@@ -248,12 +258,12 @@ export default function CustomThemesPage() {
                                                                 id="accent-color"
                                                                 type="color"
                                                                 value={accentColor}
-                                                                onChange={(e) => setAccentColor(e.target.value)}
+                                                                onChange={e => setAccentColor(e.target.value)}
                                                                 className="w-12 h-10 p-1"
                                                             />
                                                             <Input
                                                                 value={accentColor}
-                                                                onChange={(e) => setAccentColor(e.target.value)}
+                                                                onChange={e => setAccentColor(e.target.value)}
                                                                 className="flex-1"
                                                             />
                                                         </div>
@@ -262,7 +272,9 @@ export default function CustomThemesPage() {
 
                                                 <div className="space-y-2">
                                                     <div className="flex items-center justify-between">
-                                                        <Label htmlFor="border-radius">Border Radius: {borderRadius}px</Label>
+                                                        <Label htmlFor="border-radius">
+                                                            Border Radius: {borderRadius}px
+                                                        </Label>
                                                     </div>
                                                     <Slider
                                                         id="border-radius"
@@ -270,7 +282,7 @@ export default function CustomThemesPage() {
                                                         max={20}
                                                         step={1}
                                                         value={[borderRadius || 0]}
-                                                        onValueChange={(value) => setBorderRadius(value[0])}
+                                                        onValueChange={value => setBorderRadius(value[0])}
                                                         className="py-4"
                                                     />
                                                 </div>
@@ -279,7 +291,9 @@ export default function CustomThemesPage() {
                                                     <Switch
                                                         id="dark-mode"
                                                         checked={theme === "dark"}
-                                                        onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")}
+                                                        onCheckedChange={checked =>
+                                                            setTheme(checked ? "dark" : "light")
+                                                        }
                                                     />
                                                     <Label htmlFor="dark-mode">Dark Mode</Label>
                                                 </div>
@@ -299,10 +313,10 @@ export default function CustomThemesPage() {
                                                 <Button
                                                     variant="outline"
                                                     onClick={() => {
-                                                        setPrimaryColor("#0ea5e9")
-                                                        setSecondaryColor("#f1f5f9")
-                                                        setAccentColor("#6366f1")
-                                                        setBorderRadius(8)
+                                                        setPrimaryColor("#0ea5e9");
+                                                        setSecondaryColor("#f1f5f9");
+                                                        setAccentColor("#6366f1");
+                                                        setBorderRadius(8);
                                                     }}
                                                 >
                                                     Reset
@@ -330,7 +344,7 @@ export default function CustomThemesPage() {
                                                                 style={{
                                                                     backgroundColor: primaryColor,
                                                                     color: "#fff",
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Primary
@@ -340,7 +354,7 @@ export default function CustomThemesPage() {
                                                                 style={{
                                                                     borderColor: primaryColor,
                                                                     color: primaryColor,
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Outline
@@ -349,7 +363,7 @@ export default function CustomThemesPage() {
                                                                 variant="ghost"
                                                                 style={{
                                                                     color: primaryColor,
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Ghost
@@ -363,7 +377,7 @@ export default function CustomThemesPage() {
                                                             className="border rounded-lg p-4"
                                                             style={{
                                                                 borderRadius: `${borderRadius}px`,
-                                                                borderColor: "var(--border)",
+                                                                borderColor: "var(--border)"
                                                             }}
                                                         >
                                                             <div className="font-medium mb-2">Card Title</div>
@@ -379,19 +393,21 @@ export default function CustomThemesPage() {
                                                             className="border rounded-lg p-4 bg-white/5 backdrop-blur-sm"
                                                             style={{
                                                                 borderRadius: `${borderRadius}px`,
-                                                                borderColor: "var(--border)",
+                                                                borderColor: "var(--border)"
                                                             }}
                                                         >
                                                             <div className="text-center">
                                                                 <div className="font-bold text-xl mb-1">Premium</div>
                                                                 <div className="text-2xl font-bold mb-2">$4.99</div>
-                                                                <div className="text-sm text-muted-foreground mb-4">For growing communities</div>
+                                                                <div className="text-sm text-muted-foreground mb-4">
+                                                                    For growing communities
+                                                                </div>
                                                                 <Button
                                                                     className="w-full"
                                                                     style={{
                                                                         backgroundColor: primaryColor,
                                                                         color: "#fff",
-                                                                        borderRadius: `${borderRadius}px`,
+                                                                        borderRadius: `${borderRadius}px`
                                                                     }}
                                                                 >
                                                                     Upgrade Now
@@ -408,7 +424,7 @@ export default function CustomThemesPage() {
                                                                 style={{
                                                                     backgroundColor: primaryColor,
                                                                     color: "#fff",
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Primary
@@ -418,7 +434,7 @@ export default function CustomThemesPage() {
                                                                 style={{
                                                                     backgroundColor: secondaryColor,
                                                                     color: theme === "dark" ? "#fff" : "#000",
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Secondary
@@ -428,7 +444,7 @@ export default function CustomThemesPage() {
                                                                 style={{
                                                                     backgroundColor: accentColor,
                                                                     color: "#fff",
-                                                                    borderRadius: `${borderRadius}px`,
+                                                                    borderRadius: `${borderRadius}px`
                                                                 }}
                                                             >
                                                                 Accent
@@ -445,23 +461,29 @@ export default function CustomThemesPage() {
                             <TabsContent value="community" className="animate-fade-in">
                                 <div className="text-center mb-8">
                                     <h2 className="text-2xl font-bold mb-2">Community Themes</h2>
-                                    <p className="text-muted-foreground">Explore and use themes created by the community</p>
+                                    <p className="text-muted-foreground">
+                                        Explore and use themes created by the community
+                                    </p>
                                 </div>
 
                                 {!user && (
                                     <div className="text-center py-8 mb-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-                                        <p className="mb-4 text-muted-foreground">Sign in to like and save community themes</p>
+                                        <p className="mb-4 text-muted-foreground">
+                                            Sign in to like and save community themes
+                                        </p>
                                         <Button onClick={handleSignIn}>Sign In with GitHub</Button>
                                     </div>
                                 )}
 
                                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {communityThemes.length > 0 ? (
-                                        communityThemes.map((theme) => (
+                                        communityThemes.map(theme => (
                                             <Card key={theme.id} className="overflow-hidden hover-lift">
                                                 <div
                                                     className="h-24 flex"
-                                                    style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})` }}
+                                                    style={{
+                                                        background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})`
+                                                    }}
                                                 ></div>
                                                 <CardHeader>
                                                     <CardTitle>{theme.name}</CardTitle>
@@ -469,9 +491,18 @@ export default function CustomThemesPage() {
                                                 </CardHeader>
                                                 <CardContent>
                                                     <div className="flex space-x-2 mb-4">
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.primary }}></div>
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.secondary }}></div>
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.accent }}></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.primary }}
+                                                        ></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.secondary }}
+                                                        ></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.accent }}
+                                                        ></div>
                                                     </div>
                                                     <div className="flex items-center text-sm text-muted-foreground">
                                                         <Heart className="h-4 w-4 mr-1" />
@@ -479,7 +510,12 @@ export default function CustomThemesPage() {
                                                     </div>
                                                 </CardContent>
                                                 <CardFooter className="flex justify-between">
-                                                    <Button variant="ghost" size="sm" onClick={() => likeTheme(theme.id)} disabled={!user}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => likeTheme(theme.id)}
+                                                        disabled={!user}
+                                                    >
                                                         <Heart className="h-4 w-4 mr-2" />
                                                         Like
                                                     </Button>
@@ -505,27 +541,42 @@ export default function CustomThemesPage() {
 
                                 {!user ? (
                                     <div className="text-center py-8 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg">
-                                        <p className="mb-4 text-muted-foreground">Sign in to save and manage your themes</p>
+                                        <p className="mb-4 text-muted-foreground">
+                                            Sign in to save and manage your themes
+                                        </p>
                                         <Button onClick={handleSignIn}>Sign In with GitHub</Button>
                                     </div>
                                 ) : savedThemes.length > 0 ? (
                                     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {savedThemes.map((theme) => (
+                                        {savedThemes.map(theme => (
                                             <Card key={theme.id} className="overflow-hidden hover-lift">
                                                 <div
                                                     className="h-24 flex"
-                                                    style={{ background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})` }}
+                                                    style={{
+                                                        background: `linear-gradient(to right, ${theme.primary}, ${theme.accent})`
+                                                    }}
                                                 ></div>
                                                 <CardHeader>
                                                     <CardTitle>{theme.name}</CardTitle>
                                                 </CardHeader>
                                                 <CardContent>
                                                     <div className="flex space-x-2 mb-4">
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.primary }}></div>
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.secondary }}></div>
-                                                        <div className="w-8 h-8 rounded-full" style={{ backgroundColor: theme.accent }}></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.primary }}
+                                                        ></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.secondary }}
+                                                        ></div>
+                                                        <div
+                                                            className="w-8 h-8 rounded-full"
+                                                            style={{ backgroundColor: theme.accent }}
+                                                        ></div>
                                                     </div>
-                                                    <div className="text-sm text-muted-foreground">Border Radius: {theme.borderRadius}px</div>
+                                                    <div className="text-sm text-muted-foreground">
+                                                        Border Radius: {theme.borderRadius}px
+                                                    </div>
                                                 </CardContent>
                                                 <CardFooter className="flex justify-between">
                                                     <Button
@@ -542,7 +593,6 @@ export default function CustomThemesPage() {
                                             </Card>
                                         ))}
                                     </div>
-
                                 ) : (
                                     <div className="text-center py-12 border rounded-lg">
                                         <Save className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
@@ -571,7 +621,11 @@ export default function CustomThemesPage() {
                                 <Share className="mr-2 h-4 w-4" />
                                 Share Your Theme
                             </Button>
-                            <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white/10" onClick={() => setActiveTab("community")}>
+                            <Button
+                                variant="outline"
+                                className="bg-transparent border-white text-white hover:bg-white/10"
+                                onClick={() => setActiveTab("community")}
+                            >
                                 <Palette className="mr-2 h-4 w-4" />
                                 Browse Gallery
                             </Button>
@@ -580,5 +634,5 @@ export default function CustomThemesPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }

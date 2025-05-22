@@ -1,58 +1,76 @@
-"use client"
-import { useRouter } from "next/navigation"
-import { ChevronRight, Plus, Shield, ShieldAlert, ShieldCheck, Search, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { cn } from "@/lib/utils"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { useState, useEffect } from "react"
-import type { Server } from "@/lib/types/types"
+"use client";
+import { useRouter } from "next/navigation";
+import { ChevronRight, Plus, Shield, ShieldAlert, ShieldCheck, Search, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
+import type { Server } from "@/lib/types/types";
 
 // Permission constants
-const PERMISSION_ADMIN = 0x8
-const PERMISSION_MANAGE_SERVER = 0x20
-const PERMISSION_MANAGE_CHANNELS = 0x10
-const PERMISSION_MANAGE_ROLES = 0x10000000
+const PERMISSION_ADMIN = 0x8;
+const PERMISSION_MANAGE_SERVER = 0x20;
+const PERMISSION_MANAGE_CHANNELS = 0x10;
+const PERMISSION_MANAGE_ROLES = 0x10000000;
 
 // Function to get permission label based on permission integer
-function getPermissionLabel(permissions: number): { label: string; color: string } {
+function getPermissionLabel(permissions: number): {
+    label: string;
+    color: string;
+} {
     if ((permissions & PERMISSION_ADMIN) !== 0) {
-        return { label: "Administrator", color: "text-red-400 bg-red-500/10 border-red-500/20" }
+        return {
+            label: "Administrator",
+            color: "text-red-400 bg-red-500/10 border-red-500/20"
+        };
     }
     if ((permissions & PERMISSION_MANAGE_SERVER) !== 0) {
-        return { label: "Server Manager", color: "text-orange-400 bg-orange-500/10 border-orange-500/20" }
+        return {
+            label: "Server Manager",
+            color: "text-orange-400 bg-orange-500/10 border-orange-500/20"
+        };
     }
     if ((permissions & PERMISSION_MANAGE_CHANNELS) !== 0) {
-        return { label: "Channel Manager", color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20" }
+        return {
+            label: "Channel Manager",
+            color: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
+        };
     }
     if ((permissions & PERMISSION_MANAGE_ROLES) !== 0) {
-        return { label: "Role Manager", color: "text-green-400 bg-green-500/10 border-green-500/20" }
+        return {
+            label: "Role Manager",
+            color: "text-green-400 bg-green-500/10 border-green-500/20"
+        };
     }
-    return { label: "Member", color: "text-blue-400 bg-blue-500/10 border-blue-500/20" }
+    return {
+        label: "Member",
+        color: "text-blue-400 bg-blue-500/10 border-blue-500/20"
+    };
 }
 
 // Function to get permission icon based on permission integer
 function getPermissionIcon(permissions: number) {
     if ((permissions & PERMISSION_ADMIN) !== 0) {
-        return ShieldAlert
+        return ShieldAlert;
     }
     if ((permissions & PERMISSION_MANAGE_SERVER) !== 0) {
-        return ShieldCheck
+        return ShieldCheck;
     }
-    return Shield
+    return Shield;
 }
 
 interface ServerListProps {
-    servers: Server[]
-    loading?: boolean
-    refreshing?: boolean
-    onRefresh?: () => void
-    onServerSelect?: (serverId: string) => void
-    className?: string
+    servers: Server[];
+    loading?: boolean;
+    refreshing?: boolean;
+    onRefresh?: () => void;
+    onServerSelect?: (serverId: string) => void;
+    className?: string;
 }
 
 export function ServerList({
@@ -61,47 +79,47 @@ export function ServerList({
     refreshing = false,
     onRefresh,
     onServerSelect,
-    className,
+    className
 }: ServerListProps) {
-    const router = useRouter()
-    const isMobile = useIsMobile()
-    const [searchQuery, setSearchQuery] = useState("")
-    const [activeTab, setActiveTab] = useState("all")
-    const [filteredServers, setFilteredServers] = useState<Server[]>(initialServers)
+    const router = useRouter();
+    const isMobile = useIsMobile();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [activeTab, setActiveTab] = useState("all");
+    const [filteredServers, setFilteredServers] = useState<Server[]>(initialServers);
 
     useEffect(() => {
-        let filtered = [...initialServers]
+        let filtered = [...(initialServers || [])];
 
         // Apply search filter
         if (searchQuery) {
-            filtered = filtered.filter((server) => server.name.toLowerCase().includes(searchQuery.toLowerCase()))
+            filtered = filtered.filter(server => server.name.toLowerCase().includes(searchQuery.toLowerCase()));
         }
 
         // Apply tab filter
         if (activeTab === "with-bot") {
-            filtered = filtered.filter((server) => server.botPresent)
+            filtered = filtered.filter(server => server.botPresent);
         } else if (activeTab === "without-bot") {
-            filtered = filtered.filter((server) => !server.botPresent)
+            filtered = filtered.filter(server => !server.botPresent);
         }
 
-        setFilteredServers(filtered)
-    }, [initialServers, searchQuery, activeTab])
+        setFilteredServers(filtered);
+    }, [initialServers, searchQuery, activeTab]);
 
     const handleServerClick = (server: Server) => {
         if (server.botPresent) {
             if (onServerSelect) {
-                onServerSelect(server.id)
+                onServerSelect(server.id);
             } else {
-                router.push(`/dashboard/servers/${server.id}`)
+                router.push(`/dashboard/servers/${server.id}`);
             }
         } else {
             // For servers without the bot, open the invite URL
             window.open(
                 `https://discord.com/api/oauth2/authorize?client_id=${process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID}&permissions=8&scope=bot%20applications.commands&guild_id=${server.id}`,
-                "_blank",
-            )
+                "_blank"
+            );
         }
-    }
+    };
 
     return (
         <div className={cn("w-full max-w-5xl mx-auto px-4 sm:px-6", className)}>
@@ -125,7 +143,7 @@ export function ServerList({
                         placeholder="Search servers..."
                         className="pl-9 bg-slate-900/50 border-slate-800"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={e => setSearchQuery(e.target.value)}
                     />
                 </div>
                 <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
@@ -151,7 +169,10 @@ export function ServerList({
             {loading ? (
                 <div className="space-y-3">
                     {Array.from({ length: 5 }).map((_, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/50">
+                        <div
+                            key={i}
+                            className="flex items-center gap-3 p-3 rounded-lg border border-slate-800 bg-slate-900/50"
+                        >
                             <Skeleton className="h-10 w-10 rounded-full" />
                             <div className="flex-1">
                                 <Skeleton className="h-5 w-32 mb-1" />
@@ -164,9 +185,9 @@ export function ServerList({
             ) : (
                 <>
                     <div className="space-y-3">
-                        {filteredServers.map((server) => {
-                            const permInfo = getPermissionLabel(server.permissions)
-                            const PermissionIcon = getPermissionIcon(server.permissions)
+                        {filteredServers.map(server => {
+                            const permInfo = getPermissionLabel(server.permissions);
+                            const PermissionIcon = getPermissionIcon(server.permissions);
 
                             return (
                                 <div
@@ -176,7 +197,7 @@ export function ServerList({
                                         "hover:bg-slate-800/50 cursor-pointer",
                                         server.botPresent
                                             ? "border-slate-800 bg-slate-900/50"
-                                            : "border-dashed border-slate-800/50 bg-slate-900/30",
+                                            : "border-dashed border-slate-800/50 bg-slate-900/30"
                                     )}
                                     onClick={() => handleServerClick(server)}
                                 >
@@ -193,7 +214,7 @@ export function ServerList({
                                             <AvatarFallback
                                                 className={cn(
                                                     "bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold",
-                                                    !server.botPresent && "from-slate-600 to-slate-700 opacity-70",
+                                                    !server.botPresent && "from-slate-600 to-slate-700 opacity-70"
                                                 )}
                                             >
                                                 {server.name.charAt(0)}
@@ -209,12 +230,20 @@ export function ServerList({
                                     {/* Server info */}
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
-                                            <h3 className={cn("font-medium truncate", !server.botPresent && "text-slate-300")}>
+                                            <h3
+                                                className={cn(
+                                                    "font-medium truncate",
+                                                    !server.botPresent && "text-slate-300"
+                                                )}
+                                            >
                                                 {server.name}
                                             </h3>
                                         </div>
                                         <div className="flex flex-wrap items-center gap-2 mt-1">
-                                            <Badge variant="outline" className={cn("text-xs px-1.5 py-0", permInfo.color)}>
+                                            <Badge
+                                                variant="outline"
+                                                className={cn("text-xs px-1.5 py-0", permInfo.color)}
+                                            >
                                                 {permInfo.label}
                                             </Badge>
 
@@ -250,7 +279,7 @@ export function ServerList({
                                         </Button>
                                     )}
                                 </div>
-                            )
+                            );
                         })}
                     </div>
 
@@ -261,8 +290,8 @@ export function ServerList({
                                 {searchQuery
                                     ? "Try adjusting your search query"
                                     : activeTab === "with-bot"
-                                        ? "You don't have any servers with Gobot yet"
-                                        : "All your servers already have Gobot installed"}
+                                      ? "You don't have any servers with Gobot yet"
+                                      : "All your servers already have Gobot installed"}
                             </p>
                             {activeTab === "with-bot" && (
                                 <Button>
@@ -275,5 +304,5 @@ export function ServerList({
                 </>
             )}
         </div>
-    )
+    );
 }

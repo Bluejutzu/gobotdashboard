@@ -1,9 +1,9 @@
-import Link from "next/link"
-import { ArrowRight, BarChart, Bot, MessageSquare, Server, Settings, Shield, UserPlus, Vote, Zap } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { SiteHeader } from "@/components/site-header"
-import { PricingCard } from "@/components/pricing-card"
+import Link from "next/link";
+import { ArrowRight, BarChart, Bot, MessageSquare, Server, Settings, Shield, UserPlus, Vote, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { SiteHeader } from "@/components/site-header";
+import { PricingCard } from "@/components/pricing-card";
 
 export default function FeaturesPage() {
     return (
@@ -30,8 +30,8 @@ export default function FeaturesPage() {
                             Everything you need for your Discord server
                         </h1>
                         <p className="text-xl text-white/70 mb-8 max-w-2xl mx-auto">
-                            Gobot provides a comprehensive suite of tools to manage, moderate, and enhance your Discord community
-                            experience.
+                            Gobot provides a comprehensive suite of tools to manage, moderate, and enhance your Discord
+                            community experience.
                         </p>
                     </div>
                 </div>
@@ -80,8 +80,8 @@ export default function FeaturesPage() {
                             Keep your server safe and organized
                         </h2>
                         <p className="text-xl text-white/70 max-w-3xl mx-auto">
-                            Powerful moderation tools to help you manage your community and keep it safe from spam, inappropriate
-                            content, and disruptive users.
+                            Powerful moderation tools to help you manage your community and keep it safe from spam,
+                            inappropriate content, and disruptive users.
                         </p>
                     </div>
 
@@ -117,8 +117,8 @@ export default function FeaturesPage() {
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold mb-2">Moderation Dashboard</h3>
                                 <p className="text-white/70">
-                                    Access a comprehensive dashboard to view server activity, moderation logs, and user reports. Configure
-                                    auto-moderation settings and manage your server from anywhere.
+                                    Access a comprehensive dashboard to view server activity, moderation logs, and user
+                                    reports. Configure auto-moderation settings and manage your server from anywhere.
                                 </p>
                             </div>
                             <Button
@@ -187,8 +187,8 @@ export default function FeaturesPage() {
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold mb-2">Command Builder</h3>
                                 <p className="text-white/70">
-                                    Use our intuitive command builder to create custom commands with rich embeds, buttons, and interactive
-                                    elements without any coding knowledge.
+                                    Use our intuitive command builder to create custom commands with rich embeds,
+                                    buttons, and interactive elements without any coding knowledge.
                                 </p>
                             </div>
                             <Button
@@ -221,7 +221,8 @@ export default function FeaturesPage() {
                             Enhance your server functionality
                         </h2>
                         <p className="text-xl text-white/70 max-w-3xl mx-auto">
-                            Useful utilities and integrations to streamline your server management and enhance user experience.
+                            Useful utilities and integrations to streamline your server management and enhance user
+                            experience.
                         </p>
                     </div>
 
@@ -257,8 +258,8 @@ export default function FeaturesPage() {
                             <div className="flex-1">
                                 <h3 className="text-2xl font-bold mb-2">Server Analytics</h3>
                                 <p className="text-white/70">
-                                    Get detailed insights into your server's growth, activity, and engagement with our comprehensive
-                                    analytics dashboard.
+                                    Get detailed insights into your server's growth, activity, and engagement with our
+                                    comprehensive analytics dashboard.
                                 </p>
                             </div>
                             <Button
@@ -303,7 +304,7 @@ export default function FeaturesPage() {
                                 "Basic auto-moderation",
                                 "Custom commands (up to 10)",
                                 "Welcome messages",
-                                "Basic role management",
+                                "Basic role management"
                             ]}
                             buttonText="Get Started"
                             buttonLink="/auth/login"
@@ -321,7 +322,7 @@ export default function FeaturesPage() {
                                 "Unlimited custom commands",
                                 "Advanced analytics",
                                 "Priority support",
-                                "Custom branding",
+                                "Custom branding"
                             ]}
                             buttonText="Upgrade Now"
                             buttonLink="/pricing"
@@ -338,7 +339,7 @@ export default function FeaturesPage() {
                                 "Custom feature development",
                                 "SLA guarantees",
                                 "Multiple server management",
-                                "API access",
+                                "API access"
                             ]}
                             buttonText="Contact Us"
                             buttonLink="/contact"
@@ -357,7 +358,9 @@ export default function FeaturesPage() {
 
                 <div className="container relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">Ready to transform your Discord server?</h2>
+                        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+                            Ready to transform your Discord server?
+                        </h2>
                         <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
                             Join thousands of servers already using Gobot to improve their Discord experience.
                         </p>
@@ -389,7 +392,7 @@ export default function FeaturesPage() {
                 </div>
             </section>
         </div>
-    )
+    );
 }
 
 // Feature Category Card Component
@@ -398,13 +401,13 @@ function FeatureCategoryCard({
     title,
     description,
     features,
-    href,
+    href
 }: {
-    icon: React.ReactNode
-    title: string
-    description: string
-    features: string[]
-    href: string
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    features: string[];
+    href: string;
 }) {
     return (
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-1">
@@ -436,7 +439,7 @@ function FeatureCategoryCard({
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 // Feature Card Component
@@ -444,23 +447,24 @@ function FeatureCard({
     icon,
     title,
     description,
-    gradient,
+    gradient
 }: {
-    icon: React.ReactNode
-    title: string
-    description: string
-    gradient: string
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    gradient: string;
 }) {
     return (
         <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:-translate-y-1">
-            <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center mb-6`}>
+            <div
+                className={`w-12 h-12 rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center mb-6`}
+            >
                 {icon}
             </div>
             <h3 className="text-2xl font-bold mb-3">{title}</h3>
             <p className="text-white/70">{description}</p>
         </div>
-    )
+    );
 }
 
 // Pricing Card Component
-

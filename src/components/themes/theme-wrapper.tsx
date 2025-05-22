@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState, type ReactNode } from "react"
-import { useThemeContext } from "@/contexts/theme-context"
-import { cn } from "@/lib/utils"
+import { useEffect, useState, type ReactNode } from "react";
+import { useThemeContext } from "@/contexts/theme-context";
+import { cn } from "@/lib/utils/utils";
 
 interface ThemeWrapperProps {
-    children: ReactNode
-    className?: string
-    applyBorderRadius?: boolean
-    applyBackground?: boolean
-    applyTextColor?: boolean
-    applyBorder?: boolean
+    children: ReactNode;
+    className?: string;
+    applyBorderRadius?: boolean;
+    applyBackground?: boolean;
+    applyTextColor?: boolean;
+    applyBorder?: boolean;
 }
 
 export function ThemeWrapper({
@@ -19,36 +19,36 @@ export function ThemeWrapper({
     applyBorderRadius = true,
     applyBackground = false,
     applyTextColor = false,
-    applyBorder = false,
+    applyBorder = false
 }: ThemeWrapperProps) {
-    const { currentTheme } = useThemeContext()
-    const [themeStyles, setThemeStyles] = useState<Record<string, string>>({})
+    const { currentTheme } = useThemeContext();
+    const [themeStyles, setThemeStyles] = useState<Record<string, string>>({});
 
     useEffect(() => {
-        const styles: Record<string, string> = {}
+        const styles: Record<string, string> = {};
 
         if (applyBorderRadius) {
-            styles.borderRadius = `${currentTheme.borderRadius}px`
+            styles.borderRadius = `${currentTheme.borderRadius}px`;
         }
 
         if (applyBackground) {
-            styles.backgroundColor = currentTheme.primary || ""
+            styles.backgroundColor = currentTheme.primary || "";
         }
 
         if (applyTextColor) {
-            styles.color = currentTheme.primary || ""
+            styles.color = currentTheme.primary || "";
         }
 
         if (applyBorder) {
-            styles.borderColor = currentTheme.primary || ""
+            styles.borderColor = currentTheme.primary || "";
         }
 
-        setThemeStyles(styles)
-    }, [currentTheme, applyBorderRadius, applyBackground, applyTextColor, applyBorder])
+        setThemeStyles(styles);
+    }, [currentTheme, applyBorderRadius, applyBackground, applyTextColor, applyBorder]);
 
     return (
         <div className={cn(className)} style={themeStyles}>
             {children}
         </div>
-    )
+    );
 }

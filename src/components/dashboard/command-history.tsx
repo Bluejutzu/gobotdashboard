@@ -1,8 +1,8 @@
-import type { CommandLog } from "@/lib/types"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import type { CommandLog } from "@/lib/types/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface CommandHistoryProps {
-    commands: CommandLog[]
+    commands: CommandLog[];
 }
 
 export function CommandHistory({ commands }: CommandHistoryProps) {
@@ -16,14 +16,18 @@ export function CommandHistory({ commands }: CommandHistoryProps) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {commands.map((command) => (
+                    {commands.map(command => (
                         <TableRow key={command.id}>
                             <TableCell className="font-mono">{command.command}</TableCell>
-                            <TableCell>{command.executed_at ? new Date(command.executed_at).toLocaleString() : "Date not available"}</TableCell>
+                            <TableCell>
+                                {command.executed_at
+                                    ? new Date(command.executed_at).toLocaleString()
+                                    : "Date not available"}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
             </Table>
         </div>
-    )
+    );
 }

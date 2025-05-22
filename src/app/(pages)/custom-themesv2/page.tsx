@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ThemeSelector } from "@/components/themes/theme-selector"
-import { ThemedButton } from "@/components/themes/themed-button"
-import { ThemedCard } from "@/components/themes/themed-card"
-import { ThemedBadge } from "@/components/themes/themed-badge"
-import { useThemeContext } from "@/contexts/theme-context"
-import { ThemeWrapper } from "@/components/themes/theme-wrapper"
+import { useState } from "react";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ThemeSelector } from "@/components/themes/theme-selector";
+import { ThemedButton } from "@/components/themes/themed-button";
+import { ThemedCard } from "@/components/themes/themed-card";
+import { ThemedBadge } from "@/components/themes/themed-badge";
+import { useThemeContext } from "@/contexts/theme-context";
+import { ThemeWrapper } from "@/components/themes/theme-wrapper";
 
 export default function ThemeDemoPage() {
-    const { currentTheme } = useThemeContext()
-    const [activeTab, setActiveTab] = useState("tailwind")
+    const { currentTheme } = useThemeContext();
+    const [activeTab, setActiveTab] = useState("tailwind");
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -34,7 +34,9 @@ export default function ThemeDemoPage() {
                             <Badge variant="outline" className="mb-4 animate-fade-in">
                                 THEMING SYSTEM
                             </Badge>
-                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">Dynamic Theme Demo</h1>
+                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">
+                                Dynamic Theme Demo
+                            </h1>
                             <p className="text-xl text-muted-foreground animate-slide-in animation-delay-500">
                                 Explore how the theming system applies across different components
                             </p>
@@ -60,7 +62,9 @@ export default function ThemeDemoPage() {
                                     <Card>
                                         <CardHeader>
                                             <CardTitle>Tailwind Integration</CardTitle>
-                                            <CardDescription>Using Tailwind CSS with our theme variables</CardDescription>
+                                            <CardDescription>
+                                                Using Tailwind CSS with our theme variables
+                                            </CardDescription>
                                         </CardHeader>
                                         <CardContent className="space-y-6">
                                             <div className="space-y-2">
@@ -164,7 +168,9 @@ export default function ThemeDemoPage() {
                                                 <h3 className="text-lg font-medium">Themed Cards</h3>
                                                 <ThemedCard className="p-4">
                                                     <h4 className="font-medium mb-2">Default Card</h4>
-                                                    <p className="text-sm text-muted-foreground">This card uses CSS variables for styling.</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        This card uses CSS variables for styling.
+                                                    </p>
                                                 </ThemedCard>
 
                                                 <ThemedCard variant="outline" className="p-4 mt-4">
@@ -181,14 +187,19 @@ export default function ThemeDemoPage() {
                                                     className="p-4 bg-[var(--theme-primary)] text-white"
                                                     style={{ borderRadius: "var(--theme-radius)" }}
                                                 >
-                                                    <p>This element uses CSS variables directly in the className and style.</p>
+                                                    <p>
+                                                        This element uses CSS variables directly in the className and
+                                                        style.
+                                                    </p>
                                                 </div>
 
                                                 <div
                                                     className="p-4 mt-4 border border-[var(--theme-accent)]"
                                                     style={{ borderRadius: "var(--theme-radius)" }}
                                                 >
-                                                    <p style={{ color: "var(--theme-accent)" }}>Another example with border and text color.</p>
+                                                    <p style={{ color: "var(--theme-accent)" }}>
+                                                        Another example with border and text color.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </CardContent>
@@ -299,7 +310,11 @@ export default function ThemeDemoPage() {
 
                                             <div className="space-y-2">
                                                 <h3 className="text-lg font-medium">Theme Wrapper</h3>
-                                                <ThemeWrapper applyBorderRadius={true} applyBackground={true} className="p-4 text-white">
+                                                <ThemeWrapper
+                                                    applyBorderRadius={true}
+                                                    applyBackground={true}
+                                                    className="p-4 text-white"
+                                                >
                                                     <p>This content is wrapped with themed styles</p>
                                                 </ThemeWrapper>
 
@@ -399,5 +414,5 @@ function MyComponent() {
                 </section>
             </main>
         </div>
-    )
+    );
 }

@@ -1,5 +1,5 @@
-import { SiteHeader } from "@/components/site-header"
-import { PricingSectionDemo } from "@/components/pricing-section-demo"
+import { SiteHeader } from "@/components/site-header";
+import { PricingSectionDemo } from "@/components/pricing-section-demo";
 
 export default function PricingDemoPage() {
     return (
@@ -29,5 +29,5 @@ export default function PricingDemoPage() {
             {/* Pricing Demo Section */}
             <PricingSectionDemo />
         </div>
-    )
+    );
 }

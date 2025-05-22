@@ -1,8 +1,8 @@
-import { ArrowRight, Check, Clock, Star, XCircle } from "lucide-react"
-import Link from "next/link"
-import type { ReactNode } from "react"
-import { cn } from "@/lib/utils"
-import { Button } from "./ui/button"
+import { ArrowRight, Check, Clock, Star, XCircle } from "lucide-react";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils/utils";
+import { Button } from "./ui/button";
 
 export function PricingCard({
     title,
@@ -18,77 +18,102 @@ export function PricingCard({
     limited,
     bestValue,
     available = true,
-    unavailableReason,
+    unavailableReason
 }: {
-    title: string
-    price: string
-    period?: string
-    description: string
-    features: ReactNode[] | string[]
-    buttonText: string
-    buttonLink: string
-    gradient: string
-    popular?: boolean
-    trending?: boolean
-    limited?: boolean
-    bestValue?: boolean
-    available?: boolean
-    unavailableReason?: string
+    title: string;
+    price: string;
+    period?: string;
+    description: string;
+    features: ReactNode[] | string[];
+    buttonText: string;
+    buttonLink: string;
+    gradient: string;
+    popular?: boolean;
+    trending?: boolean;
+    limited?: boolean;
+    bestValue?: boolean;
+    available?: boolean;
+    unavailableReason?: string;
 }) {
     // Determine badge type and content
     const getBadgeContent = () => {
-        if (!available) return { text: "UNAVAILABLE", color: "bg-gradient-to-r from-gray-500 to-gray-600" }
-        if (popular) return { text: "MOST POPULAR", color: "bg-gradient-to-r from-purple-500 to-purple-600" }
-        if (trending) return { text: "TRENDING", color: "bg-gradient-to-r from-blue-500 to-blue-600" }
-        if (limited) return { text: "LIMITED TIME", color: "bg-gradient-to-r from-red-500 to-red-600" }
-        if (bestValue) return { text: "BEST VALUE", color: "bg-gradient-to-r from-emerald-500 to-emerald-600" }
-        return null
-    }
+        if (!available)
+            return {
+                text: "UNAVAILABLE",
+                color: "bg-gradient-to-r from-gray-500 to-gray-600"
+            };
+        if (popular)
+            return {
+                text: "MOST POPULAR",
+                color: "bg-gradient-to-r from-purple-500 to-purple-600"
+            };
+        if (trending)
+            return {
+                text: "TRENDING",
+                color: "bg-gradient-to-r from-blue-500 to-blue-600"
+            };
+        if (limited)
+            return {
+                text: "LIMITED TIME",
+                color: "bg-gradient-to-r from-red-500 to-red-600"
+            };
+        if (bestValue)
+            return {
+                text: "BEST VALUE",
+                color: "bg-gradient-to-r from-emerald-500 to-emerald-600"
+            };
+        return null;
+    };
 
-    const badge = getBadgeContent()
+    const badge = getBadgeContent();
 
     // Determine button style based on card type
     const getButtonStyle = () => {
-        if (!available) return "bg-gray-500/30 text-white/50 cursor-not-allowed"
+        if (!available) return "bg-gray-500/30 text-white/50 cursor-not-allowed";
         if (popular)
-            return "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white hover:shadow-[0_0_15px_rgba(124,58,237,0.5)]"
+            return "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white hover:shadow-[0_0_15px_rgba(124,58,237,0.5)]";
         if (trending)
-            return "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+            return "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]";
         if (limited)
-            return "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]"
+            return "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]";
         if (bestValue)
-            return "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]"
-        return "bg-white/10 hover:bg-white/20 text-white"
-    }
+            return "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.5)]";
+        return "bg-white/10 hover:bg-white/20 text-white";
+    };
 
     // Determine border style based on card type
     const getBorderStyle = () => {
-        if (!available) return "border-gray-500/20"
-        if (popular) return "border-purple-500/30"
-        if (trending) return "border-blue-500/30"
-        if (limited) return "border-red-500/30"
-        if (bestValue) return "border-emerald-500/30"
-        return "border-white/10"
-    }
+        if (!available) return "border-gray-500/20";
+        if (popular) return "border-purple-500/30";
+        if (trending) return "border-blue-500/30";
+        if (limited) return "border-red-500/30";
+        if (bestValue) return "border-emerald-500/30";
+        return "border-white/10";
+    };
 
     // Determine shadow style based on card type
     const getShadowStyle = () => {
-        if (!available) return ""
-        if (popular) return "shadow-[0_0_30px_rgba(124,58,237,0.15)]"
-        if (trending) return "shadow-[0_0_30px_rgba(59,130,246,0.15)]"
-        if (limited) return "shadow-[0_0_30px_rgba(239,68,68,0.15)]"
-        if (bestValue) return "shadow-[0_0_30px_rgba(16,185,129,0.15)]"
-        return ""
-    }
+        if (!available) return "";
+        if (popular) return "shadow-[0_0_30px_rgba(124,58,237,0.15)]";
+        if (trending) return "shadow-[0_0_30px_rgba(59,130,246,0.15)]";
+        if (limited) return "shadow-[0_0_30px_rgba(239,68,68,0.15)]";
+        if (bestValue) return "shadow-[0_0_30px_rgba(16,185,129,0.15)]";
+        return "";
+    };
 
     // Button component or link based on availability
     const ButtonComponent = () => {
         if (!available) {
             return (
-                <Button className={cn("w-full rounded-full py-6 transition-all duration-300", getButtonStyle())} disabled>
-                    <span className="flex items-center justify-center">{unavailableReason || "Currently Unavailable"}</span>
+                <Button
+                    className={cn("w-full rounded-full py-6 transition-all duration-300", getButtonStyle())}
+                    disabled
+                >
+                    <span className="flex items-center justify-center">
+                        {unavailableReason || "Currently Unavailable"}
+                    </span>
                 </Button>
-            )
+            );
         }
 
         return (
@@ -100,8 +125,8 @@ export function PricingCard({
                     </span>
                 </Link>
             </Button>
-        )
-    }
+        );
+    };
 
     return (
         <div
@@ -110,14 +135,19 @@ export function PricingCard({
                 getBorderStyle(),
                 getShadowStyle(),
                 !available ? "opacity-70 grayscale hover:grayscale-0 hover:opacity-80" : "hover:-translate-y-1",
-                (popular || trending || limited || bestValue) && available && "hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]",
+                (popular || trending || limited || bestValue) &&
+                    available &&
+                    "hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]"
             )}
         >
             {/* Badge */}
             {badge && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
                     <div
-                        className={cn("text-white text-xs font-bold py-1.5 px-4 rounded-full flex items-center gap-1", badge.color)}
+                        className={cn(
+                            "text-white text-xs font-bold py-1.5 px-4 rounded-full flex items-center gap-1",
+                            badge.color
+                        )}
                     >
                         {popular && available && <Star className="h-3 w-3 fill-white" />}
                         {!available && <XCircle className="h-3 w-3" />}
@@ -138,7 +168,7 @@ export function PricingCard({
                         "rounded-xl overflow-hidden",
                         (popular || trending || limited || bestValue) && available
                             ? "bg-gradient-to-b from-white/5 to-white/0"
-                            : "",
+                            : ""
                     )}
                 >
                     {/* Header */}
@@ -147,7 +177,7 @@ export function PricingCard({
                             "p-6 text-center relative overflow-hidden",
                             (popular || trending || limited || bestValue) && available
                                 ? "bg-gradient-to-br from-white/10 to-transparent"
-                                : "",
+                                : ""
                         )}
                     >
                         {/* Subtle background effect */}
@@ -155,7 +185,7 @@ export function PricingCard({
                             <div
                                 className={cn(
                                     "absolute inset-0 bg-gradient-to-br",
-                                    !available ? "from-gray-500/20 to-gray-600/20" : gradient,
+                                    !available ? "from-gray-500/20 to-gray-600/20" : gradient
                                 )}
                             ></div>
                         </div>
@@ -166,7 +196,9 @@ export function PricingCard({
                             <div className="flex items-center justify-center">
                                 {price !== "Custom" && <span className="text-sm mr-1">$</span>}
                                 <span className="text-5xl font-bold tracking-tight">{price}</span>
-                                {period && <span className="text-sm text-white/70 ml-1.5 self-end mb-1.5">/{period}</span>}
+                                {period && (
+                                    <span className="text-sm text-white/70 ml-1.5 self-end mb-1.5">/{period}</span>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -185,20 +217,24 @@ export function PricingCard({
                                             !available
                                                 ? "bg-gray-500/20 text-gray-400"
                                                 : popular
-                                                    ? "bg-purple-500/20 text-purple-400"
-                                                    : trending
-                                                        ? "bg-blue-500/20 text-blue-400"
-                                                        : limited
-                                                            ? "bg-red-500/20 text-red-400"
-                                                            : bestValue
-                                                                ? "bg-emerald-500/20 text-emerald-400"
-                                                                : "bg-white/10 text-white/60",
+                                                  ? "bg-purple-500/20 text-purple-400"
+                                                  : trending
+                                                    ? "bg-blue-500/20 text-blue-400"
+                                                    : limited
+                                                      ? "bg-red-500/20 text-red-400"
+                                                      : bestValue
+                                                        ? "bg-emerald-500/20 text-emerald-400"
+                                                        : "bg-white/10 text-white/60"
                                         )}
                                     >
                                         <Check className="h-3 w-3" />
                                     </div>
                                     <span
-                                        className={cn(available ? "group-hover/feature:text-white transition-colors" : "text-white/60")}
+                                        className={cn(
+                                            available
+                                                ? "group-hover/feature:text-white transition-colors"
+                                                : "text-white/60"
+                                        )}
                                     >
                                         {feature}
                                     </span>
@@ -229,14 +265,14 @@ export function PricingCard({
                             popular
                                 ? "border-purple-500/50"
                                 : trending
-                                    ? "border-blue-500/50"
-                                    : limited
-                                        ? "border-red-500/50"
-                                        : "border-emerald-500/50",
+                                  ? "border-blue-500/50"
+                                  : limited
+                                    ? "border-red-500/50"
+                                    : "border-emerald-500/50"
                         )}
                     ></div>
                 </div>
             )}
         </div>
-    )
+    );
 }

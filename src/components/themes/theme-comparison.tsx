@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import type { ThemeData } from "@/lib/types"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { ThemeData } from "@/lib/types/types";
 
 interface ThemeComparisonProps {
-    themes: ThemeData[]
-    onApply: (theme: ThemeData) => void
-    onClose: () => void
+    themes: ThemeData[];
+    onApply: (theme: ThemeData) => void;
+    onClose: () => void;
 }
 
 export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonProps) {
-    const [activeTab, setActiveTab] = useState("visual")
+    const [activeTab, setActiveTab] = useState("visual");
 
     if (themes.length !== 2) {
         return (
@@ -20,10 +20,10 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                 <p className="text-white/60 mb-4">Please select exactly two themes to compare.</p>
                 <Button onClick={onClose}>Back to Themes</Button>
             </div>
-        )
+        );
     }
 
-    const [theme1, theme2] = themes
+    const [theme1, theme2] = themes;
 
     return (
         <div className="flex flex-col h-full">
@@ -51,9 +51,18 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                             <div className="border rounded-md p-4 bg-white/5 backdrop-blur-sm border-white/10">
                                 <h3 className="text-lg font-medium mb-2">{theme1.name}</h3>
                                 <div className="flex space-x-2 mb-4">
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme1.primary }}></div>
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme1.secondary }}></div>
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme1.accent }}></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme1.primary }}
+                                    ></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme1.secondary }}
+                                    ></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme1.accent }}
+                                    ></div>
                                 </div>
                                 <p className="text-sm text-white/70">Border Radius: {theme1.borderRadius}px</p>
                                 <Button
@@ -62,7 +71,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                     style={{
                                         backgroundColor: theme1.primary,
                                         color: "#fff",
-                                        borderRadius: `${theme1.borderRadius}px`,
+                                        borderRadius: `${theme1.borderRadius}px`
                                     }}
                                 >
                                     Apply Theme
@@ -72,9 +81,18 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                             <div className="border rounded-md p-4 bg-white/5 backdrop-blur-sm border-white/10">
                                 <h3 className="text-lg font-medium mb-2">{theme2.name}</h3>
                                 <div className="flex space-x-2 mb-4">
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme2.primary }}></div>
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme2.secondary }}></div>
-                                    <div className="w-6 h-6 rounded-full" style={{ backgroundColor: theme2.accent }}></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme2.primary }}
+                                    ></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme2.secondary }}
+                                    ></div>
+                                    <div
+                                        className="w-6 h-6 rounded-full"
+                                        style={{ backgroundColor: theme2.accent }}
+                                    ></div>
                                 </div>
                                 <p className="text-sm text-white/70">Border Radius: {theme2.borderRadius}px</p>
                                 <Button
@@ -83,7 +101,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                     style={{
                                         backgroundColor: theme2.primary,
                                         color: "#fff",
-                                        borderRadius: `${theme2.borderRadius}px`,
+                                        borderRadius: `${theme2.borderRadius}px`
                                     }}
                                 >
                                     Apply Theme
@@ -104,7 +122,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                             className="px-4 py-2 text-white rounded-md w-full"
                                             style={{
                                                 backgroundColor: theme1.primary,
-                                                borderRadius: `${theme1.borderRadius}px`,
+                                                borderRadius: `${theme1.borderRadius}px`
                                             }}
                                         >
                                             Primary Button
@@ -114,7 +132,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                             style={{
                                                 borderColor: theme1.primary,
                                                 color: theme1.primary,
-                                                borderRadius: `${theme1.borderRadius}px`,
+                                                borderRadius: `${theme1.borderRadius}px`
                                             }}
                                         >
                                             Outline Button
@@ -125,7 +143,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                             className="px-4 py-2 text-white rounded-md w-full"
                                             style={{
                                                 backgroundColor: theme2.primary,
-                                                borderRadius: `${theme2.borderRadius}px`,
+                                                borderRadius: `${theme2.borderRadius}px`
                                             }}
                                         >
                                             Primary Button
@@ -135,7 +153,7 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                             style={{
                                                 borderColor: theme2.primary,
                                                 color: theme2.primary,
-                                                borderRadius: `${theme2.borderRadius}px`,
+                                                borderRadius: `${theme2.borderRadius}px`
                                             }}
                                         >
                                             Outline Button
@@ -152,18 +170,20 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                         className="p-4 border rounded-md"
                                         style={{
                                             borderColor: "rgba(255, 255, 255, 0.1)",
-                                            borderRadius: `${theme1.borderRadius}px`,
+                                            borderRadius: `${theme1.borderRadius}px`
                                         }}
                                     >
                                         <div className="font-medium mb-2" style={{ color: theme1.primary }}>
                                             Card Title
                                         </div>
-                                        <div className="text-sm text-white/70 mb-4">Card content with theme applied.</div>
+                                        <div className="text-sm text-white/70 mb-4">
+                                            Card content with theme applied.
+                                        </div>
                                         <button
                                             className="px-3 py-1 text-xs text-white rounded-md"
                                             style={{
                                                 backgroundColor: theme1.accent,
-                                                borderRadius: `${theme1.borderRadius}px`,
+                                                borderRadius: `${theme1.borderRadius}px`
                                             }}
                                         >
                                             Action
@@ -173,18 +193,20 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                         className="p-4 border rounded-md"
                                         style={{
                                             borderColor: "rgba(255, 255, 255, 0.1)",
-                                            borderRadius: `${theme2.borderRadius}px`,
+                                            borderRadius: `${theme2.borderRadius}px`
                                         }}
                                     >
                                         <div className="font-medium mb-2" style={{ color: theme2.primary }}>
                                             Card Title
                                         </div>
-                                        <div className="text-sm text-white/70 mb-4">Card content with theme applied.</div>
+                                        <div className="text-sm text-white/70 mb-4">
+                                            Card content with theme applied.
+                                        </div>
                                         <button
                                             className="px-3 py-1 text-xs text-white rounded-md"
                                             style={{
                                                 backgroundColor: theme2.accent,
-                                                borderRadius: `${theme2.borderRadius}px`,
+                                                borderRadius: `${theme2.borderRadius}px`
                                             }}
                                         >
                                             Action
@@ -203,21 +225,30 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Primary Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme1.primary }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme1.primary }}
+                                            ></div>
                                             <span className="text-sm">{theme1.primary}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Secondary Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme1.secondary }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme1.secondary }}
+                                            ></div>
                                             <span className="text-sm">{theme1.secondary}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Accent Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme1.accent }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme1.accent }}
+                                            ></div>
                                             <span className="text-sm">{theme1.accent}</span>
                                         </div>
                                     </div>
@@ -237,21 +268,30 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Primary Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme2.primary }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme2.primary }}
+                                            ></div>
                                             <span className="text-sm">{theme2.primary}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Secondary Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme2.secondary }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme2.secondary }}
+                                            ></div>
                                             <span className="text-sm">{theme2.secondary}</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-white/70">Accent Color</span>
                                         <div className="flex items-center">
-                                            <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: theme2.accent }}></div>
+                                            <div
+                                                className="w-4 h-4 rounded-full mr-2"
+                                                style={{ backgroundColor: theme2.accent }}
+                                            ></div>
                                             <span className="text-sm">{theme2.accent}</span>
                                         </div>
                                     </div>
@@ -280,5 +320,5 @@ export function ThemeComparison({ themes, onApply, onClose }: ThemeComparisonPro
                 </div>
             </div>
         </div>
-    )
+    );
 }

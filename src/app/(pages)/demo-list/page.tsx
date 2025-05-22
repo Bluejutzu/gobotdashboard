@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // List of all demo pages
 const demoPages = [
@@ -42,20 +42,18 @@ const demoPages = [
         path: "/theme-comp-demo",
         description: "A demo showcasing theme comparison"
     }
-]
+];
 
 export default function DemoListPage() {
     return (
         <div className="container mx-auto py-10">
             <div className="mb-8">
                 <h1 className="text-4xl font-bold mb-2">Demo Pages</h1>
-                <p className="text-muted-foreground">
-                    Explore all available demo pages and their features
-                </p>
+                <p className="text-muted-foreground">Explore all available demo pages and their features</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {demoPages.map((demo) => (
+                {demoPages.map(demo => (
                     <Card key={demo.path} className="hover:shadow-lg transition-shadow">
                         <CardHeader>
                             <CardTitle>{demo.name}</CardTitle>
@@ -73,5 +71,5 @@ export default function DemoListPage() {
                 ))}
             </div>
         </div>
-    )
-} 
+    );
+}

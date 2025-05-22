@@ -1,21 +1,15 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import Link from "next/link"
-import { AlertTriangle, Home, RefreshCw } from 'lucide-react'
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react";
+import Link from "next/link";
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-export default function Error({
-    error,
-    reset,
-}: {
-    error: Error & { digest?: string }
-    reset: () => void
-}) {
+export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
     useEffect(() => {
         // Log the error to an error reporting service
-        console.error(error)
-    }, [error])
+        console.error(error);
+    }, [error]);
 
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-[#1e2030] text-white p-4">
@@ -42,18 +36,11 @@ export default function Error({
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8 animate-fade-in-up animation-delay-500 will-animate">
-                        <Button
-                            variant="outline"
-                            className="group hover-glow"
-                            onClick={reset}
-                        >
+                        <Button variant="outline" className="group hover-glow" onClick={reset}>
                             <RefreshCw className="mr-2 h-4 w-4 transition-transform group-hover:rotate-180" />
                             Try Again
                         </Button>
-                        <Button
-                            className="bg-primary hover:bg-primary/90 btn-pulse"
-                            asChild
-                        >
+                        <Button className="bg-primary hover:bg-primary/90 btn-pulse" asChild>
                             <Link href="/">
                                 <Home className="mr-2 h-4 w-4" />
                                 Return Home
@@ -67,5 +54,5 @@ export default function Error({
                 </div>
             </div>
         </div>
-    )
+    );
 }

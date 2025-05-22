@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { CodeBlock } from "@/components/code-block"
+import { CodeBlock } from "@/components/code-block";
 
 export default function CodeExamplesPage() {
     const useThemeStylesExample = `import { useThemeStyles } from "@/hooks/use-theme-styles"
@@ -16,7 +16,7 @@ function MyComponent() {
       Themed content
     </div>
   )
-}`
+}`;
 
     const themeWrapperExample = `import { ThemeWrapper } from "@/components/theme-wrapper"
 
@@ -30,7 +30,7 @@ function MyComponent() {
       Content with themed styles
     </ThemeWrapper>
   )
-}`
+}`;
 
     return (
         <div className="container mx-auto py-12 px-4">
@@ -52,5 +52,5 @@ function MyComponent() {
                 <CodeBlock code={themeWrapperExample} language="tsx" filename="components/another-component.tsx" />
             </section>
         </div>
-    )
+    );
 }

@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { ArrowLeft, Home, RefreshCw, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
+import type React from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Home, RefreshCw, Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils/utils";
 
 interface ErrorPageProps {
-    statusCode?: number
-    title?: string
-    description?: string
-    errorId?: string
-    showReset?: boolean
-    resetFn?: () => void
-    className?: string
-    minecraftStyle?: boolean
-    showSearch?: boolean
-    showPixelCharacter?: boolean
-    customActions?: React.ReactNode
-    footerText?: string
+    statusCode?: number;
+    title?: string;
+    description?: string;
+    errorId?: string;
+    showReset?: boolean;
+    resetFn?: () => void;
+    className?: string;
+    minecraftStyle?: boolean;
+    showSearch?: boolean;
+    showPixelCharacter?: boolean;
+    customActions?: React.ReactNode;
+    footerText?: string;
 }
 
 export function ErrorPage({
@@ -36,30 +36,30 @@ export function ErrorPage({
     showSearch = false,
     showPixelCharacter = false,
     customActions,
-    footerText,
+    footerText
 }: ErrorPageProps) {
-    const router = useRouter()
-    const [searchQuery, setSearchQuery] = useState("")
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState("");
 
     // Default messages based on status code
-    const defaultTitle = statusCode ? getDefaultTitleByStatus(statusCode) : "An Error Occurred"
+    const defaultTitle = statusCode ? getDefaultTitleByStatus(statusCode) : "An Error Occurred";
     const defaultDescription = statusCode
         ? getDefaultDescriptionByStatus(statusCode)
-        : "We've encountered an error while processing your request."
+        : "We've encountered an error while processing your request.";
 
     // Use provided values or defaults
-    const displayTitle = title || defaultTitle
-    const displayDescription = description || defaultDescription
+    const displayTitle = title || defaultTitle;
+    const displayDescription = description || defaultDescription;
 
     // Determine background color based on status code
-    const bgColor = statusCode && statusCode >= 500 ? "destructive" : "primary"
+    const bgColor = statusCode && statusCode >= 500 ? "destructive" : "primary";
 
     const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         if (searchQuery.trim()) {
-            router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
+            router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
         }
-    }
+    };
 
     return (
         <div className={cn("flex min-h-screen flex-col items-center justify-center", className)}>
@@ -76,7 +76,7 @@ export function ErrorPage({
                                 className="text-8xl font-bold text-primary mb-2 tracking-widest"
                                 style={{
                                     fontFamily: '"Minecraft", monospace',
-                                    textShadow: "0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3)",
+                                    textShadow: "0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3)"
                                 }}
                             >
                                 {statusCode}
@@ -85,7 +85,7 @@ export function ErrorPage({
                                 className="text-2xl md:text-3xl font-semibold mb-4"
                                 style={{
                                     fontFamily: '"Minecraft", monospace',
-                                    textShadow: "0 0 5px rgba(59, 130, 246, 0.3)",
+                                    textShadow: "0 0 5px rgba(59, 130, 246, 0.3)"
                                 }}
                             >
                                 {displayTitle}
@@ -93,7 +93,9 @@ export function ErrorPage({
                         </>
                     ) : (
                         <div className="relative">
-                            <div className={`text-[10rem] font-bold text-${bgColor}/10 animate-pulse-slow will-animate`}>
+                            <div
+                                className={`text-[10rem] font-bold text-${bgColor}/10 animate-pulse-slow will-animate`}
+                            >
                                 {statusCode}
                             </div>
                             <div className="absolute inset-0 flex items-center justify-center">
@@ -131,7 +133,7 @@ export function ErrorPage({
                                 type="text"
                                 placeholder="Search for content..."
                                 value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={e => setSearchQuery(e.target.value)}
                                 className="bg-secondary/50 border-primary/20 focus-visible:ring-primary"
                             />
                             <Button type="submit" variant="secondary">
@@ -153,7 +155,11 @@ export function ErrorPage({
                                 Try Again
                             </Button>
                         ) : (
-                            <Button variant="outline" className="group hover-glow" onClick={() => window.history.back()}>
+                            <Button
+                                variant="outline"
+                                className="group hover-glow"
+                                onClick={() => window.history.back()}
+                            >
                                 <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
                                 Go Back
                             </Button>
@@ -184,66 +190,66 @@ export function ErrorPage({
                 )}
             </div>
         </div>
-    )
+    );
 }
 
 // Helper functions to get default messages based on status code
 function getDefaultTitleByStatus(statusCode: number): string {
     switch (statusCode) {
         case 400:
-            return "Bad Request"
+            return "Bad Request";
         case 401:
-            return "Unauthorized"
+            return "Unauthorized";
         case 403:
-            return "Forbidden"
+            return "Forbidden";
         case 404:
-            return "Page Not Found"
+            return "Page Not Found";
         case 405:
-            return "Method Not Allowed"
+            return "Method Not Allowed";
         case 408:
-            return "Request Timeout"
+            return "Request Timeout";
         case 429:
-            return "Too Many Requests"
+            return "Too Many Requests";
         case 500:
-            return "Internal Server Error"
+            return "Internal Server Error";
         case 502:
-            return "Bad Gateway"
+            return "Bad Gateway";
         case 503:
-            return "Service Unavailable"
+            return "Service Unavailable";
         case 504:
-            return "Gateway Timeout"
+            return "Gateway Timeout";
         default:
-            return statusCode >= 500 ? "Server Error" : "Client Error"
+            return statusCode >= 500 ? "Server Error" : "Client Error";
     }
 }
 
 function getDefaultDescriptionByStatus(statusCode: number): string {
     switch (statusCode) {
         case 400:
-            return "The server could not understand the request due to invalid syntax."
+            return "The server could not understand the request due to invalid syntax.";
         case 401:
-            return "You need to be authenticated to access this resource."
+            return "You need to be authenticated to access this resource.";
         case 403:
-            return "You don't have permission to access this resource."
+            return "You don't have permission to access this resource.";
         case 404:
-            return "Oops! Looks like you've ventured into uncharted territory. The page you're looking for has either been moved or doesn't exist."
+            return "Oops! Looks like you've ventured into uncharted territory. The page you're looking for has either been moved or doesn't exist.";
         case 405:
-            return "The method specified in the request is not allowed for the resource."
+            return "The method specified in the request is not allowed for the resource.";
         case 408:
-            return "The server timed out waiting for the request."
+            return "The server timed out waiting for the request.";
         case 429:
-            return "You've sent too many requests. Please try again later."
+            return "You've sent too many requests. Please try again later.";
         case 500:
-            return "The server encountered an unexpected condition that prevented it from fulfilling the request."
+            return "The server encountered an unexpected condition that prevented it from fulfilling the request.";
         case 502:
-            return "The server received an invalid response from an upstream server."
+            return "The server received an invalid response from an upstream server.";
         case 503:
-            return "The server is currently unavailable. Please try again later."
+            return "The server is currently unavailable. Please try again later.";
         case 504:
-            return "The server was acting as a gateway and did not receive a timely response."
+            return "The server was acting as a gateway and did not receive a timely response.";
         default:
             return statusCode >= 500
                 ? "We've encountered a server error. Our team has been notified."
-                : "We've encountered an error with your request."
+                : "We've encountered an error with your request.";
     }
 }

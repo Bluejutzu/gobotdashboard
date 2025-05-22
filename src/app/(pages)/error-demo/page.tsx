@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { AlertTriangle, Bug, RefreshCw } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ErrorPage } from "@/components/error-page"
+import { useState } from "react";
+import { AlertTriangle, Bug, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ErrorPage } from "@/components/error-page";
 
 export default function ErrorDemoPage() {
-    const [selectedError, setSelectedError] = useState<string>("none")
-    const [selectedStyle, setSelectedStyle] = useState<string>("standard")
-    const [showError, setShowError] = useState(false)
+    const [selectedError, setSelectedError] = useState<string>("none");
+    const [selectedStyle, setSelectedStyle] = useState<string>("standard");
+    const [showError, setShowError] = useState(false);
 
     // Reset error state
     const resetError = () => {
-        setShowError(false)
-        setSelectedError("none")
-    }
+        setShowError(false);
+        setSelectedError("none");
+    };
 
     // Handle showing error or redirecting
     const handleShowError = () => {
         if (selectedError === "errorv2") {
-            setShowError(true)
-            return
+            setShowError(true);
+            return;
         }
-        setShowError(true)
-    }
+        setShowError(true);
+    };
 
     // If showing error, render the error page
     if (showError) {
@@ -34,8 +34,8 @@ export default function ErrorDemoPage() {
         //     return <Errorv2Page error={new Error("Demo error for errorv2 page") as Error & { digest?: string }} reset={resetError} />
         // }
 
-        const statusCode = selectedError !== "custom" ? Number.parseInt(selectedError, 10) : undefined
-        const isMinecraft = selectedStyle === "minecraft"
+        const statusCode = selectedError !== "custom" ? Number.parseInt(selectedError, 10) : undefined;
+        const isMinecraft = selectedStyle === "minecraft";
 
         // Custom actions for Minecraft style
         const customActions = isMinecraft ? (
@@ -50,14 +50,16 @@ export default function ErrorDemoPage() {
                     Go to previous Page
                 </Button>
             </div>
-        ) : undefined
+        ) : undefined;
 
         return (
             <ErrorPage
                 statusCode={statusCode}
                 title={selectedError === "custom" ? "Custom Error" : undefined}
                 description={
-                    selectedError === "custom" ? "This is a custom error message for demonstration purposes." : undefined
+                    selectedError === "custom"
+                        ? "This is a custom error message for demonstration purposes."
+                        : undefined
                 }
                 errorId={selectedError === "custom" ? "DEMO-12345" : undefined}
                 showReset={!isMinecraft}
@@ -68,7 +70,7 @@ export default function ErrorDemoPage() {
                 customActions={customActions}
                 footerText={isMinecraft ? "You died! Score: 0" : undefined}
             />
-        )
+        );
     }
 
     return (
@@ -79,7 +81,9 @@ export default function ErrorDemoPage() {
                         <Bug className="h-5 w-5 text-primary" />
                         Error Page Demo
                     </CardTitle>
-                    <CardDescription className="text-gray-400">Test different error pages and see how they look</CardDescription>
+                    <CardDescription className="text-gray-400">
+                        Test different error pages and see how they look
+                    </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
@@ -139,5 +143,5 @@ export default function ErrorDemoPage() {
                 </CardFooter>
             </Card>
         </div>
-    )
+    );
 }

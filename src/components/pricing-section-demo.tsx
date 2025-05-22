@@ -1,4 +1,4 @@
-import { PricingCard } from "@/components/pricing-card"
+import { PricingCard } from "@/components/pricing-card";
 
 export function PricingSectionDemo() {
     return (
@@ -18,7 +18,9 @@ export function PricingSectionDemo() {
                     <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400">
                         Choose the perfect plan for your needs
                     </h2>
-                    <p className="text-xl text-white/70">Demonstration of pricing cards with different availability states</p>
+                    <p className="text-xl text-white/70">
+                        Demonstration of pricing cards with different availability states
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
@@ -32,7 +34,7 @@ export function PricingSectionDemo() {
                             "Basic auto-moderation",
                             "Custom commands (up to 10)",
                             "Welcome messages",
-                            "Basic role management",
+                            "Basic role management"
                         ]}
                         buttonText="Get Started"
                         buttonLink="/auth/login"
@@ -51,7 +53,7 @@ export function PricingSectionDemo() {
                             "Unlimited custom commands",
                             "Advanced analytics",
                             "Priority support",
-                            "Custom branding",
+                            "Custom branding"
                         ]}
                         buttonText="Upgrade Now"
                         buttonLink="/pricing"
@@ -72,7 +74,7 @@ export function PricingSectionDemo() {
                             "Advanced analytics",
                             "Custom integrations",
                             "Dedicated support",
-                            "API access",
+                            "API access"
                         ]}
                         buttonText="Upgrade Now"
                         buttonLink="/pricing"
@@ -92,7 +94,7 @@ export function PricingSectionDemo() {
                             "Custom feature development",
                             "SLA guarantees",
                             "Multiple server management",
-                            "API access",
+                            "API access"
                         ]}
                         buttonText="Contact Us"
                         buttonLink="/contact"
@@ -108,11 +110,12 @@ export function PricingSectionDemo() {
                     <div className="inline-block mx-auto p-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl max-w-3xl">
                         <h3 className="text-xl font-semibold mb-3">Pricing Card Availability Demo</h3>
                         <p className="text-white/70 mb-4">
-                            This demonstrates how pricing cards can be shown as available or unavailable with different visual states.
+                            This demonstrates how pricing cards can be shown as available or unavailable with different
+                            visual states.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
-    )
+    );
 }

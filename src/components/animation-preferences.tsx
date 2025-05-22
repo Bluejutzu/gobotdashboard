@@ -1,21 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Eye, Gauge, Monitor, Moon, Settings, Sparkles, Sun } from 'lucide-react'
-import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
+import { useEffect, useState } from "react";
+import { Eye, Gauge, Monitor, Moon, Settings, Sparkles, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils/utils";
 
-import { Button } from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Slider } from "@/components/ui/slider"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
     Sidebar,
     SidebarContent,
@@ -28,100 +23,100 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarProvider,
-    SidebarTrigger,
-} from "@/components/ui/sidebar"
+    SidebarTrigger
+} from "@/components/ui/sidebar";
 
 export function AnimationPreferences() {
     // Animation preferences
-    const [reducedMotion, setReducedMotion] = useState(false)
-    const [animationSpeed, setAnimationSpeed] = useState(1)
-    const [parallaxEffects, setParallaxEffects] = useState(true)
-    const [scrollAnimations, setScrollAnimations] = useState(true)
-    const [hoverEffects, setHoverEffects] = useState(true)
+    const [reducedMotion, setReducedMotion] = useState(false);
+    const [animationSpeed, setAnimationSpeed] = useState(1);
+    const [parallaxEffects, setParallaxEffects] = useState(true);
+    const [scrollAnimations, setScrollAnimations] = useState(true);
+    const [hoverEffects, setHoverEffects] = useState(true);
 
     // Theme preferences
-    const { theme, setTheme } = useTheme()
+    const { theme, setTheme } = useTheme();
 
     // Component mount state
-    const [mounted, setMounted] = useState(false)
+    const [mounted, setMounted] = useState(false);
 
     // Load preferences on mount
     useEffect(() => {
-        setMounted(true)
+        setMounted(true);
 
         // Load animation preferences
-        const savedReducedMotion = localStorage.getItem("reduced-motion")
-        const savedAnimationSpeed = localStorage.getItem("animation-speed")
-        const savedParallaxEffects = localStorage.getItem("parallax-effects")
-        const savedScrollAnimations = localStorage.getItem("scroll-animations")
-        const savedHoverEffects = localStorage.getItem("hover-effects")
+        const savedReducedMotion = localStorage.getItem("reduced-motion");
+        const savedAnimationSpeed = localStorage.getItem("animation-speed");
+        const savedParallaxEffects = localStorage.getItem("parallax-effects");
+        const savedScrollAnimations = localStorage.getItem("scroll-animations");
+        const savedHoverEffects = localStorage.getItem("hover-effects");
 
         if (savedReducedMotion) {
-            setReducedMotion(savedReducedMotion === "true")
+            setReducedMotion(savedReducedMotion === "true");
         } else {
-            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            setReducedMotion(prefersReducedMotion)
+            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            setReducedMotion(prefersReducedMotion);
         }
 
         if (savedAnimationSpeed) {
-            setAnimationSpeed(parseFloat(savedAnimationSpeed))
+            setAnimationSpeed(Number.parseFloat(savedAnimationSpeed));
         }
 
         if (savedParallaxEffects) {
-            setParallaxEffects(savedParallaxEffects === "true")
+            setParallaxEffects(savedParallaxEffects === "true");
         }
 
         if (savedScrollAnimations) {
-            setScrollAnimations(savedScrollAnimations === "true")
+            setScrollAnimations(savedScrollAnimations === "true");
         }
 
         if (savedHoverEffects) {
-            setHoverEffects(savedHoverEffects === "true")
+            setHoverEffects(savedHoverEffects === "true");
         }
-    }, [])
+    }, []);
 
     // Apply preferences when they change
     useEffect(() => {
-        if (!mounted) return
+        if (!mounted) return;
 
         // Save preferences to localStorage
-        localStorage.setItem("reduced-motion", reducedMotion.toString())
-        localStorage.setItem("animation-speed", animationSpeed.toString())
-        localStorage.setItem("parallax-effects", parallaxEffects.toString())
-        localStorage.setItem("scroll-animations", scrollAnimations.toString())
-        localStorage.setItem("hover-effects", hoverEffects.toString())
+        localStorage.setItem("reduced-motion", reducedMotion.toString());
+        localStorage.setItem("animation-speed", animationSpeed.toString());
+        localStorage.setItem("parallax-effects", parallaxEffects.toString());
+        localStorage.setItem("scroll-animations", scrollAnimations.toString());
+        localStorage.setItem("hover-effects", hoverEffects.toString());
 
         // Apply reduced motion class
         if (reducedMotion) {
-            document.documentElement.classList.add("reduce-motion")
+            document.documentElement.classList.add("reduce-motion");
         } else {
-            document.documentElement.classList.remove("reduce-motion")
+            document.documentElement.classList.remove("reduce-motion");
         }
 
         // Apply animation speed
-        document.documentElement.style.setProperty("--animation-speed-factor", animationSpeed.toString())
+        document.documentElement.style.setProperty("--animation-speed-factor", animationSpeed.toString());
 
         // Apply other animation settings
         if (!parallaxEffects) {
-            document.documentElement.classList.add("disable-parallax")
+            document.documentElement.classList.add("disable-parallax");
         } else {
-            document.documentElement.classList.remove("disable-parallax")
+            document.documentElement.classList.remove("disable-parallax");
         }
 
         if (!scrollAnimations) {
-            document.documentElement.classList.add("disable-scroll-animations")
+            document.documentElement.classList.add("disable-scroll-animations");
         } else {
-            document.documentElement.classList.remove("disable-scroll-animations")
+            document.documentElement.classList.remove("disable-scroll-animations");
         }
 
         if (!hoverEffects) {
-            document.documentElement.classList.add("disable-hover-effects")
+            document.documentElement.classList.add("disable-hover-effects");
         } else {
-            document.documentElement.classList.remove("disable-hover-effects")
+            document.documentElement.classList.remove("disable-hover-effects");
         }
-    }, [reducedMotion, animationSpeed, parallaxEffects, scrollAnimations, hoverEffects, mounted])
+    }, [reducedMotion, animationSpeed, parallaxEffects, scrollAnimations, hoverEffects, mounted]);
 
-    if (!mounted) return null
+    if (!mounted) return null;
 
     return (
         <SidebarProvider defaultOpen={false}>
@@ -129,7 +124,12 @@ export function AnimationPreferences() {
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <SidebarTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full bg-background/80 backdrop-blur-sm border border-border/50 shadow-sm" aria-label="Settings">
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="rounded-full bg-background/80 backdrop-blur-sm border border-border/50 shadow-sm"
+                                aria-label="Settings"
+                            >
                                 <Settings className="h-5 w-5" />
                             </Button>
                         </SidebarTrigger>
@@ -188,15 +188,22 @@ export function AnimationPreferences() {
                                             <div className="space-y-4">
                                                 <div className="space-y-1.5">
                                                     <div className="flex items-center justify-between">
-                                                        <Label htmlFor="animation-speed" className="text-sm font-medium">
+                                                        <Label
+                                                            htmlFor="animation-speed"
+                                                            className="text-sm font-medium"
+                                                        >
                                                             Animation speed
                                                         </Label>
                                                         <span className="text-xs text-muted-foreground">
-                                                            {animationSpeed === 0.5 ? "Slow" :
-                                                                animationSpeed === 1 ? "Normal" :
-                                                                    animationSpeed === 1.5 ? "Fast" :
-                                                                        animationSpeed === 2 ? "Very fast" :
-                                                                            `${animationSpeed}x`}
+                                                            {animationSpeed === 0.5
+                                                                ? "Slow"
+                                                                : animationSpeed === 1
+                                                                  ? "Normal"
+                                                                  : animationSpeed === 1.5
+                                                                    ? "Fast"
+                                                                    : animationSpeed === 2
+                                                                      ? "Very fast"
+                                                                      : `${animationSpeed}x`}
                                                         </span>
                                                     </div>
                                                     <Slider
@@ -206,7 +213,7 @@ export function AnimationPreferences() {
                                                         max={2}
                                                         step={0.5}
                                                         value={[animationSpeed]}
-                                                        onValueChange={(value) => setAnimationSpeed(value[0])}
+                                                        onValueChange={value => setAnimationSpeed(value[0])}
                                                         className={cn(reducedMotion && "opacity-50")}
                                                     />
                                                 </div>
@@ -216,7 +223,10 @@ export function AnimationPreferences() {
                                             <div className="space-y-4">
                                                 <div className="flex items-center justify-between">
                                                     <div className="space-y-0.5">
-                                                        <Label htmlFor="parallax-effects" className="text-sm font-medium">
+                                                        <Label
+                                                            htmlFor="parallax-effects"
+                                                            className="text-sm font-medium"
+                                                        >
                                                             Parallax effects
                                                         </Label>
                                                         <p className="text-xs text-muted-foreground">
@@ -234,7 +244,10 @@ export function AnimationPreferences() {
 
                                                 <div className="flex items-center justify-between">
                                                     <div className="space-y-0.5">
-                                                        <Label htmlFor="scroll-animations" className="text-sm font-medium">
+                                                        <Label
+                                                            htmlFor="scroll-animations"
+                                                            className="text-sm font-medium"
+                                                        >
                                                             Scroll animations
                                                         </Label>
                                                         <p className="text-xs text-muted-foreground">
@@ -285,9 +298,7 @@ export function AnimationPreferences() {
                                                         Optimize for performance over visual quality
                                                     </p>
                                                 </div>
-                                                <Switch
-                                                    id="high-performance"
-                                                />
+                                                <Switch id="high-performance" />
                                             </div>
                                         </div>
                                     </SidebarGroupContent>
@@ -336,16 +347,17 @@ export function AnimationPreferences() {
                                         <div className="space-y-4">
                                             <div className="flex items-center justify-between">
                                                 <div className="space-y-0.5">
-                                                    <Label htmlFor="reduce-transparency" className="text-sm font-medium">
+                                                    <Label
+                                                        htmlFor="reduce-transparency"
+                                                        className="text-sm font-medium"
+                                                    >
                                                         Reduce transparency
                                                     </Label>
                                                     <p className="text-xs text-muted-foreground">
                                                         Reduce blur and transparency effects
                                                     </p>
                                                 </div>
-                                                <Switch
-                                                    id="reduce-transparency"
-                                                />
+                                                <Switch id="reduce-transparency" />
                                             </div>
 
                                             <div className="flex items-center justify-between">
@@ -357,9 +369,7 @@ export function AnimationPreferences() {
                                                         Increase contrast for better visibility
                                                     </p>
                                                 </div>
-                                                <Switch
-                                                    id="high-contrast"
-                                                />
+                                                <Switch id="high-contrast" />
                                             </div>
                                         </div>
                                     </SidebarGroupContent>
@@ -392,5 +402,5 @@ export function AnimationPreferences() {
                 </Sidebar>
             </TooltipProvider>
         </SidebarProvider>
-    )
+    );
 }

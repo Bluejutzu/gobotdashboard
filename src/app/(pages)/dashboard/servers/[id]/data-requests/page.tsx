@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import React, { Usable, useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { DataRequestForm } from "@/components/dashboard/data-request-form"
-import { DataRequestsList } from "@/components/dashboard/data-requests-list"
-import supabase from "@/lib/supabase/client"
+import React, { type Usable, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { DataRequestForm } from "@/components/dashboard/data-request-form";
+import { DataRequestsList } from "@/components/dashboard/data-requests-list";
+import supabase from "@/lib/supabase/client";
 
 interface PageParams {
     id: string;
@@ -18,21 +18,21 @@ interface ServerData {
 }
 
 export default function DataRequestsPage({ params }: { params: Usable<PageParams> }) {
-    const { id } = React.use(params)
-    const router = useRouter()
-    const [server, setServer] = useState<ServerData | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { id } = React.use(params);
+    const router = useRouter();
+    const [server, setServer] = useState<ServerData | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const {
-                    data: { session },
-                } = await supabase.auth.getSession()
+                    data: { session }
+                } = await supabase.auth.getSession();
 
                 if (!session) {
-                    router.push("/auth/login")
-                    return
+                    router.push("/auth/login");
+                    return;
                 }
 
                 // Get server data
@@ -40,14 +40,14 @@ export default function DataRequestsPage({ params }: { params: Usable<PageParams
                     .from("servers")
                     .select("*")
                     .eq("discord_id", id)
-                    .single()
+                    .single();
 
                 if (serverError) {
-                    console.error("Error fetching server data:", serverError)
-                    return <div>Error fetching server data</div>
+                    console.error("Error fetching server data:", serverError);
+                    return <div>Error fetching server data</div>;
                 }
 
-                setServer(serverData as ServerData)
+                setServer(serverData as ServerData);
 
                 // Get user access to this server
                 // const { data: userData } = await supabase
@@ -69,18 +69,18 @@ export default function DataRequestsPage({ params }: { params: Usable<PageParams
                 //     return
                 // }
 
-                setLoading(false)
+                setLoading(false);
             } catch (error) {
-                console.error("Error fetching data:", error)
-                router.push("/dashboard")
+                console.error("Error fetching data:", error);
+                router.push("/dashboard");
             }
-        }
+        };
 
-        fetchData()
-    }, [id, router])
+        fetchData();
+    }, [id, router]);
 
     if (loading) {
-        return <div className="p-8">Loading...</div>
+        return <div className="p-8">Loading...</div>;
     }
 
     return (
@@ -89,7 +89,9 @@ export default function DataRequestsPage({ params }: { params: Usable<PageParams
                 <div className="h-full px-4 py-6 lg:px-8">
                     <div>
                         <h2 className="text-2xl font-bold tracking-tight">Data Requests</h2>
-                        <p className="text-muted-foreground">Request and manage data exports for {server?.name || ""}</p>
+                        <p className="text-muted-foreground">
+                            Request and manage data exports for {server?.name || ""}
+                        </p>
                     </div>
 
                     <div className="mt-8 grid gap-8 md:grid-cols-2">
@@ -99,5 +101,5 @@ export default function DataRequestsPage({ params }: { params: Usable<PageParams
                 </div>
             </div>
         </>
-    )
+    );
 }

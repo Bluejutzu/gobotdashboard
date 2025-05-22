@@ -1,9 +1,9 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Badge } from "@/components/ui/badge"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
 
 export default function AboutPage() {
     return (
@@ -32,8 +32,8 @@ export default function AboutPage() {
                                 The Story Behind Gobot
                             </h1>
                             <p className="text-xl text-muted-foreground animate-slide-in animation-delay-500">
-                                Gobot was created with a simple mission: to provide Discord server owners with the most powerful,
-                                customizable, and user-friendly bot experience possible.
+                                Gobot was created with a simple mission: to provide Discord server owners with the most
+                                powerful, customizable, and user-friendly bot experience possible.
                             </p>
                         </div>
                     </div>
@@ -46,9 +46,9 @@ export default function AboutPage() {
                             <div className="space-y-6 animate-fade-in-up">
                                 <h2 className="text-3xl font-bold">Our Mission</h2>
                                 <p className="text-lg text-muted-foreground">
-                                    At Gobot, we believe that Discord communities should have access to powerful tools without
-                                    complicated setup or premium paywalls. Our mission is to empower server owners with everything they
-                                    need to create engaging, safe, and thriving communities.
+                                    At Gobot, we believe that Discord communities should have access to powerful tools
+                                    without complicated setup or premium paywalls. Our mission is to empower server
+                                    owners with everything they need to create engaging, safe, and thriving communities.
                                 </p>
                                 <p className="text-lg text-muted-foreground">
                                     {`We're committed to continuous improvement, listening to our users, and implementing features that make`}
@@ -103,28 +103,31 @@ export default function AboutPage() {
                                     name: "Alex Johnson",
                                     role: "Founder & Lead Developer",
                                     avatar: "/placeholder.svg?height=100&width=100",
-                                    delay: "0",
+                                    delay: "0"
                                 },
                                 {
                                     name: "Sam Rodriguez",
                                     role: "Backend Engineer",
                                     avatar: "/placeholder.svg?height=100&width=100",
-                                    delay: "100",
+                                    delay: "100"
                                 },
                                 {
                                     name: "Taylor Kim",
                                     role: "UI/UX Designer",
                                     avatar: "/placeholder.svg?height=100&width=100",
-                                    delay: "200",
+                                    delay: "200"
                                 },
                                 {
                                     name: "Jordan Patel",
                                     role: "Community Manager",
                                     avatar: "/placeholder.svg?height=100&width=100",
-                                    delay: "300",
-                                },
+                                    delay: "300"
+                                }
                             ].map((member, index) => (
-                                <Card key={index} className={`hover-lift animate-fade-in-up animation-delay-${member.delay}`}>
+                                <Card
+                                    key={index}
+                                    className={`hover-lift animate-fade-in-up animation-delay-${member.delay}`}
+                                >
                                     <CardHeader className="text-center pb-2">
                                         <Avatar className="w-24 h-24 mx-auto mb-4">
                                             <AvatarImage src={member.avatar || "/placeholder.svg"} alt={member.name} />
@@ -198,7 +201,9 @@ export default function AboutPage() {
                                 FAQ
                             </Badge>
                             <h2 className="text-3xl font-bold md:text-4xl">Frequently Asked Questions</h2>
-                            <p className="mt-4 text-xl text-muted-foreground">Everything you need to know about Gobot.</p>
+                            <p className="mt-4 text-xl text-muted-foreground">
+                                Everything you need to know about Gobot.
+                            </p>
                         </div>
 
                         <div className="max-w-3xl mx-auto animate-fade-in-up">
@@ -206,8 +211,8 @@ export default function AboutPage() {
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger>Is Gobot really free?</AccordionTrigger>
                                     <AccordionContent>
-                                        Yes! Gobot is completely free to use with all core features available to everyone. We believe in
-                                        providing powerful tools without paywalls.
+                                        Yes! Gobot is completely free to use with all core features available to
+                                        everyone. We believe in providing powerful tools without paywalls.
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem value="item-2">
@@ -228,12 +233,15 @@ export default function AboutPage() {
                                 <AccordionItem value="item-4">
                                     <AccordionTrigger>How can I customize Gobot for my server?</AccordionTrigger>
                                     <AccordionContent>
-                                        After adding Gobot to your server, you can access the dashboard to customize all aspects of the
-                                        bot, including prefix, welcome messages, auto-roles, moderation settings, and more.
+                                        After adding Gobot to your server, you can access the dashboard to customize all
+                                        aspects of the bot, including prefix, welcome messages, auto-roles, moderation
+                                        settings, and more.
                                     </AccordionContent>
                                 </AccordionItem>
                                 <AccordionItem value="item-5">
-                                    <AccordionTrigger>Is there a limit to how many servers can use Gobot?</AccordionTrigger>
+                                    <AccordionTrigger>
+                                        Is there a limit to how many servers can use Gobot?
+                                    </AccordionTrigger>
                                     <AccordionContent>
                                         {`No, there's no limit! Gobot can be added to as many servers as you manage, and each server can`}
                                         have its own unique configuration.
@@ -242,9 +250,9 @@ export default function AboutPage() {
                                 <AccordionItem value="item-6">
                                     <AccordionTrigger>How do I report issues or suggest features?</AccordionTrigger>
                                     <AccordionContent>
-                                        You can report issues or suggest features through our support server on Discord or by using the
-                                        contact form on our website. We value community feedback and actively implement suggested
-                                        improvements.
+                                        You can report issues or suggest features through our support server on Discord
+                                        or by using the contact form on our website. We value community feedback and
+                                        actively implement suggested improvements.
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
@@ -271,5 +279,5 @@ export default function AboutPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }

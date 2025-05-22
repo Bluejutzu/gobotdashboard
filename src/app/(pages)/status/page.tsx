@@ -1,11 +1,11 @@
-import Link from "next/link"
-import { AlertTriangle, CheckCircle, Clock, RefreshCw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Progress } from "@/components/ui/progress"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import Link from "next/link";
+import { AlertTriangle, CheckCircle, Clock, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 export default function StatusPage() {
     const systems = [
@@ -13,8 +13,8 @@ export default function StatusPage() {
         { name: "Bot Core", status: "operational", uptime: 99.99 },
         { name: "Dashboard", status: "operational", uptime: 99.95 },
         { name: "Database", status: "operational", uptime: 99.97 },
-        { name: "Authentication", status: "operational", uptime: 100 },
-    ]
+        { name: "Authentication", status: "operational", uptime: 100 }
+    ];
 
     const incidents = [
         {
@@ -23,19 +23,33 @@ export default function StatusPage() {
             status: "resolved",
             date: "May 2, 2023",
             updates: [
-                { time: "14:30 UTC", message: "Issue resolved. All systems operating normally." },
-                { time: "13:45 UTC", message: "Identified the cause as a database connection issue. Working on a fix." },
-                { time: "13:15 UTC", message: "Investigating reports of API slowdowns." },
-            ],
+                {
+                    time: "14:30 UTC",
+                    message: "Issue resolved. All systems operating normally."
+                },
+                {
+                    time: "13:45 UTC",
+                    message: "Identified the cause as a database connection issue. Working on a fix."
+                },
+                {
+                    time: "13:15 UTC",
+                    message: "Investigating reports of API slowdowns."
+                }
+            ]
         },
         {
             id: 2,
             title: "Scheduled Maintenance",
             status: "scheduled",
             date: "May 15, 2023",
-            updates: [{ time: "Scheduled for 02:00-04:00 UTC", message: "Database optimization and system upgrades." }],
-        },
-    ]
+            updates: [
+                {
+                    time: "Scheduled for 02:00-04:00 UTC",
+                    message: "Database optimization and system upgrades."
+                }
+            ]
+        }
+    ];
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -59,7 +73,9 @@ export default function StatusPage() {
                             <Badge variant="outline" className="mb-4 animate-fade-in">
                                 SYSTEM STATUS
                             </Badge>
-                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">Gobot Status</h1>
+                            <h1 className="text-4xl font-bold md:text-5xl lg:text-6xl mb-6 animate-slide-in">
+                                Gobot Status
+                            </h1>
                             <div className="flex items-center justify-center gap-2 mb-6 animate-slide-in animation-delay-500">
                                 <CheckCircle className="h-6 w-6 text-green-500" />
                                 <span className="text-xl font-medium">All Systems Operational</span>
@@ -79,7 +95,9 @@ export default function StatusPage() {
                     <div className="container relative z-10">
                         <div className="text-center mb-12 animate-fade-in-up">
                             <h2 className="text-3xl font-bold md:text-4xl">System Status</h2>
-                            <p className="mt-4 text-lg text-muted-foreground">Current status of all Gobot systems and services.</p>
+                            <p className="mt-4 text-lg text-muted-foreground">
+                                Current status of all Gobot systems and services.
+                            </p>
                         </div>
 
                         <div className="max-w-4xl mx-auto space-y-4 animate-fade-in-up">
@@ -92,7 +110,9 @@ export default function StatusPage() {
                                                 <h3 className="text-lg font-medium">{system.name}</h3>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <span className="text-sm text-muted-foreground">Uptime: {system.uptime}%</span>
+                                                <span className="text-sm text-muted-foreground">
+                                                    Uptime: {system.uptime}%
+                                                </span>
                                                 <HoverCard>
                                                     <HoverCardTrigger asChild>
                                                         <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -114,27 +134,41 @@ export default function StatusPage() {
                                                     </HoverCardTrigger>
                                                     <HoverCardContent className="w-80">
                                                         <div className="space-y-2">
-                                                            <h4 className="text-sm font-semibold">{system.name} Status History</h4>
+                                                            <h4 className="text-sm font-semibold">
+                                                                {system.name} Status History
+                                                            </h4>
                                                             <div className="space-y-1">
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs">Last 24 hours</span>
-                                                                    <span className="text-xs font-medium">{system.uptime}%</span>
+                                                                    <span className="text-xs font-medium">
+                                                                        {system.uptime}%
+                                                                    </span>
                                                                 </div>
                                                                 <Progress value={system.uptime} className="h-1" />
                                                             </div>
                                                             <div className="space-y-1">
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs">Last 7 days</span>
-                                                                    <span className="text-xs font-medium">{system.uptime - 0.01}%</span>
+                                                                    <span className="text-xs font-medium">
+                                                                        {system.uptime - 0.01}%
+                                                                    </span>
                                                                 </div>
-                                                                <Progress value={system.uptime - 0.01} className="h-1" />
+                                                                <Progress
+                                                                    value={system.uptime - 0.01}
+                                                                    className="h-1"
+                                                                />
                                                             </div>
                                                             <div className="space-y-1">
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs">Last 30 days</span>
-                                                                    <span className="text-xs font-medium">{system.uptime - 0.02}%</span>
+                                                                    <span className="text-xs font-medium">
+                                                                        {system.uptime - 0.02}%
+                                                                    </span>
                                                                 </div>
-                                                                <Progress value={system.uptime - 0.02} className="h-1" />
+                                                                <Progress
+                                                                    value={system.uptime - 0.02}
+                                                                    className="h-1"
+                                                                />
                                                             </div>
                                                         </div>
                                                     </HoverCardContent>
@@ -153,7 +187,9 @@ export default function StatusPage() {
                     <div className="container relative z-10">
                         <div className="text-center mb-12 animate-fade-in-up">
                             <h2 className="text-3xl font-bold md:text-4xl">Incident History</h2>
-                            <p className="mt-4 text-lg text-muted-foreground">Recent incidents and scheduled maintenance.</p>
+                            <p className="mt-4 text-lg text-muted-foreground">
+                                Recent incidents and scheduled maintenance.
+                            </p>
                         </div>
 
                         <Tabs defaultValue="incidents" className="max-w-4xl mx-auto animate-fade-in-up">
@@ -163,19 +199,24 @@ export default function StatusPage() {
                             </TabsList>
                             <TabsContent value="incidents" className="mt-6 space-y-6">
                                 {incidents
-                                    .filter((i) => i.status !== "scheduled")
-                                    .map((incident) => (
+                                    .filter(i => i.status !== "scheduled")
+                                    .map(incident => (
                                         <Card key={incident.id} className="overflow-hidden">
                                             <CardHeader className="pb-3">
                                                 <div className="flex items-center justify-between">
                                                     <CardTitle className="text-lg">{incident.title}</CardTitle>
-                                                    <Badge variant={incident.status === "resolved" ? "outline" : "destructive"}>
+                                                    <Badge
+                                                        variant={
+                                                            incident.status === "resolved" ? "outline" : "destructive"
+                                                        }
+                                                    >
                                                         {incident.status === "resolved" ? (
                                                             <CheckCircle className="mr-1 h-3 w-3" />
                                                         ) : (
                                                             <AlertTriangle className="mr-1 h-3 w-3" />
                                                         )}
-                                                        {incident.status.charAt(0).toUpperCase() + incident.status.slice(1)}
+                                                        {incident.status.charAt(0).toUpperCase() +
+                                                            incident.status.slice(1)}
                                                     </Badge>
                                                 </div>
                                                 <CardDescription>{incident.date}</CardDescription>
@@ -185,25 +226,29 @@ export default function StatusPage() {
                                                     {incident.updates.map((update, index) => (
                                                         <div key={index} className="border-l-2 border-muted pl-4 py-1">
                                                             <div className="text-sm font-medium">{update.time}</div>
-                                                            <div className="text-sm text-muted-foreground">{update.message}</div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                {update.message}
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </CardContent>
                                         </Card>
                                     ))}
-                                {incidents.filter((i) => i.status !== "scheduled").length === 0 && (
+                                {incidents.filter(i => i.status !== "scheduled").length === 0 && (
                                     <div className="text-center py-12">
                                         <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
                                         <h3 className="text-lg font-medium mb-2">No incidents reported</h3>
-                                        <p className="text-muted-foreground">All systems have been operating normally.</p>
+                                        <p className="text-muted-foreground">
+                                            All systems have been operating normally.
+                                        </p>
                                     </div>
                                 )}
                             </TabsContent>
                             <TabsContent value="scheduled" className="mt-6 space-y-6">
                                 {incidents
-                                    .filter((i) => i.status === "scheduled")
-                                    .map((incident) => (
+                                    .filter(i => i.status === "scheduled")
+                                    .map(incident => (
                                         <Card key={incident.id} className="overflow-hidden">
                                             <CardHeader className="pb-3">
                                                 <div className="flex items-center justify-between">
@@ -220,18 +265,22 @@ export default function StatusPage() {
                                                     {incident.updates.map((update, index) => (
                                                         <div key={index} className="border-l-2 border-muted pl-4 py-1">
                                                             <div className="text-sm font-medium">{update.time}</div>
-                                                            <div className="text-sm text-muted-foreground">{update.message}</div>
+                                                            <div className="text-sm text-muted-foreground">
+                                                                {update.message}
+                                                            </div>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </CardContent>
                                         </Card>
                                     ))}
-                                {incidents.filter((i) => i.status === "scheduled").length === 0 && (
+                                {incidents.filter(i => i.status === "scheduled").length === 0 && (
                                     <div className="text-center py-12">
                                         <Clock className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                                         <h3 className="text-lg font-medium mb-2">No scheduled maintenance</h3>
-                                        <p className="text-muted-foreground">There are no upcoming maintenance windows planned.</p>
+                                        <p className="text-muted-foreground">
+                                            There are no upcoming maintenance windows planned.
+                                        </p>
                                     </div>
                                 )}
                             </TabsContent>
@@ -292,5 +341,5 @@ export default function StatusPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }

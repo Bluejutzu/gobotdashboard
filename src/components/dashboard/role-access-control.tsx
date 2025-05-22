@@ -1,40 +1,39 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Info, Plus, Shield, Trash2 } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import supabase from "@/lib/supabase/client"
+import { useEffect, useState } from "react";
+import { Info, Plus, Shield, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import supabase from "@/lib/supabase/client";
 
 interface Role {
-    id: string
-    name: string
-    color: string
-    position: number
-    permissions: string
+    id: string;
+    name: string;
+    color: string;
+    position: number;
+    permissions: string;
 }
 
 interface ServerAccessRole {
-    id: string
-    discord_role_id: string
-    access_level: string
+    id: string;
+    discord_role_id: string;
+    access_level: string;
 }
 
 interface RoleAccessControlProps {
-    serverId: string
+    serverId: string;
 }
 
 export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
-    const [roles, setRoles] = useState<Role[]>([])
-    const [accessRoles, setAccessRoles] = useState<ServerAccessRole[]>([])
-    const [, setLoading] = useState(true)
-    const [saving, setSaving] = useState(false)
-    const [selectedRoleId, setSelectedRoleId] = useState("")
-    const [selectedAccessLevel, setSelectedAccessLevel] = useState("view")
-    
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [accessRoles, setAccessRoles] = useState<ServerAccessRole[]>([]);
+    const [, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [selectedRoleId, setSelectedRoleId] = useState("");
+    const [selectedAccessLevel, setSelectedAccessLevel] = useState("view");
 
     // Fetch server roles and access settings
     useEffect(() => {
@@ -43,46 +42,80 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                 // In a real app, you would fetch Discord roles from the Discord API
                 // For this demo, we'll use mock data
                 const mockRoles: Role[] = [
-                    { id: "1234567890", name: "Admin", color: "#ff0000", position: 5, permissions: "8" },
-                    { id: "2345678901", name: "Moderator", color: "#00ff00", position: 4, permissions: "4" },
-                    { id: "3456789012", name: "Member", color: "#0000ff", position: 3, permissions: "2" },
-                    { id: "4567890123", name: "New Member", color: "#ffff00", position: 2, permissions: "1" },
-                    { id: "5678901234", name: "Bot", color: "#ff00ff", position: 1, permissions: "0" },
-                ]
+                    {
+                        id: "1234567890",
+                        name: "Admin",
+                        color: "#ff0000",
+                        position: 5,
+                        permissions: "8"
+                    },
+                    {
+                        id: "2345678901",
+                        name: "Moderator",
+                        color: "#00ff00",
+                        position: 4,
+                        permissions: "4"
+                    },
+                    {
+                        id: "3456789012",
+                        name: "Member",
+                        color: "#0000ff",
+                        position: 3,
+                        permissions: "2"
+                    },
+                    {
+                        id: "4567890123",
+                        name: "New Member",
+                        color: "#ffff00",
+                        position: 2,
+                        permissions: "1"
+                    },
+                    {
+                        id: "5678901234",
+                        name: "Bot",
+                        color: "#ff00ff",
+                        position: 1,
+                        permissions: "0"
+                    }
+                ];
 
-                setRoles(mockRoles)
+                setRoles(mockRoles);
 
                 // Fetch existing access roles from database
-                const { data, error } = await supabase.from("server_access_roles").select("*").eq("server_id", serverId).overrideTypes<ServerAccessRole[]>()
+                const { data, error } = await supabase
+                    .from("server_access_roles")
+                    .select("*")
+                    .eq("server_id", serverId)
+                    .overrideTypes<ServerAccessRole[]>();
 
-                if (error) throw error
+                if (error) throw error;
 
-                setAccessRoles(data || [])
+                setAccessRoles(data || []);
             } catch (error) {
-                console.error("Error fetching roles and access settings:", error)
+                console.error("Error fetching roles and access settings:", error);
                 toast.error("Error", {
-                    description: "Failed to load roles and access settings. Please try again.",
-                })
+                    description: "Failed to load roles and access settings. Please try again."
+                });
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
-        }
+        };
 
-        fetchRolesAndAccess()
-    }, [serverId])
+        fetchRolesAndAccess();
+    }, [serverId]);
 
     const handleAddRole = async () => {
-        if (!selectedRoleId) return
+        if (!selectedRoleId) return;
 
         // Check if role is already added
-        if (accessRoles.some((role) => role.discord_role_id === selectedRoleId)) {
+        if (accessRoles.some(role => role.discord_role_id === selectedRoleId)) {
             toast.error("Role already added", {
-                description: "This role already has access settings configured.",
-            })
-            return
+                description: "This role already has access settings configured."
+            });
+            return;
         }
 
-        setSaving(true)
+        setSaving(true);
 
         try {
             const { data, error } = await supabase
@@ -90,84 +123,87 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                 .insert({
                     server_id: serverId,
                     discord_role_id: selectedRoleId,
-                    access_level: selectedAccessLevel,
+                    access_level: selectedAccessLevel
                 })
                 .select()
-                .returns<ServerAccessRole[]>()
+                .returns<ServerAccessRole[]>();
 
-            if (error) throw error
+            if (error) throw error;
 
-            setAccessRoles([...accessRoles, data[0]])
-            setSelectedRoleId("")
+            setAccessRoles([...accessRoles, data[0]]);
+            setSelectedRoleId("");
 
             toast.success("Role added", {
-                description: "The role has been added with the specified access level.",
-            })
+                description: "The role has been added with the specified access level."
+            });
         } catch (error) {
-            console.error("Error adding role:", error)
+            console.error("Error adding role:", error);
             toast.error("Error", {
-                description: "Failed to add role. Please try again.",
-            })
+                description: "Failed to add role. Please try again."
+            });
         } finally {
-            setSaving(false)
+            setSaving(false);
         }
-    }
+    };
 
     const handleRemoveRole = async (roleId: string) => {
-        setSaving(true)
+        setSaving(true);
 
         try {
-            const { error } = await supabase.from("server_access_roles").delete().eq("id", roleId)
+            const { error } = await supabase.from("server_access_roles").delete().eq("id", roleId);
 
-            if (error) throw error
+            if (error) throw error;
 
-            setAccessRoles(accessRoles.filter((role) => role.id !== roleId))
+            setAccessRoles(accessRoles.filter(role => role.id !== roleId));
 
             toast.success("Role removed", {
-                description: "The role has been removed from access control.",
-            })
+                description: "The role has been removed from access control."
+            });
         } catch (error) {
-            console.error("Error removing role:", error)
+            console.error("Error removing role:", error);
             toast.error("Error", {
-                description: "Failed to remove role. Please try again.",
-            })
+                description: "Failed to remove role. Please try again."
+            });
         } finally {
-            setSaving(false)
+            setSaving(false);
         }
-    }
+    };
 
     const handleUpdateAccessLevel = async (roleId: string, newLevel: string) => {
-        setSaving(true)
+        setSaving(true);
 
         try {
-            const { error } = await supabase.from("server_access_roles").update({ access_level: newLevel }).eq("id", roleId)
+            const { error } = await supabase
+                .from("server_access_roles")
+                .update({ access_level: newLevel })
+                .eq("id", roleId);
 
-            if (error) throw error
+            if (error) throw error;
 
-            setAccessRoles(accessRoles.map((role) => (role.id === roleId ? { ...role, access_level: newLevel } : role)))
+            setAccessRoles(accessRoles.map(role => (role.id === roleId ? { ...role, access_level: newLevel } : role)));
 
             toast.success("Access updated", {
-                description: "The role's access level has been updated.",
-            })
+                description: "The role's access level has been updated."
+            });
         } catch (error) {
-            console.error("Error updating access level:", error)
-            toast.error("Error",{
-                description: "Failed to update access level. Please try again.",
-            })
+            console.error("Error updating access level:", error);
+            toast.error("Error", {
+                description: "Failed to update access level. Please try again."
+            });
         } finally {
-            setSaving(false)
+            setSaving(false);
         }
-    }
+    };
 
     const getRoleName = (roleId: string) => {
-        const role = roles.find((r) => r.id === roleId)
-        return role ? role.name : "Unknown Role"
-    }
+        const role = roles.find(r => r.id === roleId);
+        return role ? role.name : "Unknown Role";
+    };
 
     const getRoleColor = (roleId: string) => {
-        const role = roles.find((r) => r.id === roleId)
-        return role ? role.color : "#cccccc"
-    }
+        const role = roles.find(r => r.id === roleId);
+        return role ? role.color : "#cccccc";
+    };
 
     return (
         <Card>
@@ -183,8 +219,8 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                     <Info className="h-4 w-4" />
                     <AlertTitle>How it works</AlertTitle>
                     <AlertDescription>
-                        Users with these roles in your Discord server will be able to access the dashboard with the specified
-                        permission level.
+                        Users with these roles in your Discord server will be able to access the dashboard with the
+                        specified permission level.
                         <ul className="mt-2 list-disc pl-5 space-y-1">
                             <li>
                                 <strong>View:</strong> Can only view data and analytics
@@ -208,19 +244,24 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                         </div>
                     ) : (
                         <div className="space-y-2">
-                            {accessRoles.map((accessRole) => (
-                                <div key={accessRole.id} className="flex items-center justify-between border rounded-md p-3">
+                            {accessRoles.map(accessRole => (
+                                <div
+                                    key={accessRole.id}
+                                    className="flex items-center justify-between border rounded-md p-3"
+                                >
                                     <div className="flex items-center gap-2">
                                         <div
                                             className="w-3 h-3 rounded-full"
-                                            style={{ backgroundColor: getRoleColor(accessRole.discord_role_id) }}
+                                            style={{
+                                                backgroundColor: getRoleColor(accessRole.discord_role_id)
+                                            }}
                                         />
                                         <span className="font-medium">{getRoleName(accessRole.discord_role_id)}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Select
                                             value={accessRole.access_level}
-                                            onValueChange={(value) => handleUpdateAccessLevel(accessRole.id, value)}
+                                            onValueChange={value => handleUpdateAccessLevel(accessRole.id, value)}
                                             disabled={saving}
                                         >
                                             <SelectTrigger className="w-[120px]">
@@ -255,10 +296,13 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
                             <SelectContent>
-                                {roles.map((role) => (
+                                {roles.map(role => (
                                     <SelectItem key={role.id} value={role.id}>
                                         <div className="flex items-center gap-2">
-                                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: role.color }} />
+                                            <div
+                                                className="w-2 h-2 rounded-full"
+                                                style={{ backgroundColor: role.color }}
+                                            />
                                             {role.name}
                                         </div>
                                     </SelectItem>
@@ -275,7 +319,11 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                                 <SelectItem value="admin">Admin</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Button onClick={handleAddRole} disabled={!selectedRoleId || saving} className="sm:w-auto w-full">
+                        <Button
+                            onClick={handleAddRole}
+                            disabled={!selectedRoleId || saving}
+                            className="sm:w-auto w-full"
+                        >
                             <Plus className="h-4 w-4 mr-2" />
                             Add Role
                         </Button>
@@ -286,5 +334,5 @@ export function RoleAccessControl({ serverId }: RoleAccessControlProps) {
                 <div className="text-sm text-muted-foreground">Server owners always have full access</div>
             </CardFooter>
         </Card>
-    )
+    );
 }

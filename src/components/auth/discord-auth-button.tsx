@@ -1,38 +1,39 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import supabase from "@/lib/supabase/client"
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import supabase from "@/lib/supabase/client";
 
 export function DiscordAuthButton() {
-    const router = useRouter()
-    
-    const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter();
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
-        setIsLoading(true)
+        setIsLoading(true);
         try {
             const {
-                data: { session },
-            } = await supabase.auth.getSession()
+                data: { session }
+            } = await supabase.auth.getSession();
 
             if (session && session != null) {
-                return router.push("/auth/callback?logged=true")
+                return router.push("/auth/callback?logged=true");
             }
 
-            await supabase.auth.signInWithOAuth({
+            const { data } = await supabase.auth.signInWithOAuth({
                 provider: "discord",
                 options: {
                     redirectTo: `${window.location.origin}/auth/callback`,
-                    scopes: "identify email guilds",
-                },
-            })
+                    scopes: "identify email guilds"
+                }
+            });
+            console.log(data);
         } catch (err) {
-            console.error("Login error:", err)
-            setIsLoading(false)
+            console.error("Login error:", err);
+            setIsLoading(false);
         }
-    }
+    };
 
     return (
         <Button
@@ -50,7 +51,14 @@ export function DiscordAuthButton() {
                             fill="none"
                             viewBox="0 0 24 24"
                         >
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
                             <path
                                 className="opacity-75"
                                 fill="currentColor"
@@ -81,5 +89,5 @@ export function DiscordAuthButton() {
                 )}
             </div>
         </Button>
-    )
+    );
 }

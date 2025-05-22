@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef } from "react"
-import { Download, Upload, AlertCircle } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { useThemeContext } from "@/contexts/theme-context"
-import { exportThemeToJson, importThemeFromJson } from "@/lib/theme-export"
+import { useState, useRef } from "react";
+import { Download, Upload, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useThemeContext } from "@/contexts/theme-context";
+import { exportThemeToJson, importThemeFromJson } from "@/lib/utils/theme-export";
 import {
     Dialog,
     DialogContent,
@@ -15,87 +15,87 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose,
-} from "@/components/ui/dialog"
+    DialogClose
+} from "@/components/ui/dialog";
 
 interface ThemeImportExportProps {
-    theme?: any // Optional theme to export
-    variant?: "default" | "outline" | "ghost" | "link"
-    size?: "default" | "sm" | "lg" | "icon"
+    theme?: any; // Optional theme to export
+    variant?: "default" | "outline" | "ghost" | "link";
+    size?: "default" | "sm" | "lg" | "icon";
 }
 
 export function ThemeImportExport({ theme, variant = "outline", size = "sm" }: ThemeImportExportProps) {
-    const { currentTheme, importTheme } = useThemeContext()
-    const [isImportDialogOpen, setIsImportDialogOpen] = useState(false)
-    const [isDragging, setIsDragging] = useState(false)
-    const [importError, setImportError] = useState<string | null>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null)
+    const { currentTheme, importTheme } = useThemeContext();
+    const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+    const [isDragging, setIsDragging] = useState(false);
+    const [importError, setImportError] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Handle export button click
     const handleExport = () => {
-        const themeToExport = theme || currentTheme
-        exportThemeToJson(themeToExport)
-        toast.success(`Theme "${themeToExport.name}" exported successfully`)
-    }
+        const themeToExport = theme || currentTheme;
+        exportThemeToJson(themeToExport);
+        toast.success(`Theme "${themeToExport.name}" exported successfully`);
+    };
 
     // Handle import button click
     const handleImportClick = () => {
-        fileInputRef.current?.click()
-    }
+        fileInputRef.current?.click();
+    };
 
     // Handle file selection
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]
-        if (!file) return
+        const file = event.target.files?.[0];
+        if (!file) return;
 
         try {
-            setImportError(null)
-            const importedTheme = await importThemeFromJson(file)
-            await importTheme(importedTheme)
-            setIsImportDialogOpen(false)
-            event.target.value = "" // Reset the input
+            setImportError(null);
+            const importedTheme = await importThemeFromJson(file);
+            await importTheme(importedTheme);
+            setIsImportDialogOpen(false);
+            event.target.value = ""; // Reset the input
         } catch (error) {
-            console.error("Import error:", error)
-            setImportError((error as Error).message)
+            console.error("Import error:", error);
+            setImportError((error as Error).message);
         }
-    }
+    };
 
     // Handle drag events
     const handleDragEnter = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setIsDragging(true)
-    }
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
 
     const handleDragLeave = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setIsDragging(false)
-    }
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
 
     const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
+        e.preventDefault();
+        e.stopPropagation();
+    };
 
     const handleDrop = async (e: React.DragEvent) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setIsDragging(false)
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
 
-        const file = e.dataTransfer.files?.[0]
-        if (!file) return
+        const file = e.dataTransfer.files?.[0];
+        if (!file) return;
 
         try {
-            setImportError(null)
-            const importedTheme = await importThemeFromJson(file)
-            await importTheme(importedTheme)
-            setIsImportDialogOpen(false)
+            setImportError(null);
+            const importedTheme = await importThemeFromJson(file);
+            await importTheme(importedTheme);
+            setIsImportDialogOpen(false);
         } catch (error) {
-            console.error("Import error:", error)
-            setImportError((error as Error).message)
+            console.error("Import error:", error);
+            setImportError((error as Error).message);
         }
-    }
+    };
 
     return (
         <div className="flex items-center gap-2">
@@ -122,8 +122,9 @@ export function ThemeImportExport({ theme, variant = "outline", size = "sm" }: T
                     </DialogHeader>
 
                     <div
-                        className={`mt-4 border-2 border-dashed rounded-lg p-8 text-center ${isDragging ? "border-primary bg-primary/5" : "border-white/20"
-                            } transition-colors duration-200`}
+                        className={`mt-4 border-2 border-dashed rounded-lg p-8 text-center ${
+                            isDragging ? "border-primary bg-primary/5" : "border-white/20"
+                        } transition-colors duration-200`}
                         onDragEnter={handleDragEnter}
                         onDragLeave={handleDragLeave}
                         onDragOver={handleDragOver}
@@ -135,7 +136,13 @@ export function ThemeImportExport({ theme, variant = "outline", size = "sm" }: T
                         <Button onClick={handleImportClick} variant="secondary">
                             Browse Files
                         </Button>
-                        <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".json" className="hidden" />
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept=".json"
+                            className="hidden"
+                        />
                     </div>
 
                     {importError && (
@@ -156,5 +163,5 @@ export function ThemeImportExport({ theme, variant = "outline", size = "sm" }: T
                 </DialogContent>
             </Dialog>
         </div>
-    )
+    );
 }

@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { SiteHeader } from "@/components/site-header"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ThemeSelector } from "@/components/themes/theme-selector"
-import { ThemeImportExport } from "@/components/themes/theme-import-export"
-import { CodeBlock } from "@/components/code-block"
-import { useThemeContext } from "@/contexts/theme-context"
+import { useState } from "react";
+import { SiteHeader } from "@/components/site-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ThemeSelector } from "@/components/themes/theme-selector";
+import { ThemeImportExport } from "@/components/themes/theme-import-export";
+import { CodeBlock } from "@/components/code-block";
+import { useThemeContext } from "@/contexts/theme-context";
 
 export default function ThemeImportExportDemoPage() {
-    const { currentTheme } = useThemeContext()
-    const [showSelector, setShowSelector] = useState(false)
+    const { currentTheme } = useThemeContext();
+    const [showSelector, setShowSelector] = useState(false);
 
     const themeJsonExample = `{
   "id": "custom-theme-1",
@@ -20,7 +20,7 @@ export default function ThemeImportExportDemoPage() {
   "secondary": "#f8fafc",
   "accent": "#8b5cf6",
   "borderRadius": 10
-}`
+}`;
 
     return (
         <div className="flex min-h-screen flex-col">
@@ -63,7 +63,10 @@ export default function ThemeImportExportDemoPage() {
                                     <CardTitle>Export Themes</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p>Export your custom themes as JSON files that can be shared with others or saved as backups.</p>
+                                    <p>
+                                        Export your custom themes as JSON files that can be shared with others or saved
+                                        as backups.
+                                    </p>
                                 </CardContent>
                             </Card>
 
@@ -72,7 +75,10 @@ export default function ThemeImportExportDemoPage() {
                                     <CardTitle>Import Themes</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p>Import themes from JSON files, either by selecting a file or using drag-and-drop functionality.</p>
+                                    <p>
+                                        Import themes from JSON files, either by selecting a file or using drag-and-drop
+                                        functionality.
+                                    </p>
                                 </CardContent>
                             </Card>
 
@@ -82,7 +88,8 @@ export default function ThemeImportExportDemoPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p>
-                                        Imported themes are validated to ensure they contain all required properties and valid color values.
+                                        Imported themes are validated to ensure they contain all required properties and
+                                        valid color values.
                                     </p>
                                 </CardContent>
                             </Card>
@@ -170,8 +177,8 @@ export default function ThemeImportExportDemoPage() {
                     <div className="container">
                         <h2 className="text-3xl font-bold text-center mb-8">Theme JSON Format</h2>
                         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-                            Themes are exported as JSON files with the following structure. You can create your own theme files
-                            following this format.
+                            Themes are exported as JSON files with the following structure. You can create your own
+                            theme files following this format.
                         </p>
 
                         <div className="max-w-2xl mx-auto">
@@ -187,7 +194,8 @@ export default function ThemeImportExportDemoPage() {
                                         <code className="text-sm">primary</code> - Primary color in hex format (string)
                                     </li>
                                     <li>
-                                        <code className="text-sm">secondary</code> - Secondary color in hex format (string)
+                                        <code className="text-sm">secondary</code> - Secondary color in hex format
+                                        (string)
                                     </li>
                                     <li>
                                         <code className="text-sm">accent</code> - Accent color in hex format (string)
@@ -206,7 +214,8 @@ export default function ThemeImportExportDemoPage() {
                                         <code className="text-sm">creator</code> - Name of the theme creator (string)
                                     </li>
                                     <li>
-                                        <code className="text-sm">isPublic</code> - Whether the theme is public (boolean)
+                                        <code className="text-sm">isPublic</code> - Whether the theme is public
+                                        (boolean)
                                     </li>
                                 </ul>
                             </div>
@@ -215,5 +224,5 @@ export default function ThemeImportExportDemoPage() {
                 </section>
             </main>
         </div>
-    )
+    );
 }
