@@ -7,7 +7,7 @@ import { Download, Upload, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useThemeContext } from "@/contexts/theme-context";
-import { exportThemeToJson, importThemeFromJson } from "@/lib/theme-export";
+import { exportThemeToJson, importThemeFromJson } from "@/lib/utils/theme-export";
 import {
     Dialog,
     DialogContent,

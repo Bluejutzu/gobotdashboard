@@ -18,9 +18,9 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { ThemeAnimation } from "@/components/themes/theme-animation";
-import { exportThemeToJson } from "@/lib/theme-export";
+import { exportThemeToJson } from "@/lib/utils/theme-export";
 import { ThemeCreator } from "@/components/themes/theme-creator";
 import { Input } from "@/components/ui/input";
 import {

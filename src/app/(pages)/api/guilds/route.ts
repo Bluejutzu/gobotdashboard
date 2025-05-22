@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { getFormattedServerList } from "@/lib/redis-service/guild-service";
+import { Logger } from "@/lib/utils/logger";
+
+const logger = new Logger("[GUILDS API]");
 
 /**
  * Handles POST requests to fetch a formatted list of servers for a user.
@@ -18,7 +21,7 @@ export async function POST(req: Request) {
 
         // Validate required parameters
         if (!userId || !supabase_user_id) {
-            console.error("Missing required parameters:", {
+            logger.error("Missing required parameters:", {
                 userId,
                 supabase_user_id
             });
@@ -31,7 +34,7 @@ export async function POST(req: Request) {
         }
 
         // Log the request for debugging
-        console.log("Fetching servers for:", {
+        logger.info("Fetching servers for:", {
             userId,
             supabase_user_id,
             forceRefresh
@@ -40,7 +43,7 @@ export async function POST(req: Request) {
         const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh, "api-route");
         return NextResponse.json({ servers });
     } catch (e) {
-        console.error("Error in server fetch API route:", e);
+        logger.error("Error in server fetch API route:", e);
         return NextResponse.json(
             {
                 error: `Failed to fetch servers: ${e instanceof Error ? e.message : String(e)}`

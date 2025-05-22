@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { refreshDiscordToken } from "@/lib/utils";
+import { refreshDiscordToken } from "@/lib/utils/utils";
 
 /**
  * Handles a POST request to refresh a user's Discord OAuth access token.

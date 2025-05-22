@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useThemeContext } from "@/contexts/theme-context";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 interface ThemeWrapperProps {
     children: ReactNode;

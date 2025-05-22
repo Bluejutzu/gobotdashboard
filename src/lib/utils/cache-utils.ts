@@ -1,7 +1,7 @@
-import { redis, CACHE_TTL, CACHE_KEYS } from "./redis";
+import { redis, CACHE_TTL, CACHE_KEYS } from "../redis-service/redis";
 
 // Types
-import type { DiscordPartialGuild, ModerationCase } from "./types/types";
+import type { DiscordPartialGuild, ModerationCase } from "../types/types";
 
 /**
  * Cache user's Discord guilds

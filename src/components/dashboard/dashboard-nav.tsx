@@ -27,7 +27,7 @@ import {
     Sparkles,
     Layers
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { Badge } from "@/components/ui/badge";
 import type { Server as ServerType } from "@/lib/types/types";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, type ButtonHTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { useThemeStyles } from "@/hooks/use-theme-styles";
 
 export interface ThemedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

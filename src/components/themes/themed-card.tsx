@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, type HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 export interface ThemedCardProps extends HTMLAttributes<HTMLDivElement> {
     variant?: "default" | "outline" | "ghost";

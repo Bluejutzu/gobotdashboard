@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronDown, Filter, Link, MessageSquare, Shield } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import type { ExtendedAutoModerationRule } from "@/lib/types/types";
 import { ProfanitySettings } from "../moderation/rule-settings/profanity-settings";
 import { SpamSettings } from "../moderation/rule-settings/spam-settings";

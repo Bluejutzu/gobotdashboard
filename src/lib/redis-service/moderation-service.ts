@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { CACHE_KEYS, setCache, getCache, invalidateCache, CACHE_TTL } from "@/lib/redis";
+import { CACHE_KEYS, setCache, getCache, invalidateCache, CACHE_TTL } from "@/lib/redis-service/redis";
 import type { Database } from "../types/supabase";
 import supabase from "../supabase/client";
 import type { AutoModerationRule } from "../types/types";

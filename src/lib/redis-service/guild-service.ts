@@ -6,7 +6,7 @@ import {
     cacheBotGuilds,
     invalidateUserGuildsCache,
     invalidateBotGuildsCache
-} from "@/lib/cache-utils";
+} from "@/lib/utils/cache-utils";
 import type { DiscordPartialGuild, Server } from "../types/types";
 import axios from "axios";
 

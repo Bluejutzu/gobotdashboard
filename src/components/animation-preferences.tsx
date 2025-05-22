@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Eye, Gauge, Monitor, Moon, Settings, Sparkles, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";

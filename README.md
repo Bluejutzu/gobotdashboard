@@ -1,7 +1,7 @@
 ## TODO
 
-- [x] Add custom theme functionality
+- [ ] Add custom theme functionality (kinda broken right now, gotta revise)
 - [ ] Fix command page (partially done)
-- [x] improve server dashboard
 - [ ] Add data request functionality (make data actually downloadable)
-- [ ] Proper Token refreshing
+- [ ] Proper Token refreshing (assuming it works, not tested)
+- [ ] Implement the new Logger Class across codebase

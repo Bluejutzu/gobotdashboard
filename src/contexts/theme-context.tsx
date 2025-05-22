@@ -10,8 +10,8 @@ import {
     deleteTheme as deleteThemeFromDb,
     likeTheme as likeThemeInDb
 } from "@/lib/supabase";
-import { hexToHSL } from "@/lib/color-utils";
-import { validateThemeData } from "@/lib/theme-export";
+import { hexToHSL } from "@/lib/utils/color-utils";
+import { validateThemeData } from "@/lib/utils/theme-export";
 import supabase from "@/lib/supabase/client";
 
 // Default theme

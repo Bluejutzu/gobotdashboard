@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useThemeContext } from "@/contexts/theme-context";
-import { darkenColor, getContrastingTextColor } from "@/lib/color-utils";
+import { darkenColor, getContrastingTextColor } from "@/lib/utils/color-utils";
 
 interface ThemeStyles {
     primary: string;

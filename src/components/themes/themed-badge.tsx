@@ -1,9 +1,9 @@
 "use client";
 
 import { forwardRef, type HTMLAttributes } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { useThemeContext } from "@/contexts/theme-context";
-import { getContrastingTextColor } from "@/lib/color-utils";
+import { getContrastingTextColor } from "@/lib/utils/color-utils";
 
 export interface ThemedBadgeProps extends HTMLAttributes<HTMLDivElement> {
     variant?: "default" | "outline" | "secondary" | "accent";
