@@ -1,3 +1,5 @@
+export const runtime = 'nodejs'
+
 import { NextResponse } from "next/server";
 import { getFormattedServerList } from "@/lib/redis-service/guild-service";
 import { Logger } from "@/lib/utils/logger";
