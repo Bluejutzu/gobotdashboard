@@ -1,7 +1,6 @@
 export const runtime = 'nodejs'
 
 import { NextResponse } from "next/server";
-import { getFormattedServerList } from "@/lib/redis-service/guild-service";
 import { Logger } from "@/lib/utils/logger";
 
 const logger = new Logger("[GUILDS API]");
@@ -42,8 +41,8 @@ export async function POST(req: Request) {
             forceRefresh
         });
 
-        const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh, "api-route");
-        return NextResponse.json({ servers });
+        // const servers = await getFormattedServerList(userId, supabase_user_id, forceRefresh, "api-route");
+        return NextResponse.json({ servers: [] });
     } catch (e) {
         logger.error("Error in server fetch API route:", e);
         return NextResponse.json(
