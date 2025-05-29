@@ -12,7 +12,7 @@ export function SiteHeader({ className }: { className?: string }) {
     const pathname = usePathname();
     const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     useEffect(() => {
         const checkSession = async () => {
@@ -35,6 +35,12 @@ export function SiteHeader({ className }: { className?: string }) {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const isDashboard = pathname.startsWith("/dashboard");
+
+    if (isDashboard) {
+        return <></>;
+    }
 
     return (
         <header

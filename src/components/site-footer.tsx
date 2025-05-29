@@ -1,6 +1,15 @@
+"use client"
+
 import { cn } from "@/lib/utils/utils";
+import { usePathname } from "next/navigation";
 
 export function SiteFooter({ className }: { className?: string }) {
+    const pathname = usePathname();
+    const isDashboard = pathname.startsWith("/dashboard");
+
+    if (isDashboard) {
+        return <></>;
+    }
     return (
         <footer className={cn("bg-black text-white py-12 border-t border-white/10", className)}>
             <div className="container text-center">

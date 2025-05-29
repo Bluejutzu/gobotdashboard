@@ -83,7 +83,6 @@ export default async function ServerLayout({ children, params }: ServerLayoutPro
     }
 
     // Fetch server data and user's guilds
-    let r: string = "";
     try {
         // Get server information
         const { data: server, error: serverError } = await supabase
@@ -94,7 +93,6 @@ export default async function ServerLayout({ children, params }: ServerLayoutPro
 
         if (serverError || !server) {
             console.error("Error fetching server:", serverError);
-            r = "/dashboard";
         }
 
         // Get formatted list of user's servers
@@ -102,7 +100,6 @@ export default async function ServerLayout({ children, params }: ServerLayoutPro
 
         if (!guilds.some(guild => guild.id === id)) {
             console.error("User does not have access to this server");
-            r = "/dashboard";
         }
 
         return (
@@ -164,7 +161,5 @@ export default async function ServerLayout({ children, params }: ServerLayoutPro
                 </body>
             </html>
         );
-    } finally {
-        redirect(r);
     }
 }
