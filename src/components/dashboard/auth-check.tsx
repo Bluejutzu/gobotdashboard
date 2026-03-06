@@ -13,29 +13,7 @@ export function AuthCheck({ children }: AuthCheckProps) {
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
 
-    useEffect(() => {
-        const checkSession = async () => {
-            try {
-                setIsLoading(true);
-
-                const { data, error } = await supabase.auth.getSession();
-
-                if (error || !data.session) {
-                    console.error("Auth check failed:", error);
-                    router.push("/auth/login");
-                    return;
-                }
-
-                // Session is valid, continue
-                setIsLoading(false);
-            } catch (error) {
-                console.error("Error checking session:", error);
-                router.push("/auth/login");
-            }
-        };
-
-        checkSession();
-    }, [router]);
+   setIsLoading(false)
 
     if (isLoading) {
         return (
