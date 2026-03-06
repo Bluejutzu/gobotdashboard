@@ -15,19 +15,6 @@ export function SiteHeader({ className }: { className?: string }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     useEffect(() => {
-        const checkSession = async () => {
-            const {
-                data: { session }
-            } = await supabase.auth.getSession();
-            if (!session) {
-                router.push("/auth/login");
-            }
-            setIsLoggedIn(!!session);
-        };
-        checkSession();
-    }, [router]);
-
-    useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 10);
         };
@@ -107,7 +94,7 @@ export function SiteHeader({ className }: { className?: string }) {
 
                 <div className="flex items-center gap-4">
                     <ThemeSelector />
-                    {isLoggedIn ? (
+                    { ? (
                         <>
                             <Button asChild>
                                 <Link href="/dashboard">Dashboard</Link>
