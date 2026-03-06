@@ -30,7 +30,7 @@ export function SiteHeader({ className }: { className?: string }) {
     }
 
     return (
-        <header
+        <div
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
                 isScrolled ? "bg-black/80 backdrop-blur-md py-3 shadow-md" : "bg-transparent py-5",
@@ -117,6 +117,6 @@ export function SiteHeader({ className }: { className?: string }) {
                     )}
                 </div>
             </div>
-        </header>
+        </div>
     );
 }
