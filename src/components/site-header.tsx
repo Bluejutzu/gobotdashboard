@@ -12,7 +12,6 @@ export function SiteHeader({ className }: { className?: string }) {
     const pathname = usePathname();
     const router = useRouter();
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -94,27 +93,6 @@ export function SiteHeader({ className }: { className?: string }) {
 
                 <div className="flex items-center gap-4">
                     <ThemeSelector />
-                    { ? (
-                        <>
-                            <Button asChild>
-                                <Link href="/dashboard">Dashboard</Link>
-                            </Button>
-                            <Button
-                                variant={"outline"}
-                                onClick={() =>
-                                    supabase.auth.signOut().then(() => {
-                                        router.push("/");
-                                    })
-                                }
-                            >
-                                Sign Out
-                            </Button>
-                        </>
-                    ) : (
-                        <Button asChild>
-                            <Link href="/auth/login">Login</Link>
-                        </Button>
-                    )}
                 </div>
             </div>
         </div>
